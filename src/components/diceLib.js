@@ -49,8 +49,8 @@ const diceLib = {
 	sortUniqueDiceCombinations: function (target, successes, dice) {
 		let sortedDice = [];
 		let diceTypes = dice.map(el => el.slice(el.indexOf("d")));
-		let keys = [];
-		let values = [];
+		let keys;
+		let values;
 		if (successes === 0 || dice.every(el => parseInt(el.slice(el.indexOf("d") + 1)) < target)) {
 			let tempArr = [];
 			dice.forEach(el => {
@@ -63,15 +63,11 @@ const diceLib = {
 		// Remove any dice that cannot roll successes if needed, e.g. a d6 cannot roll a 7 so it has to be filtered out when creating the combinations
 		if (dice.some(el => parseInt(el.slice(el.indexOf("d") + 1)) < target)) {
 			let filtered = dice.filter(el => parseInt(el.slice(el.indexOf("d") + 1)) >= target);
-			filtered.forEach(el => {
-				keys.push(el.slice(el.indexOf("d")));
-				values.push(el.slice(0, el.indexOf("d")));
-			});
+			keys = filtered.map(el => el.slice(el.indexOf('d')))
+			values = filtered.map(el => el.slice(0, el.indexOf('d')))
 		} else {
-			dice.forEach(el => {
-				keys.push(el.slice(el.indexOf("d")));
-				values.push(el.slice(0, el.indexOf("d")));
-			});
+			keys = dice.map(el => el.slice(el.indexOf('d')))
+			values = dice.map(el => el.slice(0, el.indexOf('d')))
 		}
 		let diceObj = _.zipObject(keys, values);
 		let sortedObj = this.UniqueCombinations(diceObj, successes);
@@ -96,6 +92,7 @@ const diceLib = {
 	},
 
 	sortDiceInput: function (dice) {
+		console.time('sort');
 		let diceArr = [];
 		let diceTypes = [];
 		let sortedDice = [];
@@ -108,6 +105,7 @@ const diceLib = {
 
 		diceArr.forEach(el => diceTypes.indexOf(el.slice(el.indexOf('d'))) < 0 && diceTypes.push(el));
 		diceTypes.forEach(el => sortedDice.push(this.countDice(el.slice(el.indexOf('d')), diceArr)));
+		console.timeEnd('sort');
 		return sortedDice;
 	},
 
