@@ -1,33 +1,187 @@
-.App {
-  text-align: center;
+/* Font imports */
+@import url("https://fonts.googleapis.com/css?family=Nunito");
+
+/* General stylings for the whole app */
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	border: 0;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
+body {
+	font-family: "Nunito", Arial, Helvetica, sans-serif;
+	line-height: 1.4;
+	background-color: #fff;
+	margin: 2rem;
+	font-size: 100%;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+h2 {
+	font-weight: normal;
 }
 
-.App-link {
-  color: #61dafb;
+a {
+	color: #333333;
+	text-decoration: none;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+#root {
+	display: flex;
+	justify-content: center;
+}
+
+p {
+	text-align: justify;
+	margin: 0.5rem 0;
+}
+
+/* Container stylings */
+
+.probability-calculator-wrapper {
+	padding: 1rem 2rem;
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: center;
+	align-items: center;
+	color: #fff;
+	background-color: #282c34;
+	border-radius: 8px;
+	box-shadow: 0 0 35px 2px rgba(0, 0, 0, 0.2);
+	max-width: 35rem;
+	transition: height 0.5s ease-in-out;
+}
+
+.dice-faces-input-wrapper,
+.dice-sums-input-wrapper {
+	display: flex;
+	flex-flow: column wrap;
+	align-items: center;
+	width: 100%;
+}
+
+.sum-target-between-wrapper p,
+.face-target-between-wrapper p {
+	text-align: center;
+}
+
+.dice-image-wrapper {
+	display: grid;
+	grid-template: auto / 1fr 1fr 1fr;
+	justify-content: center;
+	margin: 10px 0;
+}
+
+.face-target-count-wrapper {
+	display: flex;
+	flex-flow: row wrap;
+	align-items: center;
+	margin: 0.5rem 0;
+	position: relative;
+}
+
+.dice-sums-target-wrapper,
+.dice-faces-target-wrapper {
+	display: flex;
+	flex-flow: row wrap;
+	align-items: center;
+	margin: 0.5rem 0;
+}
+
+.dice-input-wrapper {
+	display: flex;
+	flex-flow: column wrap;
+	align-items: center;
+	width: 100%;
+}
+
+.probabilityValue {
+	text-align: center;
+	font-size: 1.5em;
+	margin: 5px 0;
+}
+
+/* Specific element stylings */
+
+.face-target-count-name {
+	position: absolute;
+	right: -30px;
+	margin: 0;
+	text-align: center;
+}
+
+/* Controllable Component stylings*/
+
+.number-input {
+	width: 4rem;
+	height: auto;
+	border-radius: 8px;
+	padding: 0.5rem;
+	font-family: Nunito;
+	color: #282c34;
+	margin: 0.5rem;
+}
+
+.dice-input {
+	width: 18rem;
+	height: auto;
+	border-radius: 8px;
+	padding: 0.5rem;
+	font-family: Nunito;
+	color: #282c34;
+	margin: 0.5rem;
+}
+
+.number-input.count-input {
+	width: 4rem;
+	margin: 0.5rem;
+}
+
+.select-input {
+	border-radius: 8px;
+	width: 10rem;
+	height: auto;
+	font-family: Nunito;
+	color: #282c34;
+	margin: 0.5rem;
+}
+
+.select-face-target-count {
+	margin: 0.5rem;
+}
+
+.select-calculation-type {
+	width: 14rem;
+}
+
+/* Button stylings */
+
+.calculate-sums-button,
+.calculate-faces-button {
+	height: 3rem;
+	width: 10rem;
+	cursor: pointer;
+	border-radius: 1.5rem;
+	color: #fff;
+	background-color: #3f51b5;
+	font-family: "Nunito";
+	transition: background-color 0.15s ease-in;
+	margin: 0.75rem;
+	font-size: 1rem;
+}
+
+.calculate-sums-button:hover,
+.calculate-faces-button:hover {
+	background-color: #4a5bbf;
+}
+
+/* Image stylings */
+
+.dice-image {
+	height: 75px;
+	width: auto;
+	border-radius: 50%;
+	margin: 5px;
+	cursor: pointer;
+	box-shadow: 2px 2px 20px 2px rgba(0, 0, 0, 0.3);
 }
