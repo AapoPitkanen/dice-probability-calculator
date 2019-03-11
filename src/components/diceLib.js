@@ -21,6 +21,7 @@ const faceTargetDiceCountOptions = [
 
 const diceLib = {
 	/* Not written by me, found on math.stackexchange.com for finding only the n-sized unique combinations from a set */
+	faceCombinationOptions: math.setCartesian(faceTargetDiceCountOptions, faceTargetValueOptions),
 
 	UniqueCombinations: function (set, n) {
 		let combinations = [];
@@ -44,8 +45,6 @@ const diceLib = {
 		}
 		return combinations;
 	},
-
-	faceCombinationOptions: math.setCartesian(faceTargetDiceCountOptions, faceTargetValueOptions),
 
 	sortUniqueDiceCombinations: function (target, successes, dice) {
 		let sortedDice = [];
