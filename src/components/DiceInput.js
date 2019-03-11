@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import diceLib from "./diceLib";
-import _ from "lodash";
 
 class DiceInput extends Component {
 	constructor(props) {
