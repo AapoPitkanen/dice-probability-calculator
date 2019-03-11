@@ -110,9 +110,7 @@ const diceLib = {
 	},
 
 	countDice: function (diceType, dice) {
-		let count = 0;
-		dice.forEach(dice => dice === diceType && count++);
-		return `${count}${diceType}`;
+		return `${dice.filter(el => el === diceType).length}${diceType}`
 	},
 
 	binomialProbabilityDiceCountExactlyTargetValueAtLeast: function (target, successes, dice) {
