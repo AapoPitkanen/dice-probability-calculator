@@ -12,6 +12,8 @@ import d8 from "./img/d8-small.png";
 import d10 from "./img/d10-small.png";
 import d12 from "./img/d12-small.png";
 import d20 from "./img/d20-small.png";
+import worker from "./app.worker"
+import WebWorker from "./WebWorker"
 
 class App extends Component {
 	constructor(props) {
@@ -36,8 +38,21 @@ class App extends Component {
 			diceInput: "",
 			probabilityText: "",
 			probability: "",
-			diceCounts: {}
+			diceCounts: {},
+			calculating: false,
+			data: {}
 		};
+	}
+
+	componentDidMount() {
+		this.worker = new WebWorker(worker, { type: "module" });
+
+		this.worker.addEventListener('message', event => {
+			const data = event.data;
+			this.setState({
+				data: data
+			})
+		});
 	}
 
 	handleSelectChange(newValue, actionMeta) {
@@ -80,19 +95,29 @@ class App extends Component {
 	}
 
 	calculateSumProbability() {
-		console.time("probability");
 		let output;
 		let probabilityValue;
 		let diceList = diceLib.diceObjToArray(this.state.diceCounts);
 		let polyDice = diceLib.createDicePolynomial(diceList);
-		let targetType;
-
+		let calculationType = this.state.calculationType.value;
+		let sumTargetValueType = this.state.sumTargetValueType.value;
+		let sumTargetValueOne = this.state.sumTargetValueOne;
+		let sumTargetValueTwo = this.state.sumTargetValueTwo;
+		let message = {
+			calculationType: calculationType,
+			polyDice: polyDice,
+			sumTargetValueType: sumTargetValueType,
+			sumTargetValueOne: sumTargetValueOne,
+			sumTargetValueTwo: sumTargetValueTwo
+		}
+		this.worker.postMessage(message);
+		/*
 		switch (this.state.sumTargetValueType.value) {
 			case "sumTargetValueExactly":
 				targetType = "exactly";
 				output = `The probability of rolling ${targetType} ${
 					this.state.sumTargetValueOne
-				} with the dice ${diceList.join(", ")} is`;
+					} with the dice ${diceList.join(", ")} is`;
 				probabilityValue = (
 					diceLib.diceSumExactly(this.state.sumTargetValueOne, polyDice) * 100
 				).toFixed(2);
@@ -101,7 +126,7 @@ class App extends Component {
 				targetType = "at least";
 				output = `The probability of rolling ${targetType} ${
 					this.state.sumTargetValueOne
-				} with the dice ${diceList.join(", ")} is`;
+					} with the dice ${diceList.join(", ")} is`;
 				probabilityValue = (
 					diceLib.diceSumAtLeast(this.state.sumTargetValueOne, polyDice) * 100
 				).toFixed(2);
@@ -110,7 +135,7 @@ class App extends Component {
 				targetType = "at most";
 				output = `The probability of rolling ${targetType} ${
 					this.state.sumTargetValueOne
-				} with the dice ${diceList.join(", ")} is`;
+					} with the dice ${diceList.join(", ")} is`;
 				probabilityValue = (
 					diceLib.diceSumAtMost(this.state.sumTargetValueOne, polyDice) * 100
 				).toFixed(2);
@@ -119,7 +144,7 @@ class App extends Component {
 				targetType = "between";
 				output = `The probability of rolling ${targetType} ${
 					this.state.sumTargetValueOne
-				} and ${this.state.sumTargetValueTwo} with the dice ${diceList.join(", ")} is`;
+					} and ${this.state.sumTargetValueTwo} with the dice ${diceList.join(", ")} is`;
 				probabilityValue = (
 					diceLib.diceSumBetween(
 						this.state.sumTargetValueOne,
@@ -132,7 +157,7 @@ class App extends Component {
 				targetType = "between";
 				output = `The probability of not rolling ${targetType} ${
 					this.state.sumTargetValueOne
-				} and ${this.state.sumTargetValueTwo} with the dice ${diceList.join(", ")} is`;
+					} and ${this.state.sumTargetValueTwo} with the dice ${diceList.join(", ")} is`;
 				probabilityValue = (
 					diceLib.diceSumNotBetween(
 						this.state.sumTargetValueOne,
@@ -143,11 +168,14 @@ class App extends Component {
 				break;
 			default:
 		}
-		console.timeEnd("probability");
+		*/
+
+		/*
 		this.setState({
 			probabilityText: output,
 			probability: `${probabilityValue}%`
 		});
+		*/
 	}
 
 	render() {
@@ -237,17 +265,17 @@ class App extends Component {
 								/>
 								{(this.state.sumTargetValueType.value === "sumTargetValueBetween" ||
 									this.state.sumTargetValueType.value ===
-										"sumTargetValueNotBetween") && (
-									<React.Fragment>
-										<p>and</p>
-										<NumberInput
-											callback={this.inputCallback}
-											inputValue={this.state.sumTargetValueTwo}
-											name={"sumTargetValueTwo"}
-											className={"number-input"}
-										/>
-									</React.Fragment>
-								)}
+									"sumTargetValueNotBetween") && (
+										<React.Fragment>
+											<p>and</p>
+											<NumberInput
+												callback={this.inputCallback}
+												inputValue={this.state.sumTargetValueTwo}
+												name={"sumTargetValueTwo"}
+												className={"number-input"}
+											/>
+										</React.Fragment>
+									)}
 							</div>
 						</div>
 					)}
@@ -272,17 +300,17 @@ class App extends Component {
 								{(this.state.faceTargetDiceCountType.value ===
 									"faceTargetDiceCountBetween" ||
 									this.state.faceTargetDiceCountType.value ===
-										"faceTargetDiceCountNotBetween") && (
-									<React.Fragment>
-										<p>and</p>
-										<NumberInput
-											callback={this.inputCallback}
-											inputValue={this.state.faceTargetDiceCountTwo}
-											name={"faceTargetDiceCountTwo"}
-											className="number-input count-input"
-										/>
-									</React.Fragment>
-								)}
+									"faceTargetDiceCountNotBetween") && (
+										<React.Fragment>
+											<p>and</p>
+											<NumberInput
+												callback={this.inputCallback}
+												inputValue={this.state.faceTargetDiceCountTwo}
+												name={"faceTargetDiceCountTwo"}
+												className="number-input count-input"
+											/>
+										</React.Fragment>
+									)}
 								<p className="face-target-count-name">dice</p>
 							</div>
 							<p>where the face value</p>
@@ -303,17 +331,17 @@ class App extends Component {
 								{(this.state.faceTargetValueType.value ===
 									"faceTargetValueBetween" ||
 									this.state.faceTargetValueType.value ===
-										"faceTargetValueNotBetween") && (
-									<React.Fragment>
-										<p>and</p>
-										<NumberInput
-											callback={this.inputCallback}
-											inputValue={this.state.faceTargetValueTwo}
-											name={"faceTargetValueTwo"}
-											className={"number-input"}
-										/>
-									</React.Fragment>
-								)}
+									"faceTargetValueNotBetween") && (
+										<React.Fragment>
+											<p>and</p>
+											<NumberInput
+												callback={this.inputCallback}
+												inputValue={this.state.faceTargetValueTwo}
+												name={"faceTargetValueTwo"}
+												className={"number-input"}
+											/>
+										</React.Fragment>
+									)}
 							</div>
 						</div>
 					)}
