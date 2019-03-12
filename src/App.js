@@ -54,6 +54,19 @@ class App extends Component {
 			probabilityText: "",
 			probability: ""
 		});
+    }
+    
+	handleClickDiceImage(event) {
+		if (event.target.dataset.diceType) {
+			let diceType = event.target.dataset.diceType;
+			let diceObj = { ...this.state.diceCounts };
+			diceObj[diceType] = diceObj[diceType] === undefined ? 1 : diceObj[diceType] + 1;
+			let diceArr = diceLib.diceObjToArray(diceObj).join("+");
+			this.setState({
+				diceCounts: diceObj,
+				diceInput: diceArr
+			});
+		}
 	}
 
 	inputCallback(childData, childName) {
@@ -134,19 +147,6 @@ class App extends Component {
 			probabilityText: output,
 			probability: `${probabilityValue}%`
 		});
-	}
-
-	handleClickDiceImage(event) {
-		if (event.target.dataset.diceType) {
-			let diceType = event.target.dataset.diceType;
-			let diceObj = { ...this.state.diceCounts };
-			diceObj[diceType] = diceObj[diceType] === undefined ? 1 : diceObj[diceType] + 1;
-			let diceArr = diceLib.diceObjToArray(diceObj).join("+");
-			this.setState({
-				diceCounts: diceObj,
-				diceInput: diceArr
-			});
-		}
 	}
 
 	render() {
