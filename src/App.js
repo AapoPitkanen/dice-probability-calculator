@@ -5,7 +5,7 @@ import NumberInput from "./components/NumberInput";
 import Select from "react-select";
 import diceLib from "./components/diceLib";
 import styled from "styled-components";
-import _ from "lodash";
+//import _ from "lodash";
 import d4 from "./img/d4-small.png";
 import d6 from "./img/d6-small.png";
 import d8 from "./img/d8-small.png";
