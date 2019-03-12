@@ -54,8 +54,8 @@ class App extends Component {
 			probabilityText: "",
 			probability: ""
 		});
-    }
-    
+	}
+
 	handleClickDiceImage(event) {
 		if (event.target.dataset.diceType) {
 			let diceType = event.target.dataset.diceType;
@@ -80,9 +80,10 @@ class App extends Component {
 	}
 
 	calculateSumProbability() {
+		console.time("probability");
 		let output;
 		let probabilityValue;
-		let diceList = this.state.diceInput.split("+");
+		let diceList = diceLib.diceObjToArray(this.state.diceCounts);
 		let polyDice = diceLib.createDicePolynomial(diceList);
 		let targetType;
 
@@ -142,7 +143,7 @@ class App extends Component {
 				break;
 			default:
 		}
-
+		console.timeEnd("probability");
 		this.setState({
 			probabilityText: output,
 			probability: `${probabilityValue}%`

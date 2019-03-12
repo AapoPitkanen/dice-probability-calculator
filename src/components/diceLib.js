@@ -331,6 +331,21 @@ const diceLib = {
 		return polyDiceArr;
 	}
 };
+
+/*
+
+entries.forEach(el => {
+    for (let i = 0; i < el[1]; i++) {
+	    let polyStr = "";
+	    for (let j = 0; j < parseInt(el[0].slice(1)); j++) {
+		    polyStr += `1/${el[0].slice(1)}x^${el[0].slice(1)}+`;
+            }
+	    polyDiceArr.push(polyStr);
+    }	
+});
+
+*/
+
 /*
 const diceAlgorithmAtMost = (p, n, s) => {
   let probability = 0;
