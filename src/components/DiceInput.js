@@ -29,9 +29,12 @@ class DiceInput extends Component {
 		});
 
 		inputValue = inputValue.split("+");
+		let diceObj = diceLib.createDiceObject(inputValue);
+		console.log(diceLib.diceObjToArray(diceObj));
+		console.log(diceLib.diceObjToArray(diceObj).join("+"));
 		inputValue = diceLib.sortDiceInput(inputValue);
 		inputValue = inputValue.join("+");
-
+		this.props.callback(diceObj, "diceCounts");
 		this.props.callback(inputValue, inputName);
 	}
 

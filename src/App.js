@@ -35,7 +35,8 @@ class App extends Component {
 			faceTargetValueTwo: "",
 			diceInput: "",
 			probabilityText: "",
-			probability: ""
+			probability: "",
+			diceCounts: {}
 		};
 	}
 
@@ -77,7 +78,7 @@ class App extends Component {
 				targetType = "exactly";
 				output = `The probability of rolling ${targetType} ${
 					this.state.sumTargetValueOne
-					} with the dice ${diceList.join(", ")} is`;
+				} with the dice ${diceList.join(", ")} is`;
 				probabilityValue = (
 					diceLib.diceSumExactly(this.state.sumTargetValueOne, polyDice) * 100
 				).toFixed(2);
@@ -86,7 +87,7 @@ class App extends Component {
 				targetType = "at least";
 				output = `The probability of rolling ${targetType} ${
 					this.state.sumTargetValueOne
-					} with the dice ${diceList.join(", ")} is`;
+				} with the dice ${diceList.join(", ")} is`;
 				probabilityValue = (
 					diceLib.diceSumAtLeast(this.state.sumTargetValueOne, polyDice) * 100
 				).toFixed(2);
@@ -95,7 +96,7 @@ class App extends Component {
 				targetType = "at most";
 				output = `The probability of rolling ${targetType} ${
 					this.state.sumTargetValueOne
-					} with the dice ${diceList.join(", ")} is`;
+				} with the dice ${diceList.join(", ")} is`;
 				probabilityValue = (
 					diceLib.diceSumAtMost(this.state.sumTargetValueOne, polyDice) * 100
 				).toFixed(2);
@@ -104,7 +105,7 @@ class App extends Component {
 				targetType = "between";
 				output = `The probability of rolling ${targetType} ${
 					this.state.sumTargetValueOne
-					} and ${this.state.sumTargetValueTwo} with the dice ${diceList.join(", ")} is`;
+				} and ${this.state.sumTargetValueTwo} with the dice ${diceList.join(", ")} is`;
 				probabilityValue = (
 					diceLib.diceSumBetween(
 						this.state.sumTargetValueOne,
@@ -117,7 +118,7 @@ class App extends Component {
 				targetType = "between";
 				output = `The probability of not rolling ${targetType} ${
 					this.state.sumTargetValueOne
-					} and ${this.state.sumTargetValueTwo} with the dice ${diceList.join(", ")} is`;
+				} and ${this.state.sumTargetValueTwo} with the dice ${diceList.join(", ")} is`;
 				probabilityValue = (
 					diceLib.diceSumNotBetween(
 						this.state.sumTargetValueOne,
@@ -136,21 +137,14 @@ class App extends Component {
 	}
 
 	handleClickDiceImage(event) {
-		let input = this.state.diceInput;
-		let diceType = event.target.dataset.diceType;
-		let diceList = input.split("+");
-		if (diceType) {
-			if (input === "") {
-				input = `1${diceType}`;
-			} else if (input.indexOf(diceType) < 0) {
-				input += `+1${diceType}`;
-			} else {
-				let currentDiceCount = diceLib.findDiceCount(diceType, diceList);
-				diceList = diceLib.updateDiceCount(currentDiceCount + 1, diceType, diceList);
-				input = diceList.join("+");
-			}
+		if (event.target.dataset.diceType) {
+			let diceType = event.target.dataset.diceType;
+			let diceObj = { ...this.state.diceCounts };
+			diceObj[diceType] = diceObj[diceType] === undefined ? 1 : diceObj[diceType] + 1;
+			let diceArr = diceLib.diceObjToArray(diceObj).join("+");
 			this.setState({
-				diceInput: input
+				diceCounts: diceObj,
+				diceInput: diceArr
 			});
 		}
 	}
@@ -242,17 +236,17 @@ class App extends Component {
 								/>
 								{(this.state.sumTargetValueType.value === "sumTargetValueBetween" ||
 									this.state.sumTargetValueType.value ===
-									"sumTargetValueNotBetween") && (
-										<React.Fragment>
-											<p>and</p>
-											<NumberInput
-												callback={this.inputCallback}
-												inputValue={this.state.sumTargetValueTwo}
-												name={"sumTargetValueTwo"}
-												className={"number-input"}
-											/>
-										</React.Fragment>
-									)}
+										"sumTargetValueNotBetween") && (
+									<React.Fragment>
+										<p>and</p>
+										<NumberInput
+											callback={this.inputCallback}
+											inputValue={this.state.sumTargetValueTwo}
+											name={"sumTargetValueTwo"}
+											className={"number-input"}
+										/>
+									</React.Fragment>
+								)}
 							</div>
 						</div>
 					)}
@@ -277,17 +271,17 @@ class App extends Component {
 								{(this.state.faceTargetDiceCountType.value ===
 									"faceTargetDiceCountBetween" ||
 									this.state.faceTargetDiceCountType.value ===
-									"faceTargetDiceCountNotBetween") && (
-										<React.Fragment>
-											<p>and</p>
-											<NumberInput
-												callback={this.inputCallback}
-												inputValue={this.state.faceTargetDiceCountTwo}
-												name={"faceTargetDiceCountTwo"}
-												className="number-input count-input"
-											/>
-										</React.Fragment>
-									)}
+										"faceTargetDiceCountNotBetween") && (
+									<React.Fragment>
+										<p>and</p>
+										<NumberInput
+											callback={this.inputCallback}
+											inputValue={this.state.faceTargetDiceCountTwo}
+											name={"faceTargetDiceCountTwo"}
+											className="number-input count-input"
+										/>
+									</React.Fragment>
+								)}
 								<p className="face-target-count-name">dice</p>
 							</div>
 							<p>where the face value</p>
@@ -308,17 +302,17 @@ class App extends Component {
 								{(this.state.faceTargetValueType.value ===
 									"faceTargetValueBetween" ||
 									this.state.faceTargetValueType.value ===
-									"faceTargetValueNotBetween") && (
-										<React.Fragment>
-											<p>and</p>
-											<NumberInput
-												callback={this.inputCallback}
-												inputValue={this.state.faceTargetValueTwo}
-												name={"faceTargetValueTwo"}
-												className={"number-input"}
-											/>
-										</React.Fragment>
-									)}
+										"faceTargetValueNotBetween") && (
+									<React.Fragment>
+										<p>and</p>
+										<NumberInput
+											callback={this.inputCallback}
+											inputValue={this.state.faceTargetValueTwo}
+											name={"faceTargetValueTwo"}
+											className={"number-input"}
+										/>
+									</React.Fragment>
+								)}
 							</div>
 						</div>
 					)}
