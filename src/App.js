@@ -12,8 +12,7 @@ import d8 from "./img/d8-small.png";
 import d10 from "./img/d10-small.png";
 import d12 from "./img/d12-small.png";
 import d20 from "./img/d20-small.png";
-import worker from "./app.worker"
-import WebWorker from "./WebWorker"
+import myWorker from "./test.worker";
 
 class App extends Component {
 	constructor(props) {
@@ -45,13 +44,13 @@ class App extends Component {
 	}
 
 	componentDidMount() {
-		this.worker = new WebWorker(worker, { type: "module" });
-
-		this.worker.addEventListener('message', event => {
-			const data = event.data;
-			this.setState({
-				data: data
-			})
+		const worker = new myWorker();
+		const message = {
+			data: "This is a message from the parent App"
+		};
+		worker.postMessage(message);
+		worker.addEventListener("message", e => {
+			console.log(e.data);
 		});
 	}
 
@@ -103,14 +102,14 @@ class App extends Component {
 		let sumTargetValueType = this.state.sumTargetValueType.value;
 		let sumTargetValueOne = this.state.sumTargetValueOne;
 		let sumTargetValueTwo = this.state.sumTargetValueTwo;
+		/*
 		let message = {
 			calculationType: calculationType,
 			polyDice: polyDice,
 			sumTargetValueType: sumTargetValueType,
 			sumTargetValueOne: sumTargetValueOne,
 			sumTargetValueTwo: sumTargetValueTwo
-		}
-		this.worker.postMessage(message);
+		};
 		/*
 		switch (this.state.sumTargetValueType.value) {
 			case "sumTargetValueExactly":
@@ -265,17 +264,17 @@ class App extends Component {
 								/>
 								{(this.state.sumTargetValueType.value === "sumTargetValueBetween" ||
 									this.state.sumTargetValueType.value ===
-									"sumTargetValueNotBetween") && (
-										<React.Fragment>
-											<p>and</p>
-											<NumberInput
-												callback={this.inputCallback}
-												inputValue={this.state.sumTargetValueTwo}
-												name={"sumTargetValueTwo"}
-												className={"number-input"}
-											/>
-										</React.Fragment>
-									)}
+										"sumTargetValueNotBetween") && (
+									<React.Fragment>
+										<p>and</p>
+										<NumberInput
+											callback={this.inputCallback}
+											inputValue={this.state.sumTargetValueTwo}
+											name={"sumTargetValueTwo"}
+											className={"number-input"}
+										/>
+									</React.Fragment>
+								)}
 							</div>
 						</div>
 					)}
@@ -300,17 +299,17 @@ class App extends Component {
 								{(this.state.faceTargetDiceCountType.value ===
 									"faceTargetDiceCountBetween" ||
 									this.state.faceTargetDiceCountType.value ===
-									"faceTargetDiceCountNotBetween") && (
-										<React.Fragment>
-											<p>and</p>
-											<NumberInput
-												callback={this.inputCallback}
-												inputValue={this.state.faceTargetDiceCountTwo}
-												name={"faceTargetDiceCountTwo"}
-												className="number-input count-input"
-											/>
-										</React.Fragment>
-									)}
+										"faceTargetDiceCountNotBetween") && (
+									<React.Fragment>
+										<p>and</p>
+										<NumberInput
+											callback={this.inputCallback}
+											inputValue={this.state.faceTargetDiceCountTwo}
+											name={"faceTargetDiceCountTwo"}
+											className="number-input count-input"
+										/>
+									</React.Fragment>
+								)}
 								<p className="face-target-count-name">dice</p>
 							</div>
 							<p>where the face value</p>
@@ -331,17 +330,17 @@ class App extends Component {
 								{(this.state.faceTargetValueType.value ===
 									"faceTargetValueBetween" ||
 									this.state.faceTargetValueType.value ===
-									"faceTargetValueNotBetween") && (
-										<React.Fragment>
-											<p>and</p>
-											<NumberInput
-												callback={this.inputCallback}
-												inputValue={this.state.faceTargetValueTwo}
-												name={"faceTargetValueTwo"}
-												className={"number-input"}
-											/>
-										</React.Fragment>
-									)}
+										"faceTargetValueNotBetween") && (
+									<React.Fragment>
+										<p>and</p>
+										<NumberInput
+											callback={this.inputCallback}
+											inputValue={this.state.faceTargetValueTwo}
+											name={"faceTargetValueTwo"}
+											className={"number-input"}
+										/>
+									</React.Fragment>
+								)}
 							</div>
 						</div>
 					)}
