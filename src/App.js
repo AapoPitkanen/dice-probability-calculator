@@ -44,13 +44,14 @@ class App extends Component {
 	}
 
 	componentDidMount() {
-		const worker = new myWorker();
-		const message = {
-			data: "This is a message from the parent App"
-		};
-		worker.postMessage(message);
-		worker.addEventListener("message", e => {
-			console.log(e.data);
+		this.worker = new myWorker();
+		this.worker.addEventListener("message", e => {
+			let data = e.data;
+			this.setState({
+				calculating: false,
+				probabilityText: data.output,
+				probability: data.probabilityValue
+			});
 		});
 	}
 
@@ -94,87 +95,19 @@ class App extends Component {
 	}
 
 	calculateSumProbability() {
-		let output;
-		let probabilityValue;
-		let diceList = diceLib.diceObjToArray(this.state.diceCounts);
-		let polyDice = diceLib.createDicePolynomial(diceList);
-		let calculationType = this.state.calculationType.value;
-		let sumTargetValueType = this.state.sumTargetValueType.value;
-		let sumTargetValueOne = this.state.sumTargetValueOne;
-		let sumTargetValueTwo = this.state.sumTargetValueTwo;
-		/*
-		let message = {
-			calculationType: calculationType,
-			polyDice: polyDice,
-			sumTargetValueType: sumTargetValueType,
-			sumTargetValueOne: sumTargetValueOne,
-			sumTargetValueTwo: sumTargetValueTwo
+		const diceList = diceLib.diceObjToArray(this.state.diceCounts);
+		const message = {
+			diceList: diceList,
+			calculationType: this.state.calculationType.value,
+			sumTargetValueType: this.state.sumTargetValueType.value,
+			sumTargetValueOne: this.state.sumTargetValueOne,
+			sumTargetValueTwo: this.state.sumTargetValueTwo
 		};
-		/*
-		switch (this.state.sumTargetValueType.value) {
-			case "sumTargetValueExactly":
-				targetType = "exactly";
-				output = `The probability of rolling ${targetType} ${
-					this.state.sumTargetValueOne
-					} with the dice ${diceList.join(", ")} is`;
-				probabilityValue = (
-					diceLib.diceSumExactly(this.state.sumTargetValueOne, polyDice) * 100
-				).toFixed(2);
-				break;
-			case "sumTargetValueAtLeast":
-				targetType = "at least";
-				output = `The probability of rolling ${targetType} ${
-					this.state.sumTargetValueOne
-					} with the dice ${diceList.join(", ")} is`;
-				probabilityValue = (
-					diceLib.diceSumAtLeast(this.state.sumTargetValueOne, polyDice) * 100
-				).toFixed(2);
-				break;
-			case "sumTargetValueAtMost":
-				targetType = "at most";
-				output = `The probability of rolling ${targetType} ${
-					this.state.sumTargetValueOne
-					} with the dice ${diceList.join(", ")} is`;
-				probabilityValue = (
-					diceLib.diceSumAtMost(this.state.sumTargetValueOne, polyDice) * 100
-				).toFixed(2);
-				break;
-			case "sumTargetValueBetween":
-				targetType = "between";
-				output = `The probability of rolling ${targetType} ${
-					this.state.sumTargetValueOne
-					} and ${this.state.sumTargetValueTwo} with the dice ${diceList.join(", ")} is`;
-				probabilityValue = (
-					diceLib.diceSumBetween(
-						this.state.sumTargetValueOne,
-						this.state.sumTargetValueTwo,
-						polyDice
-					) * 100
-				).toFixed(2);
-				break;
-			case "sumTargetValueNotBetween":
-				targetType = "between";
-				output = `The probability of not rolling ${targetType} ${
-					this.state.sumTargetValueOne
-					} and ${this.state.sumTargetValueTwo} with the dice ${diceList.join(", ")} is`;
-				probabilityValue = (
-					diceLib.diceSumNotBetween(
-						this.state.sumTargetValueOne,
-						this.state.sumTargetValueTwo,
-						polyDice
-					) * 100
-				).toFixed(2);
-				break;
-			default:
-		}
-		*/
 
-		/*
+		this.worker.postMessage(message);
 		this.setState({
-			probabilityText: output,
-			probability: `${probabilityValue}%`
+			calculating: true
 		});
-		*/
 	}
 
 	render() {
