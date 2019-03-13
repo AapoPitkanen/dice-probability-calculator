@@ -46,11 +46,15 @@ const diceLib = {
 		return combinations;
 	},
 
+	/* This function sorts the input dice to check all possible unique ways to roll the specified successes with the dice. 
+    After sorting the dice, the binomial distributions can be calculated from the dice combinations. */
 	sortUniqueDiceCombinations: function(target, successes, dice) {
 		let sortedDice = [];
 		let diceTypes = dice.map(el => el.slice(el.indexOf("d")));
 		let keys;
 		let values;
+		/* We'll just return zeroes for each dice if the user specifies 0 successes rolled or if the target cannot be rolled with any of the dice.
+        The only combination then is that none of the dice roll a success */
 		if (successes === 0 || dice.every(el => parseInt(el.slice(el.indexOf("d") + 1)) < target)) {
 			let tempArr = [];
 			dice.forEach(el => {

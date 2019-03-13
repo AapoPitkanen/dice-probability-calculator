@@ -50,7 +50,7 @@ class App extends Component {
 			this.setState({
 				calculating: false,
 				probabilityText: data.output,
-				probability: data.probabilityValue
+				probability: `${data.probabilityValue}%`
 			});
 		});
 	}
@@ -103,11 +103,12 @@ class App extends Component {
 			sumTargetValueOne: this.state.sumTargetValueOne,
 			sumTargetValueTwo: this.state.sumTargetValueTwo
 		};
-
-		this.worker.postMessage(message);
 		this.setState({
+			probabilityText: "",
+			probability: "",
 			calculating: true
 		});
+		this.worker.postMessage(message);
 	}
 
 	render() {
@@ -295,6 +296,7 @@ class App extends Component {
 						Calculate!
 					</button>
 				)}
+				{this.state.calculating && <div className="loader" />}
 				<div className="outputText">{this.state.probabilityText}</div>
 				<div className="probabilityValue">{this.state.probability}</div>
 			</div>

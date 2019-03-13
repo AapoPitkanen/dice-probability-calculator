@@ -25,8 +25,6 @@ self.addEventListener("message", e => {
 	};
 
 	const polyDice = createDicePolynomial(data.diceList);
-	console.log(polyDice);
-	console.log(data);
 	switch (data.sumTargetValueType) {
 		case "sumTargetValueExactly":
 			targetType = "exactly";
