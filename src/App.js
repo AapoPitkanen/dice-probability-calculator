@@ -95,6 +95,11 @@ class App extends Component {
 	}
 
 	calculateSumProbability() {
+		if (this.state.diceInput === "" || this.state.sumTargetValueOne === "") {
+			return
+		}
+		const diceCounts = Object.values(this.state.diceCounts);
+		const maxDice = diceCounts.reduce((acc, curr) => acc + curr);
 		const diceList = diceLib.diceObjToArray(this.state.diceCounts);
 		const message = {
 			diceList: diceList,
@@ -103,11 +108,15 @@ class App extends Component {
 			sumTargetValueOne: this.state.sumTargetValueOne,
 			sumTargetValueTwo: this.state.sumTargetValueTwo
 		};
-		this.setState({
+		maxDice >= 200 ? this.setState({
 			probabilityText: "",
 			probability: "",
 			calculating: true
+		}) : this.setState({
+			probabilityText: "",
+			probability: "",
 		});
+
 		this.worker.postMessage(message);
 	}
 
@@ -198,17 +207,17 @@ class App extends Component {
 								/>
 								{(this.state.sumTargetValueType.value === "sumTargetValueBetween" ||
 									this.state.sumTargetValueType.value ===
-										"sumTargetValueNotBetween") && (
-									<React.Fragment>
-										<p>and</p>
-										<NumberInput
-											callback={this.inputCallback}
-											inputValue={this.state.sumTargetValueTwo}
-											name={"sumTargetValueTwo"}
-											className={"number-input"}
-										/>
-									</React.Fragment>
-								)}
+									"sumTargetValueNotBetween") && (
+										<React.Fragment>
+											<p>and</p>
+											<NumberInput
+												callback={this.inputCallback}
+												inputValue={this.state.sumTargetValueTwo}
+												name={"sumTargetValueTwo"}
+												className={"number-input"}
+											/>
+										</React.Fragment>
+									)}
 							</div>
 						</div>
 					)}
@@ -233,17 +242,17 @@ class App extends Component {
 								{(this.state.faceTargetDiceCountType.value ===
 									"faceTargetDiceCountBetween" ||
 									this.state.faceTargetDiceCountType.value ===
-										"faceTargetDiceCountNotBetween") && (
-									<React.Fragment>
-										<p>and</p>
-										<NumberInput
-											callback={this.inputCallback}
-											inputValue={this.state.faceTargetDiceCountTwo}
-											name={"faceTargetDiceCountTwo"}
-											className="number-input count-input"
-										/>
-									</React.Fragment>
-								)}
+									"faceTargetDiceCountNotBetween") && (
+										<React.Fragment>
+											<p>and</p>
+											<NumberInput
+												callback={this.inputCallback}
+												inputValue={this.state.faceTargetDiceCountTwo}
+												name={"faceTargetDiceCountTwo"}
+												className="number-input count-input"
+											/>
+										</React.Fragment>
+									)}
 								<p className="face-target-count-name">dice</p>
 							</div>
 							<p>where the face value</p>
@@ -264,17 +273,17 @@ class App extends Component {
 								{(this.state.faceTargetValueType.value ===
 									"faceTargetValueBetween" ||
 									this.state.faceTargetValueType.value ===
-										"faceTargetValueNotBetween") && (
-									<React.Fragment>
-										<p>and</p>
-										<NumberInput
-											callback={this.inputCallback}
-											inputValue={this.state.faceTargetValueTwo}
-											name={"faceTargetValueTwo"}
-											className={"number-input"}
-										/>
-									</React.Fragment>
-								)}
+									"faceTargetValueNotBetween") && (
+										<React.Fragment>
+											<p>and</p>
+											<NumberInput
+												callback={this.inputCallback}
+												inputValue={this.state.faceTargetValueTwo}
+												name={"faceTargetValueTwo"}
+												className={"number-input"}
+											/>
+										</React.Fragment>
+									)}
 							</div>
 						</div>
 					)}
@@ -297,8 +306,10 @@ class App extends Component {
 					</button>
 				)}
 				{this.state.calculating && <div className="loader" />}
-				<div className="outputText">{this.state.probabilityText}</div>
-				<div className="probabilityValue">{this.state.probability}</div>
+				<div className="output-wrapper">
+					<div className="outputText">{this.state.probabilityText}</div>
+					<div className="probabilityValue">{this.state.probability}</div>
+				</div>
 			</div>
 		);
 	}

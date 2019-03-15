@@ -119,6 +119,10 @@ p {
 	margin: 5px 0;
 }
 
+.output-wrapper {
+	min-height: 3em;
+}
+
 /* Specific element stylings */
 
 .face-target-count-name {

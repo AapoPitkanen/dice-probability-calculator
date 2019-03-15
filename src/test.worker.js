@@ -23,14 +23,14 @@ self.addEventListener("message", e => {
 		}
 		return polyDiceArr;
 	};
-
+	console.time('probability');
 	const polyDice = createDicePolynomial(data.diceList);
 	switch (data.sumTargetValueType) {
 		case "sumTargetValueExactly":
 			targetType = "exactly";
 			output = `The probability of rolling ${targetType} ${
 				data.sumTargetValueOne
-			} with the dice ${data.diceList.join(", ")} is`;
+				} with the dice ${data.diceList.join(", ")} is`;
 			probabilityValue = (
 				diceLib.diceSumExactly(data.sumTargetValueOne, polyDice) * 100
 			).toFixed(2);
@@ -39,7 +39,7 @@ self.addEventListener("message", e => {
 			targetType = "at least";
 			output = `The probability of rolling ${targetType} ${
 				data.sumTargetValueOne
-			} with the dice ${data.diceList.join(", ")} is`;
+				} with the dice ${data.diceList.join(", ")} is`;
 			probabilityValue = (
 				diceLib.diceSumAtLeast(data.sumTargetValueOne, polyDice) * 100
 			).toFixed(2);
@@ -48,7 +48,7 @@ self.addEventListener("message", e => {
 			targetType = "at most";
 			output = `The probability of rolling ${targetType} ${
 				data.sumTargetValueOne
-			} with the dice ${data.diceList.join(", ")} is`;
+				} with the dice ${data.diceList.join(", ")} is`;
 			probabilityValue = (
 				diceLib.diceSumAtMost(data.sumTargetValueOne, polyDice) * 100
 			).toFixed(2);
@@ -57,7 +57,7 @@ self.addEventListener("message", e => {
 			targetType = "between";
 			output = `The probability of rolling ${targetType} ${data.sumTargetValueOne} and ${
 				data.sumTargetValueTwo
-			} with the dice ${data.diceList.join(", ")} is`;
+				} with the dice ${data.diceList.join(", ")} is`;
 			probabilityValue = (
 				diceLib.diceSumBetween(data.sumTargetValueOne, data.sumTargetValueTwo, polyDice) *
 				100
@@ -67,7 +67,7 @@ self.addEventListener("message", e => {
 			targetType = "between";
 			output = `The probability of not rolling ${targetType} ${data.sumTargetValueOne} and ${
 				data.sumTargetValueTwo
-			} with the dice ${data.diceList.join(", ")} is`;
+				} with the dice ${data.diceList.join(", ")} is`;
 			probabilityValue = (
 				diceLib.diceSumNotBetween(
 					data.sumTargetValueOne,
@@ -78,7 +78,8 @@ self.addEventListener("message", e => {
 			break;
 		default:
 	}
-	let message = {
+	console.timeEnd('probability');
+	const message = {
 		output: output,
 		probabilityValue: probabilityValue
 	};
