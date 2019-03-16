@@ -112,7 +112,8 @@ class App extends Component {
 		const message = {
 			diceList: diceList,
 			faceTargetDiceCountOne: targetDiceCount,
-			faceTargetValueOne: one
+			faceTargetValueOne: one,
+			diceObj: this.state.diceCounts
 		}
 		this.faceWorker.postMessage(message);
 	}

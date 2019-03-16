@@ -176,7 +176,6 @@ const diceLib = {
 		let totalProbability = 0;
 		let currentProbability = 1;
 		let sortedArr = this.sortUniqueDiceCombinations(target, successes, dice);
-		console.log(sortedArr);
 		let diceCount;
 		let sides;
 		let diceSuccessCount;
@@ -223,14 +222,11 @@ const diceLib = {
 		return totalProbability;
 	},
 
-	binomialProbabilityDCALTVAL: function (target, successes, dice) {
-		dice = dice.split("+");
+	binomialProbabilityDCALTVAL: function (target, successes, dice, diceObj) {
 		let maxSuccesses = 0;
 		let probability = 0;
-		dice.forEach(el => {
-			maxSuccesses += parseInt(el.slice(0, el.indexOf("d")));
-		});
-		dice = dice.join("+");
+		let values = Object.values(diceObj);
+		maxSuccesses = values.reduce((acc, curr) => acc + curr);
 		while (successes <= maxSuccesses) {
 			probability += this.binomialProbabilityDCETVAL(
 				target,
