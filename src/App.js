@@ -4,20 +4,20 @@ import DiceInput from "./components/DiceInput";
 import NumberInput from "./components/NumberInput";
 import Select from "react-select";
 import diceLib from "./components/diceLib";
-import styled from "styled-components";
-//import _ from "lodash";
 import d4 from "./img/d4-small.png";
 import d6 from "./img/d6-small.png";
 import d8 from "./img/d8-small.png";
 import d10 from "./img/d10-small.png";
 import d12 from "./img/d12-small.png";
 import d20 from "./img/d20-small.png";
-import myWorker from "./test.worker";
+import sumWorker from "./sum.worker";
+import faceWorker from "./face.worker";
 
 class App extends Component {
 	constructor(props) {
 		super(props);
 		this.calculateSumProbability = this.calculateSumProbability.bind(this);
+		this.calculateFaceProbability = this.calculateFaceProbability.bind(this);
 		this.inputCallback = this.inputCallback.bind(this);
 		this.handleSelectChange = this.handleSelectChange.bind(this);
 		this.handleClickDiceImage = this.handleClickDiceImage.bind(this);
@@ -44,8 +44,9 @@ class App extends Component {
 	}
 
 	componentDidMount() {
-		this.worker = new myWorker();
-		this.worker.addEventListener("message", e => {
+		this.sumWorker = new sumWorker();
+		this.faceWorker = new faceWorker();
+		this.sumWorker.addEventListener("message", e => {
 			let data = e.data;
 			this.setState({
 				calculating: false,
@@ -53,6 +54,19 @@ class App extends Component {
 				probability: `${data.probabilityValue}%`
 			});
 		});
+
+		this.faceWorker.addEventListener("message", e => {
+			let data = e.data;
+			/*
+			this.setState({
+				calculating: false,
+				probabilityText: data.output,
+				probability: `${data.probabilityValue}%`
+			});
+			*/
+			console.log(data);
+		});
+
 	}
 
 	handleSelectChange(newValue, actionMeta) {
@@ -91,24 +105,55 @@ class App extends Component {
 	}
 
 	calculateFaceProbability() {
-		console.log("faces selected");
+		const diceInput = this.state.diceInput;
+		const diceList = diceLib.diceObjToArray(this.state.diceCounts);
+		const targetDiceCount = this.state.faceTargetDiceCountOne;
+		const one = this.state.faceTargetValueOne;
+		const message = {
+			diceList: diceList,
+			faceTargetDiceCountOne: targetDiceCount,
+			faceTargetValueOne: one
+		}
+		this.faceWorker.postMessage(message);
 	}
 
 	calculateSumProbability() {
-		if (this.state.diceInput === "" || this.state.sumTargetValueOne === "") {
+		const diceInput = this.state.diceInput;
+		const sumType = this.state.sumTargetValueType.value;
+		let num1 = this.state.sumTargetValueOne;
+		let num2 = this.state.sumTargetValueTwo;
+		let maxSum = 0;
+
+
+
+
+		if ((sumType === "" || diceInput === "" || num1 === "") || (num2 === "" && (sumType === "sumTargetValueNotBetween" || sumType === "sumTargetValueBetween"))) {
+			console.log('parameters missing');
 			return
 		}
+
+
+
+
 		const diceCounts = Object.values(this.state.diceCounts);
-		const maxDice = diceCounts.reduce((acc, curr) => acc + curr);
+		const diceTypes = Object.keys(this.state.diceCounts);
+		const totalDice = diceCounts.reduce((acc, curr) => acc + curr);
 		const diceList = diceLib.diceObjToArray(this.state.diceCounts);
+
+		diceTypes.forEach((el, i) => maxSum += (parseInt(el.slice(1)) * diceCounts[i]));
+
+		if (num2 !== "" && num1 > num2) {
+			[num1, num2] = [num2, num1];
+		}
+
 		const message = {
 			diceList: diceList,
-			calculationType: this.state.calculationType.value,
-			sumTargetValueType: this.state.sumTargetValueType.value,
-			sumTargetValueOne: this.state.sumTargetValueOne,
-			sumTargetValueTwo: this.state.sumTargetValueTwo
+			sumTargetValueType: sumType,
+			sumTargetValueOne: num1,
+			sumTargetValueTwo: num2
 		};
-		maxDice >= 200 ? this.setState({
+
+		totalDice >= 200 ? this.setState({
 			probabilityText: "",
 			probability: "",
 			calculating: true
@@ -117,7 +162,7 @@ class App extends Component {
 			probability: "",
 		});
 
-		this.worker.postMessage(message);
+		this.sumWorker.postMessage(message);
 	}
 
 	render() {
