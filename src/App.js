@@ -39,7 +39,8 @@ class App extends Component {
 			probability: "",
 			diceCounts: {},
 			calculating: false,
-			data: {}
+			data: {},
+			totalDice: 0
 		};
 	}
 
@@ -66,7 +67,6 @@ class App extends Component {
 			*/
 			console.log(data);
 		});
-
 	}
 
 	handleSelectChange(newValue, actionMeta) {
@@ -93,7 +93,8 @@ class App extends Component {
 			let diceArr = diceLib.diceObjToArray(diceObj).join("+");
 			this.setState({
 				diceCounts: diceObj,
-				diceInput: diceArr
+				diceInput: diceArr,
+				totalDice: this.state.totalDice + 1
 			});
 		}
 	}
@@ -114,7 +115,7 @@ class App extends Component {
 			faceTargetDiceCountOne: targetDiceCount,
 			faceTargetValueOne: one,
 			diceObj: this.state.diceCounts
-		}
+		};
 		this.faceWorker.postMessage(message);
 	}
 
@@ -125,23 +126,23 @@ class App extends Component {
 		let num2 = this.state.sumTargetValueTwo;
 		let maxSum = 0;
 
-
-
-
-		if ((sumType === "" || diceInput === "" || num1 === "") || (num2 === "" && (sumType === "sumTargetValueNotBetween" || sumType === "sumTargetValueBetween"))) {
-			console.log('parameters missing');
-			return
+		if (
+			sumType === "" ||
+			diceInput === "" ||
+			num1 === "" ||
+			(num2 === "" &&
+				(sumType === "sumTargetValueNotBetween" || sumType === "sumTargetValueBetween"))
+		) {
+			console.log("parameters missing");
+			return;
 		}
-
-
-
 
 		const diceCounts = Object.values(this.state.diceCounts);
 		const diceTypes = Object.keys(this.state.diceCounts);
 		const totalDice = diceCounts.reduce((acc, curr) => acc + curr);
 		const diceList = diceLib.diceObjToArray(this.state.diceCounts);
 
-		diceTypes.forEach((el, i) => maxSum += (parseInt(el.slice(1)) * diceCounts[i]));
+		diceTypes.forEach((el, i) => (maxSum += parseInt(el.slice(1)) * diceCounts[i]));
 
 		if (num2 !== "" && num1 > num2) {
 			[num1, num2] = [num2, num1];
@@ -154,14 +155,16 @@ class App extends Component {
 			sumTargetValueTwo: num2
 		};
 
-		totalDice >= 200 ? this.setState({
-			probabilityText: "",
-			probability: "",
-			calculating: true
-		}) : this.setState({
-			probabilityText: "",
-			probability: "",
-		});
+		totalDice >= 200
+			? this.setState({
+					probabilityText: "",
+					probability: "",
+					calculating: true
+			  })
+			: this.setState({
+					probabilityText: "",
+					probability: ""
+			  });
 
 		this.sumWorker.postMessage(message);
 	}
@@ -253,17 +256,17 @@ class App extends Component {
 								/>
 								{(this.state.sumTargetValueType.value === "sumTargetValueBetween" ||
 									this.state.sumTargetValueType.value ===
-									"sumTargetValueNotBetween") && (
-										<React.Fragment>
-											<p>and</p>
-											<NumberInput
-												callback={this.inputCallback}
-												inputValue={this.state.sumTargetValueTwo}
-												name={"sumTargetValueTwo"}
-												className={"number-input"}
-											/>
-										</React.Fragment>
-									)}
+										"sumTargetValueNotBetween") && (
+									<React.Fragment>
+										<p>and</p>
+										<NumberInput
+											callback={this.inputCallback}
+											inputValue={this.state.sumTargetValueTwo}
+											name={"sumTargetValueTwo"}
+											className={"number-input"}
+										/>
+									</React.Fragment>
+								)}
 							</div>
 						</div>
 					)}
@@ -288,17 +291,17 @@ class App extends Component {
 								{(this.state.faceTargetDiceCountType.value ===
 									"faceTargetDiceCountBetween" ||
 									this.state.faceTargetDiceCountType.value ===
-									"faceTargetDiceCountNotBetween") && (
-										<React.Fragment>
-											<p>and</p>
-											<NumberInput
-												callback={this.inputCallback}
-												inputValue={this.state.faceTargetDiceCountTwo}
-												name={"faceTargetDiceCountTwo"}
-												className="number-input count-input"
-											/>
-										</React.Fragment>
-									)}
+										"faceTargetDiceCountNotBetween") && (
+									<React.Fragment>
+										<p>and</p>
+										<NumberInput
+											callback={this.inputCallback}
+											inputValue={this.state.faceTargetDiceCountTwo}
+											name={"faceTargetDiceCountTwo"}
+											className="number-input count-input"
+										/>
+									</React.Fragment>
+								)}
 								<p className="face-target-count-name">dice</p>
 							</div>
 							<p>where the face value</p>
@@ -319,17 +322,17 @@ class App extends Component {
 								{(this.state.faceTargetValueType.value ===
 									"faceTargetValueBetween" ||
 									this.state.faceTargetValueType.value ===
-									"faceTargetValueNotBetween") && (
-										<React.Fragment>
-											<p>and</p>
-											<NumberInput
-												callback={this.inputCallback}
-												inputValue={this.state.faceTargetValueTwo}
-												name={"faceTargetValueTwo"}
-												className={"number-input"}
-											/>
-										</React.Fragment>
-									)}
+										"faceTargetValueNotBetween") && (
+									<React.Fragment>
+										<p>and</p>
+										<NumberInput
+											callback={this.inputCallback}
+											inputValue={this.state.faceTargetValueTwo}
+											name={"faceTargetValueTwo"}
+											className={"number-input"}
+										/>
+									</React.Fragment>
+								)}
 							</div>
 						</div>
 					)}

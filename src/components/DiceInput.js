@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import diceLib from "./diceLib";
+import _ from "lodash";
 
 class DiceInput extends Component {
 	constructor(props) {
@@ -23,15 +24,22 @@ class DiceInput extends Component {
 		let replaceValues = ["", "+", "", "d"];
 		let inputValue = event.target.value;
 		let inputName = event.target.name;
+		let diceObj = diceLib.createDiceObject(inputValue);
+		let totalDice;
 
 		regexArr.forEach((x, i) => {
 			inputValue = inputValue.replace(x, replaceValues[i]);
 		});
 
 		inputValue = inputValue.split("+");
-		let diceObj = diceLib.createDiceObject(inputValue);
+
+		_.isEmpty(diceObj)
+			? (totalDice = 0)
+			: (totalDice = Object.values(diceObj).reduce((acc, curr) => acc + curr));
+
 		inputValue = diceLib.sortDiceInput(inputValue);
 		inputValue = inputValue.join("+");
+		this.props.callback(totalDice, "totalDice");
 		this.props.callback(diceObj, "diceCounts");
 		this.props.callback(inputValue, inputName);
 	}

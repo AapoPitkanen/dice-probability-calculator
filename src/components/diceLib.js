@@ -22,7 +22,7 @@ const diceLib = {
 	faceCombinationOptions: math.setCartesian(faceTargetDiceCountOptions, faceTargetValueOptions),
 
 	/* Not written by me, found on math.stackexchange.com for finding only the n-sized unique combinations from a set */
-	UniqueCombinations: function (set, n) {
+	UniqueCombinations: function(set, n) {
 		let combinations = [];
 		let props = Object.getOwnPropertyNames(set);
 		for (let p = 0, l = props.length; p < l; p++) {
@@ -47,7 +47,7 @@ const diceLib = {
 
 	/* This function sorts the input dice to check all possible unique ways to roll the specified successes with the dice. 
     After sorting the dice, the binomial distributions can be calculated from the dice combinations. */
-	sortUniqueDiceCombinations: function (target, successes, dice) {
+	sortUniqueDiceCombinations: function(target, successes, dice) {
 		let sortedDice = [];
 		let diceTypes = dice.map(el => el.slice(el.indexOf("d")));
 		let keys;
@@ -95,7 +95,8 @@ const diceLib = {
 		return sortedDice;
 	},
 
-	sortDiceInput: function (dice) {
+	// Counts duplicate dice and adds them together, returning a sorted array of dice e.g. [1d6, 1d6, 2d8, 1d4, 1d6] => [3d6, 2d8, 1d4]
+	sortDiceInput: function(dice) {
 		dice = this.splitDice(dice);
 		let diceTypes = [];
 		let sortedDice = [];
@@ -105,7 +106,8 @@ const diceLib = {
 		return sortedDice;
 	},
 
-	splitDice: function (dice) {
+	// Splits multiple dice to singular dice e.g. 2d6+1d8 => d6, d6, d8
+	splitDice: function(dice) {
 		let splitDice = [];
 		dice.forEach(el => {
 			for (let i = 0, l = parseInt(el.slice(0, el.indexOf("d"))); i < l; i++) {
@@ -115,18 +117,18 @@ const diceLib = {
 		return splitDice;
 	},
 
-	countDice: function (diceType, dice) {
+	countDice: function(diceType, dice) {
 		return `${dice.filter(el => el === diceType).length}${diceType}`;
 	},
 
-	createDiceObject: function (dice) {
+	createDiceObject: function(dice) {
 		dice = this.splitDice(dice);
 		let diceObj = {};
 		dice.forEach(el => (diceObj[el] = (diceObj[el] || 0) + 1));
 		return diceObj;
 	},
 
-	diceObjToArray: function (diceObj) {
+	diceObjToArray: function(diceObj) {
 		let entries = Object.entries(diceObj);
 		return entries.map(el => el.reduce((acc, curr) => `${curr}${acc}`));
 	},
@@ -147,7 +149,7 @@ const diceLib = {
 	SDT = Single Dice Type, only one type of dice exists in the input field
 	*/
 
-	binomialProbabilityDCETVE: function (target, successes, dice) {
+	binomialProbabilityDCETVE: function(target, successes, dice) {
 		let totalProbability = 0;
 		let currentProbability = 1;
 		let sortedArr = this.sortUniqueDiceCombinations(target, successes, dice);
@@ -172,7 +174,7 @@ const diceLib = {
 		return totalProbability;
 	},
 
-	binomialProbabilityDCETVAL: function (target, successes, dice) {
+	binomialProbabilityDCETVAL: function(target, successes, dice) {
 		let totalProbability = 0;
 		let currentProbability = 1;
 		let sortedArr = this.sortUniqueDiceCombinations(target, successes, dice);
@@ -197,7 +199,7 @@ const diceLib = {
 		return totalProbability;
 	},
 
-	binomialProbabilityDCETVAM: function (target, successes, dice) {
+	binomialProbabilityDCETVAM: function(target, successes, dice) {
 		let totalProbability = 0;
 		let currentProbability = 1;
 		let sortedArr = this.sortUniqueDiceCombinations(target, successes, dice);
@@ -222,23 +224,19 @@ const diceLib = {
 		return totalProbability;
 	},
 
-	binomialProbabilityDCALTVAL: function (target, successes, dice, diceObj) {
+	binomialProbabilityDCALTVAL: function(target, successes, dice, diceObj) {
 		let maxSuccesses = 0;
 		let probability = 0;
 		let values = Object.values(diceObj);
 		maxSuccesses = values.reduce((acc, curr) => acc + curr);
 		while (successes <= maxSuccesses) {
-			probability += this.binomialProbabilityDCETVAL(
-				target,
-				successes,
-				dice
-			);
+			probability += this.binomialProbabilityDCETVAL(target, successes, dice);
 			successes++;
 		}
 		return probability;
 	},
 
-	binomialDiceTargetExactly: function (sides, trials, successes) {
+	binomialDiceTargetExactly: function(sides, trials, successes) {
 		const psuccess = 1 / sides;
 		return (
 			math.combinations(trials, successes) *
@@ -247,7 +245,7 @@ const diceLib = {
 		);
 	},
 
-	binomialDiceTargetAtLeast: function (target, sides, trials, successes) {
+	binomialDiceTargetAtLeast: function(target, sides, trials, successes) {
 		const psuccess = (sides - target + 1) / sides;
 		return (
 			math.combinations(trials, successes) *
@@ -256,7 +254,7 @@ const diceLib = {
 		);
 	},
 
-	binomialDiceTargetAtMost: function (target, sides, trials, successes) {
+	binomialDiceTargetAtMost: function(target, sides, trials, successes) {
 		const psuccess = target / sides;
 		return (
 			math.combinations(trials, successes) *
@@ -265,7 +263,7 @@ const diceLib = {
 		);
 	},
 
-	binomialDiceTargetBetween: function (target1, target2, sides, trials, successes) {
+	binomialDiceTargetBetween: function(target1, target2, sides, trials, successes) {
 		let arr = [];
 		arr.push(target1, target2);
 		for (let i = target1 + 1; i < target2; i++) {
@@ -279,7 +277,7 @@ const diceLib = {
 		);
 	},
 
-	binomialDiceTargetNotBetween: function (target1, target2, sides, trials, successes) {
+	binomialDiceTargetNotBetween: function(target1, target2, sides, trials, successes) {
 		let arr = [];
 		arr.push(target1, target2);
 		for (let i = target1 + 1; i < target2; i++) {
@@ -293,7 +291,7 @@ const diceLib = {
 		);
 	},
 
-	binomialSingleDiceTypeAtLeast: function (target, sides, trials, successes) {
+	binomialSingleDiceTypeAtLeast: function(target, sides, trials, successes) {
 		let probability = 0;
 		while (successes <= trials) {
 			probability += this.binomialDiceTargetAtLeast(target, sides, trials, successes);
@@ -302,7 +300,7 @@ const diceLib = {
 		return probability;
 	},
 
-	binomialSingleDiceTypeAtMost: function (target, sides, trials, successes) {
+	binomialSingleDiceTypeAtMost: function(target, sides, trials, successes) {
 		let probability = 0;
 		while (successes >= 0) {
 			probability += this.binomialDiceTargetAtMost(target, sides, trials, successes);
@@ -311,18 +309,7 @@ const diceLib = {
 		return probability;
 	},
 
-	findDiceCount: function (diceType, dice) {
-		let match = dice.find(el => el.slice(el.indexOf("d")) === diceType);
-		return parseInt(match.slice(0, match.indexOf("d")));
-	},
-
-	updateDiceCount: function (diceCount, diceType, dice) {
-		let index = dice.findIndex(el => el.indexOf(diceType) >= 0);
-		dice[index] = `${diceCount}${diceType}`;
-		return dice;
-	},
-
-	diceSumExactly: function (num, polyDice) {
+	diceSumExactly: function(num, polyDice) {
 		let input = polyDice[0];
 		for (let i = 1, j = polyDice.length; i < j; i++) {
 			input = input.mul(polyDice[i]);
@@ -333,7 +320,7 @@ const diceLib = {
 		return probability;
 	},
 
-	diceSumAtLeast: function (num, polyDice) {
+	diceSumAtLeast: function(num, polyDice) {
 		let input = polyDice[0];
 		let probability = 0;
 		let j = polyDice.length;
@@ -349,7 +336,7 @@ const diceLib = {
 		return probability;
 	},
 
-	diceSumAtMost: function (num, polyDice) {
+	diceSumAtMost: function(num, polyDice) {
 		let polynomial = polyDice[0];
 		let probability = 0;
 		for (let i = 1, j = polyDice.length; i < j; i++) {
@@ -363,7 +350,7 @@ const diceLib = {
 		return probability;
 	},
 
-	diceSumBetween: function (num, num2, polyDice) {
+	diceSumBetween: function(num, num2, polyDice) {
 		let input = polyDice[0];
 		let probability = 0;
 		for (let i = 1, j = polyDice.length; i < j; i++) {
@@ -377,11 +364,11 @@ const diceLib = {
 		return probability;
 	},
 
-	diceSumNotBetween: function (num, num2, polyDice) {
+	diceSumNotBetween: function(num, num2, polyDice) {
 		return 1 - this.diceSumBetween(num, num2, polyDice);
 	},
 
-	createDicePolynomial: function (dice) {
+	createDicePolynomial: function(dice) {
 		let polyDiceArr = [];
 		for (let i = 0, l = dice.length; i < l; i++) {
 			for (let j = 0; j < parseInt(dice[i].slice(0, dice[i].indexOf("d"))); j++) {
