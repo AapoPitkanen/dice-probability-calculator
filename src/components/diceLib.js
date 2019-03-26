@@ -117,6 +117,24 @@ const diceLib = {
 		return splitDice;
 	},
 
+	splitDiceRecursion: function(diceArr) {
+		let splitDice = [];
+		function pushDice(diceCount, diceType) {
+			if (diceCount === 0) {
+				return;
+			}
+			splitDice.push(diceType);
+			diceCount--;
+			pushDice(diceCount, diceType);
+		}
+		diceArr.forEach(el => {
+			let diceCount = parseInt(el.slice(0, el.indexOf("d")));
+			let diceType = el.slice(el.indexOf("d"));
+			pushDice(diceCount, diceType);
+		});
+		return splitDice;
+	},
+
 	countDice: function(diceType, dice) {
 		return `${dice.filter(el => el === diceType).length}${diceType}`;
 	},
