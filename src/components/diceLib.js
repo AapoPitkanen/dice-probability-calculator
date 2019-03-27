@@ -108,31 +108,13 @@ const diceLib = {
 
 	// Splits multiple dice to singular dice e.g. 2d6+1d8 => d6, d6, d8
 	splitDice: function(dice) {
-		let splitDice = [];
-		dice.forEach(el => {
-			for (let i = 0, l = parseInt(el.slice(0, el.indexOf("d"))); i < l; i++) {
-				splitDice.push(el.slice(el.indexOf("d")));
-			}
-		});
-		return splitDice;
-	},
-
-	splitDiceRecursion: function(diceArr) {
-		let splitDice = [];
-		function pushDice(diceCount, diceType) {
-			if (diceCount === 0) {
-				return;
-			}
-			splitDice.push(diceType);
-			diceCount--;
-			pushDice(diceCount, diceType);
-		}
-		diceArr.forEach(el => {
-			let diceCount = parseInt(el.slice(0, el.indexOf("d")));
-			let diceType = el.slice(el.indexOf("d"));
-			pushDice(diceCount, diceType);
-		});
-		return splitDice;
+		return dice
+			.map(el => {
+				let diceCount = parseInt(el.slice(0, el.indexOf("d")));
+				let diceType = el.slice(el.indexOf("d"));
+				return Array(diceCount).fill(diceType);
+			})
+			.flat();
 	},
 
 	countDice: function(diceType, dice) {
