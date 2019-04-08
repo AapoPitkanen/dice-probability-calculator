@@ -283,7 +283,7 @@ const diceLib = {
 	},
 
 	binomialDiceTargetNotBetween(target1, target2, sides, trials, successes) {
-		const psuccess = 1 - ((target2 - target1 + 1) / sides);
+		const psuccess = 1 - (target2 - target1 + 1) / sides;
 		return (
 			math.combinations(trials, successes) *
 			math.pow(psuccess, successes) *
@@ -369,21 +369,21 @@ const diceLib = {
 	},
 
 	createDicePolynomial(dice) {
-        let polyDiceArr = [];
-        
-        dice.forEach(el => {
-			let diceCount = parseInt(el.slice(0, el.indexOf('d')));
-            for (let i = 0; i < diceCount; i++) {
-				let sides = parseInt(el.slice(el.indexOf("d") + 1))
-                let polyStr = "";
-                for (let j = 0; j < sides; j++) {
-                    polyStr === "" 
-                    ? (polyStr += `1/${sides}x^${j + 1}`)
-                    : (polyStr += `+1/${sides}x^${j + 1}`);
-                }
-                polyDiceArr.push(new Polynomial(polyStr));
-            }
-        })
+		let polyDiceArr = [];
+
+		dice.forEach(el => {
+			let diceCount = parseInt(el.slice(0, el.indexOf("d")));
+			for (let i = 0; i < diceCount; i++) {
+				let sides = parseInt(el.slice(el.indexOf("d") + 1));
+				let polyStr = "";
+				for (let j = 0; j < sides; j++) {
+					polyStr === ""
+						? (polyStr += `1/${sides}x^${j + 1}`)
+						: (polyStr += `+1/${sides}x^${j + 1}`);
+				}
+				polyDiceArr.push(new Polynomial(polyStr));
+			}
+		});
 		return polyDiceArr;
 	}
 };

@@ -24,14 +24,15 @@ class DiceInput extends Component {
 		let replaceValues = ["", "+", "", "d"];
 		let inputValue = event.target.value;
 		let inputName = event.target.name;
-		let diceObj = diceLib.createDiceObject(inputValue);
 		let totalDice;
+		let diceObj;
 
 		regexArr.forEach((x, i) => {
 			inputValue = inputValue.replace(x, replaceValues[i]);
 		});
 
 		inputValue = inputValue.split("+");
+		diceObj = diceLib.createDiceObject(inputValue);
 
 		_.isEmpty(diceObj)
 			? (totalDice = 0)

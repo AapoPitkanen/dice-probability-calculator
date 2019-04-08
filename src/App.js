@@ -24,22 +24,22 @@ class App extends Component {
 		this.handleCalculationTypeSelectChange = this.handleCalculationTypeSelectChange.bind(this);
 
 		this.state = {
+			calculating: false,
 			calculationType: { value: "diceSums", label: "Dice sums" },
-			sumTargetValueType: "",
-			sumTargetValueOne: "",
-			sumTargetValueTwo: "",
+			data: {},
+			diceCounts: {},
+			diceInput: "",
 			faceTargetDiceCountType: "",
 			faceTargetDiceCountOne: "",
 			faceTargetDiceCountTwo: "",
 			faceTargetValueType: "",
 			faceTargetValueOne: "",
 			faceTargetValueTwo: "",
-			diceInput: "",
 			probabilityText: "",
 			probability: "",
-			diceCounts: {},
-			calculating: false,
-			data: {},
+			sumTargetValueType: "",
+			sumTargetValueOne: "",
+			sumTargetValueTwo: "",
 			totalDice: 0
 		};
 	}
@@ -106,15 +106,22 @@ class App extends Component {
 	}
 
 	calculateFaceProbability() {
-		const diceInput = this.state.diceInput;
 		const diceList = diceLib.diceObjToArray(this.state.diceCounts);
-		const targetDiceCount = this.state.faceTargetDiceCountOne;
-		const one = this.state.faceTargetValueOne;
+		const targetDiceCountOne = this.state.faceTargetDiceCountOne;
+		const targetDiceCountTwo = this.state.faceTargetDiceCountTwo;
+		const targetOne = this.state.faceTargetValueOne;
+		const targetTwo = this.state.faceTargetValueTwo;
+		const valueType = this.state.faceTargetValueType.value;
+		const diceCountType = this.state.faceTargetDiceCountType.value;
 		const message = {
 			diceList: diceList,
-			faceTargetDiceCountOne: targetDiceCount,
-			faceTargetValueOne: one,
-			diceObj: this.state.diceCounts
+			diceObj: this.state.diceCounts,
+			faceTargetDiceCountOne: targetDiceCountOne,
+			faceTargetDiceCountTwo: targetDiceCountTwo,
+			faceDiceCountType: diceCountType,
+			faceTargetValueOne: targetOne,
+			faceTargetValueTwo: targetTwo,
+			faceTargetValueType: valueType
 		};
 		this.faceWorker.postMessage(message);
 	}
