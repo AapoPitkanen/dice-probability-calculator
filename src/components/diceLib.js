@@ -138,7 +138,7 @@ const diceLib = {
 		return diceObj;
 	},
 
-	diceObjToArray: function(diceObj) {
+	diceObjToArray(diceObj) {
 		let entries = Object.entries(diceObj);
 		return entries.map(el => el.reduce((acc, curr) => `${curr}${acc}`));
 	},

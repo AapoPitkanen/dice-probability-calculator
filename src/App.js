@@ -106,22 +106,15 @@ class App extends Component {
 	}
 
 	calculateFaceProbability() {
-		const diceList = diceLib.diceObjToArray(this.state.diceCounts);
-		const targetDiceCountOne = this.state.faceTargetDiceCountOne;
-		const targetDiceCountTwo = this.state.faceTargetDiceCountTwo;
-		const targetOne = this.state.faceTargetValueOne;
-		const targetTwo = this.state.faceTargetValueTwo;
-		const valueType = this.state.faceTargetValueType.value;
-		const diceCountType = this.state.faceTargetDiceCountType.value;
 		const message = {
-			diceList: diceList,
+			diceList: diceLib.diceObjToArray(this.state.diceCounts),
 			diceObj: this.state.diceCounts,
-			faceTargetDiceCountOne: targetDiceCountOne,
-			faceTargetDiceCountTwo: targetDiceCountTwo,
-			faceDiceCountType: diceCountType,
-			faceTargetValueOne: targetOne,
-			faceTargetValueTwo: targetTwo,
-			faceTargetValueType: valueType
+			faceTargetDiceCountOne: this.state.faceTargetDiceCountOne,
+			faceTargetDiceCountTwo: this.state.faceTargetDiceCountTwo,
+			faceTargetDiceCountType: this.state.faceTargetDiceCountType.value,
+			faceTargetValueOne: this.state.faceTargetValueOne,
+			faceTargetValueTwo: this.state.faceTargetValueTwo,
+			faceTargetValueType: this.state.faceTargetValueType.value
 		};
 		this.faceWorker.postMessage(message);
 	}
@@ -131,7 +124,6 @@ class App extends Component {
 		const sumType = this.state.sumTargetValueType.value;
 		let num1 = this.state.sumTargetValueOne;
 		let num2 = this.state.sumTargetValueTwo;
-		let maxSum = 0;
 
 		if (
 			sumType === "" ||
@@ -145,14 +137,23 @@ class App extends Component {
 		}
 
 		const diceCounts = Object.values(this.state.diceCounts);
-		const diceTypes = Object.keys(this.state.diceCounts);
+		const entries = Object.entries(this.state.diceCounts).map(item =>
+			item.map(el => (typeof el === "string" ? parseInt(el.slice(1)) : el))
+		);
+		const maxSum = entries.reduce(
+			(acc, curr) => acc + curr.reduce((acc, curr) => acc * curr),
+			0
+		);
 		const totalDice = diceCounts.reduce((acc, curr) => acc + curr);
 		const diceList = diceLib.diceObjToArray(this.state.diceCounts);
 
-		diceTypes.forEach((el, i) => (maxSum += parseInt(el.slice(1)) * diceCounts[i]));
-
 		if (num2 !== "" && num1 > num2) {
 			[num1, num2] = [num2, num1];
+		}
+
+		if ([num1, num2].some(el => el > maxSum)) {
+			console.log("Sum cannot be larger than maximum sum of dice");
+			return;
 		}
 
 		const message = {
