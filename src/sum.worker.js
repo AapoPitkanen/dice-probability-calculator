@@ -23,7 +23,6 @@ self.addEventListener("message", e => {
 		}
 		return polyDiceArr;
 	};
-	console.time('probability');
 	const polyDice = createDicePolynomial(data.diceList);
 	switch (data.sumTargetValueType) {
 		case "sumTargetValueExactly":
@@ -78,7 +77,6 @@ self.addEventListener("message", e => {
 			break;
 		default:
 	}
-	console.timeEnd('probability');
 	const message = {
 		output: output,
 		probabilityValue: probabilityValue
