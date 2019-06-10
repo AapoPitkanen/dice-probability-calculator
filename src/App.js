@@ -12,7 +12,7 @@ import d12 from "./img/d12-small.png";
 import d20 from "./img/d20-small.png";
 import sumWorker from "./sum.worker";
 import faceWorker from "./face.worker";
-import { CSSTransition, TransitionGroup } from "react-transition-group"
+import { CSSTransition, TransitionGroup } from "C:/Code/React_projects/dice-probability-calculator/node_modules/react-transition-group";
 
 class App extends Component {
 	constructor(props) {
@@ -164,9 +164,9 @@ class App extends Component {
 			0
 		);
 		const totalDice = diceCounts.reduce((acc, curr) => acc + curr);
-		const diceList = diceLib.diceObjToArray(this.state.diceCounts);
+		const diceList = diceLib.splitDice(diceLib.diceObjToArray(this.state.diceCounts));
 
-		if (num2 && num1 > num2) {
+		if (num2 && (num1 > num2)) {
 			[num1, num2] = [num2, num1];
 		}
 
@@ -179,7 +179,8 @@ class App extends Component {
 			diceList: diceList,
 			sumTargetValueType: sumType,
 			sumTargetValueOne: num1,
-			sumTargetValueTwo: num2
+			sumTargetValueTwo: num2,
+			totalDice: totalDice
 		};
 
 		totalDice >= 200
@@ -384,14 +385,19 @@ class App extends Component {
 					</button>
 				)}
 
-					<CSSTransition key="my-node" unmountOnExit timeout={400} classNames="my-node" in={this.state.error}>
-						<div className="error-message">Please fill in all the required fields</div>
-					</CSSTransition>
-				{this.state.calculating && <div className="loader" />}
-				<div className="output-wrapper">
-					<div className="outputText">{this.state.probabilityText}</div>
-					<div className="probabilityValue">{this.state.probability}</div>
-				</div>
+				<CSSTransition key="error" unmountOnExit timeout={500} classNames="error" in={this.state.error}>
+					<div className="error-message">Please fill in all the required fields</div>
+				</CSSTransition>
+
+				<CSSTransition key="loader" unmountOnExit timeout={500} classNames="spin-loader" in={this.state.calculating}>
+					<div className="loader">Calculating...</div>
+				</CSSTransition>
+				<CSSTransition key="output" unmountOnExit timeout={600} classNames="output" in={this.state.calculationFinished}>
+					<div className="output-wrapper">
+						<div className="outputText">{this.state.probabilityText}</div>
+						<div className="probabilityValue">{this.state.probability}</div>
+					</div>
+				</CSSTransition>
 			</div>
 		);
 	}

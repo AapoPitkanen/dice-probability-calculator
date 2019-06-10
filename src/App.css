@@ -48,12 +48,8 @@ p {
 }
 
 .loader {
-	border: 16px solid #f3f3f3;
-	border-radius: 50%;
-	border-top: 16px solid #3498db;
-	width: 80px;
-	height: 80px;
-	animation: spin 1.5s ease infinite;
+	font-size: 1rem;
+	color: #fff;
 }
 
 .probability-calculator-wrapper {
@@ -113,14 +109,14 @@ p {
 	width: 100%;
 }
 
+.output-wrapper {
+	margin: 10px;
+}
+
 .probabilityValue {
 	text-align: center;
 	font-size: 1.5em;
 	margin: 5px 0;
-}
-
-.output-wrapper {
-	min-height: 3em;
 }
 
 .error-message {
@@ -133,26 +129,73 @@ p {
 	justify-content: center;
 	align-items: center;
 	position: absolute;
-	width: 240px;
-	height: 80px;
+	width: 20rem;
+	height: 5rem;
 	background-color: #BA3636;
 	color: #fff
 }
 
-.my-node-enter {
+.error-enter {
 	opacity: 0;
-  }
-  .my-node-enter-active {
+}
+
+.error-enter-active {
 	opacity: 1;
 	transition: opacity 500ms;
-  }
-  .my-node-exit {
+}
+
+.error-exit {
 	opacity: 1;
-  }
-  .my-node-exit-active {
+}
+
+.error-exit-active {
 	opacity: 0;
 	transition: opacity 500ms;
-  }
+}
+
+.spin-loader-enter {
+	opacity: 0;
+	max-height: 0;
+}
+
+.spin-loader-enter-active {
+	max-height: 20rem;
+	opacity: 1;
+	transition: max-height 800ms ease, opacity 500ms ease-in-out;
+}
+
+.spin-loader-exit {
+	max-height: 20rem;
+	opacity: 1;
+}
+
+.spin-loader-exit-active {
+	max-height: 0;
+	opacity: 0;
+	transition: max-height 800ms ease, opacity 500ms ease-in-out;
+}
+
+.output-enter {
+	max-height: 0;
+	opacity: 0;
+}
+
+.output-enter-active {
+	max-height: 20rem;
+	opacity: 1;
+	transition: max-height 800ms ease-in-out, opacity 500ms ease-in-out;;
+}
+
+.output-exit {
+	opacity: 1;
+	max-height: 20rem;
+}
+
+.output-exit-active {
+	opacity: 0;
+	max-height: 0;
+	transition: max-height 800ms ease-in-out, opacity 500ms ease-in-out;
+}
 
 /* Specific element stylings */
 

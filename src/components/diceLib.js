@@ -106,22 +106,12 @@ const diceLib = {
 		return sortedDice;
 	},
 
-	// Splits array of multiple dice to array containing the singular dice e.g. ["2d6", "1d8"] => ["d6", "d6", "d8"]
-	splitDice(dice) {
-		let splitDice = [];
-		dice.forEach(el => {
-			for (let i = 0, l = parseInt(el.slice(0, el.indexOf("d"))); i < l; i++) {
-				splitDice.push(el.slice(el.indexOf("d")));
-			}
-		});
-		return splitDice;
-	},
-
-	splitDiceFunction(dice) {
-		return dice
-			.map(el => {
-				let diceCount = parseInt(el.slice(0, el.indexOf("d")));
-				let diceType = el.slice(el.indexOf("d"));
+	// Splits an array of multiple dice to an array containing the respective singular dice e.g. ["2d6", "1d8"] => ["d6", "d6", "d8"]
+	splitDice(diceArr) {
+		return diceArr
+			.map(dice => {
+				const diceCount = parseInt(dice.slice(0, dice.indexOf("d")));
+				const diceType = dice.slice(dice.indexOf("d"));
 				return Array(diceCount).fill(diceType);
 			})
 			.flat();
@@ -136,6 +126,17 @@ const diceLib = {
 		let diceObj = {};
 		dice.forEach(el => (diceObj[el] = (diceObj[el] || 0) + 1));
 		return diceObj;
+	},
+
+	// Helper function to create a polynomial from a single dice e.g. d6 => 1/6x^1+1/6x^2+1/6x^3+1/6x^4+1/6x^5+1/6x^6
+	createDicePolynomial(dice) {
+		let polyStr = "";
+		const sides = parseInt(dice.slice(dice.indexOf('d') + 1))
+		for (let exponent = 1; exponent <= sides; exponent++) {
+			polyStr += `+1/${sides}x^${exponent}`
+		}
+		// replace the first +-sign from the string so the Polynomial object can be created
+		return new Polynomial(polyStr.replace('+', ''));
 	},
 
 	diceObjToArray(diceObj) {
@@ -309,7 +310,7 @@ const diceLib = {
 		return probability;
 	},
 
-	diceSumExactly(num, polyDice) {
+	diceSumExactly(polyDice, num) {
 		let input = polyDice[0];
 		for (let i = 1, j = polyDice.length; i < j; i++) {
 			input = input.mul(polyDice[i]);
@@ -320,7 +321,7 @@ const diceLib = {
 		return probability;
 	},
 
-	diceSumAtLeast(num, polyDice) {
+	diceSumAtLeast(polyDice, num) {
 		let input = polyDice[0];
 		let probability = 0;
 		let j = polyDice.length;
@@ -336,7 +337,7 @@ const diceLib = {
 		return probability;
 	},
 
-	diceSumAtMost(num, polyDice) {
+	diceSumAtMost(polyDice, num) {
 		let polynomial = polyDice[0];
 		let probability = 0;
 		for (let i = 1, j = polyDice.length; i < j; i++) {
@@ -350,7 +351,7 @@ const diceLib = {
 		return probability;
 	},
 
-	diceSumBetween(num, num2, polyDice) {
+	diceSumBetween(polyDice, num, num2) {
 		let input = polyDice[0];
 		let probability = 0;
 		for (let i = 1, j = polyDice.length; i < j; i++) {
@@ -364,27 +365,8 @@ const diceLib = {
 		return probability;
 	},
 
-	diceSumNotBetween(num, num2, polyDice) {
+	diceSumNotBetween(polyDice, num, num2) {
 		return 1 - this.diceSumBetween(num, num2, polyDice);
-	},
-
-	createDicePolynomial(dice) {
-		let polyDiceArr = [];
-
-		dice.forEach(el => {
-			let diceCount = parseInt(el.slice(0, el.indexOf("d")));
-			for (let i = 0; i < diceCount; i++) {
-				let sides = parseInt(el.slice(el.indexOf("d") + 1));
-				let polyStr = "";
-				for (let j = 0; j < sides; j++) {
-					polyStr === ""
-						? (polyStr += `1/${sides}x^${j + 1}`)
-						: (polyStr += `+1/${sides}x^${j + 1}`);
-				}
-				polyDiceArr.push(new Polynomial(polyStr));
-			}
-		});
-		return polyDiceArr;
 	}
 };
 

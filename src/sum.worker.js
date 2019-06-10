@@ -7,23 +7,30 @@ self.addEventListener("message", e => {
 	let targetType;
 	let output;
 	let probabilityValue;
+	let message;
 
-	const createDicePolynomial = dice => {
-		let polyDiceArr = [];
-		for (let i = 0, l = dice.length; i < l; i++) {
-			for (let j = 0; j < parseInt(dice[i].slice(0, dice[i].indexOf("d"))); j++) {
-				let polyStr = "";
-				for (let k = 0; k < parseInt(dice[i].slice(dice[i].indexOf("d") + 1)); k++) {
-					polyStr === ""
-						? (polyStr += `1/${dice[i].slice(dice[i].indexOf("d") + 1)}x^${k + 1}`)
-						: (polyStr += `+1/${dice[i].slice(dice[i].indexOf("d") + 1)}x^${k + 1}`);
-				}
-				polyDiceArr.push(new Polynomial(polyStr));
+	const polyDice = data.diceList.map(dice => diceLib.createDicePolynomial(dice));
+	
+	const calculationTypes = {
+		sumTargetValueExactly(polyDice, sumTargetValueOne) {
+			const probabilityValue = diceLib.diceSumExactly(polyDice, sumTargetValueOne);
+			message = {
+				output: `The probability of rolling exactly ${sumTargetValueOne} with the dice `,
+				probabilityValue: probabilityValue,
 			}
+		},
+		sumTargetValueAtLeast(sumTargetValueOne, polyDice) {
+		},
+		sumTargetValueAtMost(sumTargetValueOne, polyDice) {
+		},
+		sumTargetValueBetween(sumTargetValueOne, sumTargetValueTwo, polyDice) {
+		},
+		sumTargetValueNotBetween(sumTargetValueOne, sumTargetValueTwo, polyDice) {
 		}
-		return polyDiceArr;
-	};
-	const polyDice = createDicePolynomial(data.diceList);
+	}
+
+	//options[data.sumTargetValueType](data.sumTargetValueOne, data.sumTargetValueTwo, polyDice)
+
 	switch (data.sumTargetValueType) {
 		case "sumTargetValueExactly":
 			targetType = "exactly";
