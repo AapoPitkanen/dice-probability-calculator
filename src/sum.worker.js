@@ -1,93 +1,42 @@
 import diceLib from "./components/diceLib";
-import Polynomial from "polynomial";
 
 // eslint-disable-line no-restricted-globals
 self.addEventListener("message", e => {
-	const data = e.data;
-	let targetType;
-	let output;
-	let probabilityValue;
-	let message;
 
+	const data = e.data;
 	const polyDice = data.diceList.map(dice => diceLib.createDicePolynomial(dice));
-	
+	let probabilityText;
+	let probabilityValue;
+
 	const calculationTypes = {
 		sumTargetValueExactly(polyDice, sumTargetValueOne) {
-			const probabilityValue = diceLib.diceSumExactly(polyDice, sumTargetValueOne);
-			message = {
-				output: `The probability of rolling exactly ${sumTargetValueOne} with the dice `,
-				probabilityValue: probabilityValue,
-			}
+			probabilityValue = (diceLib.diceSumExactly(polyDice, sumTargetValueOne) * 100).toFixed(2);
+			probabilityText = `The probability of rolling exactly ${sumTargetValueOne} with the dice ${data.diceArr.join(', ')} is`
 		},
-		sumTargetValueAtLeast(sumTargetValueOne, polyDice) {
+		sumTargetValueAtLeast(polyDice, sumTargetValueOne) {
+			probabilityValue = (diceLib.diceSumAtLeast(polyDice, sumTargetValueOne) * 100).toFixed(2);
+			probabilityText = `The probability of rolling at least ${sumTargetValueOne} with the dice ${data.diceArr.join(', ')} is`
 		},
-		sumTargetValueAtMost(sumTargetValueOne, polyDice) {
+		sumTargetValueAtMost(polyDice, sumTargetValueOne) {
+			probabilityValue = (diceLib.diceSumAtMost(polyDice, sumTargetValueOne) * 100).toFixed(2);
+			probabilityText = `The probability of rolling at most ${sumTargetValueOne} with the dice ${data.diceArr.join(', ')} is`
 		},
-		sumTargetValueBetween(sumTargetValueOne, sumTargetValueTwo, polyDice) {
+		sumTargetValueBetween(polyDice, sumTargetValueOne, sumTargetValueTwo) {
+			probabilityValue = (diceLib.diceSumBetween(polyDice, sumTargetValueOne, sumTargetValueTwo) * 100).toFixed(2);
+			probabilityText = `The probability of rolling between ${sumTargetValueOne} and ${sumTargetValueTwo} with the dice ${data.diceArr.join(', ')} is`
 		},
-		sumTargetValueNotBetween(sumTargetValueOne, sumTargetValueTwo, polyDice) {
+		sumTargetValueNotBetween(polyDice, sumTargetValueOne, sumTargetValueTwo) {
+			probabilityValue = (diceLib.diceSumNotBetween(polyDice, sumTargetValueOne, sumTargetValueTwo) * 100).toFixed(2);
+			probabilityText = `The probability of not rolling between ${sumTargetValueOne} and ${sumTargetValueTwo} with the dice ${data.diceArr.join(', ')} is`
 		}
 	}
 
-	//options[data.sumTargetValueType](data.sumTargetValueOne, data.sumTargetValueTwo, polyDice)
+	calculationTypes[data.sumTargetValueType](polyDice, data.sumTargetValueOne, data.sumTargetValueTwo)
 
-	switch (data.sumTargetValueType) {
-		case "sumTargetValueExactly":
-			targetType = "exactly";
-			output = `The probability of rolling ${targetType} ${
-				data.sumTargetValueOne
-				} with the dice ${data.diceList.join(", ")} is`;
-			probabilityValue = (
-				diceLib.diceSumExactly(data.sumTargetValueOne, polyDice) * 100
-			).toFixed(2);
-			break;
-		case "sumTargetValueAtLeast":
-			targetType = "at least";
-			output = `The probability of rolling ${targetType} ${
-				data.sumTargetValueOne
-				} with the dice ${data.diceList.join(", ")} is`;
-			probabilityValue = (
-				diceLib.diceSumAtLeast(data.sumTargetValueOne, polyDice) * 100
-			).toFixed(2);
-			break;
-		case "sumTargetValueAtMost":
-			targetType = "at most";
-			output = `The probability of rolling ${targetType} ${
-				data.sumTargetValueOne
-				} with the dice ${data.diceList.join(", ")} is`;
-			probabilityValue = (
-				diceLib.diceSumAtMost(data.sumTargetValueOne, polyDice) * 100
-			).toFixed(2);
-			break;
-		case "sumTargetValueBetween":
-			targetType = "between";
-			output = `The probability of rolling ${targetType} ${data.sumTargetValueOne} and ${
-				data.sumTargetValueTwo
-				} with the dice ${data.diceList.join(", ")} is`;
-			probabilityValue = (
-				diceLib.diceSumBetween(data.sumTargetValueOne, data.sumTargetValueTwo, polyDice) *
-				100
-			).toFixed(2);
-			break;
-		case "sumTargetValueNotBetween":
-			targetType = "between";
-			output = `The probability of not rolling ${targetType} ${data.sumTargetValueOne} and ${
-				data.sumTargetValueTwo
-				} with the dice ${data.diceList.join(", ")} is`;
-			probabilityValue = (
-				diceLib.diceSumNotBetween(
-					data.sumTargetValueOne,
-					data.sumTargetValueTwo,
-					polyDice
-				) * 100
-			).toFixed(2);
-			break;
-		default:
-	}
 	const message = {
-		output: output,
+		probabilityText: probabilityText,
 		probabilityValue: probabilityValue
-	};
+	}
 
 	self.postMessage(message);
 });

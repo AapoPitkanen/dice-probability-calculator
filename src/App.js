@@ -12,7 +12,7 @@ import d12 from "./img/d12-small.png";
 import d20 from "./img/d20-small.png";
 import sumWorker from "./sum.worker";
 import faceWorker from "./face.worker";
-import { CSSTransition, TransitionGroup } from "C:/Code/React_projects/dice-probability-calculator/node_modules/react-transition-group";
+import { CSSTransition, TransitionGroup } from "../node_modules/react-transition-group";
 
 class App extends Component {
 	constructor(props) {
@@ -51,24 +51,25 @@ class App extends Component {
 		this.sumWorker = new sumWorker();
 		this.faceWorker = new faceWorker();
 		this.sumWorker.addEventListener("message", e => {
-			let data = e.data;
+			const data = e.data;
 			this.setState({
 				calculating: false,
 				calculationFinished: true,
-				probabilityText: data.output,
+				probabilityText: data.probabilityText,
 				probability: `${data.probabilityValue}%`
 			});
 		});
 
 		this.faceWorker.addEventListener("message", e => {
-			let data = e.data;
-			/*
+			const data = e.data;
+
 			this.setState({
 				calculating: false,
-				probabilityText: data.output,
+				calculationFinished: true,
+				probabilityText: data.probabilityText,
 				probability: `${data.probabilityValue}%`
 			});
-			*/
+
 			console.log(data);
 		});
 	}
@@ -111,7 +112,7 @@ class App extends Component {
 
 	calculateFaceProbability() {
 		const message = {
-			diceList: diceLib.diceObjToArray(this.state.diceCounts),
+			diceArr: diceLib.diceObjToArray(this.state.diceCounts),
 			diceObj: this.state.diceCounts,
 			faceTargetDiceCountOne: this.state.faceTargetDiceCountOne,
 			faceTargetDiceCountTwo: this.state.faceTargetDiceCountTwo,
@@ -125,12 +126,13 @@ class App extends Component {
 
 	calculateSumProbability() {
 		const diceInput = this.state.diceInput;
+		const diceArr = diceInput.split('+');
 		const sumType = this.state.sumTargetValueType.value;
 		let num1 = this.state.sumTargetValueOne;
 		let num2 = this.state.sumTargetValueTwo;
 
 		if (sumType === "sumTargetValueNotBetween" || sumType === "sumTargetValueBetween") {
-			if ([diceInput, sumType, num1, num2].some(value => value === "")) {
+			if ([diceInput, num1, num2].some(value => value === "")) {
 				console.log('parameters missing');
 				this.setState({
 					error: true
@@ -142,7 +144,7 @@ class App extends Component {
 				}, 3000)
 				return;
 			}
-		} else if ([diceInput, sumType, num1].some(value => value === "")) {
+		} else if ([diceInput, sumType, num1].some(value => value === "" || value === undefined)) {
 			this.setState({
 				error: true
 			})
@@ -176,6 +178,7 @@ class App extends Component {
 		}
 
 		const message = {
+			diceArr: diceArr,
 			diceList: diceList,
 			sumTargetValueType: sumType,
 			sumTargetValueOne: num1,
@@ -185,12 +188,14 @@ class App extends Component {
 
 		totalDice >= 200
 			? this.setState({
+				error: false,
 				probabilityText: "",
 				probability: "",
 				calculating: true,
 				calculationFinished: false
 			})
 			: this.setState({
+				error: false,
 				probabilityText: "",
 				probability: "",
 				calculationFinished: false

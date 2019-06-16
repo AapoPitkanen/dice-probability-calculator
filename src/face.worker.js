@@ -2,11 +2,15 @@ import diceLib from "./components/diceLib";
 
 // eslint-disable-line no-restricted-globals
 self.addEventListener("message", e => {
-	const data = e.data;
-	const calculationType = `${data.faceTargetDiceCountType},${data.faceTargetValueType}`;
-	const calculationOptions = diceLib.faceCombinationOptions.map(el => el.join(","));
-	console.log(data);
-	console.log(calculationOptions.indexOf(calculationType));
+	const diceArr = e.data.diceArr
+	const diceObj = e.data.diceObj
+	const successes = e.data.faceTargetDiceCountOne
+	const successes2 = e.data.faceTargetDiceCountTwo
+	const target = e.data.faceTargetValueOne
+	const target2 = e.data.faceTargetValueTwo
+	const calculationType = `${e.data.faceTargetDiceCountType}${e.data.faceTargetValueType}`;
+	let probabilityValue;
+	let probabilityText;
 
 	/*
     0: "faceTargetDiceCountAtLeast,faceTargetValueAtLeast"
@@ -35,88 +39,93 @@ self.addEventListener("message", e => {
     23: "faceTargetDiceCountNotBetween,faceTargetValueExactly"
     24: "faceTargetDiceCountNotBetween,faceTargetValueNotBetween"
     */
+	const calculationOptions = {
+		faceTargetDiceCountAtLeastfaceTargetValueAtLeast() {
+			probabilityValue = diceLib.binomialProbabilityDCALTVAL(target, successes, diceArr, diceObj)
+			probabilityText = `The probability of rolling at least ${successes} dice where the face value is at least ${target} is `
+		},
+		faceTargetDiceCountAtLeastfaceTargetValueAtMost() {
 
-	switch (calculationOptions.indexOf(calculationType)) {
-		case 0:
-			console.log("faceTargetDiceCountAtLeast,faceTargetValueAtLeast");
-			break;
-		case 1:
-			console.log("faceTargetDiceCountAtLeast,faceTargetValueAtMost");
-			break;
-		case 2:
-			console.log("faceTargetDiceCountAtLeast,faceTargetValueBetween");
-			break;
-		case 3:
-			console.log("faceTargetDiceCountAtLeast,faceTargetValueExactly");
-			break;
-		case 4:
-			console.log("faceTargetDiceCountAtLeast,faceTargetValueNotBetween");
-			break;
-		case 5:
-			console.log("faceTargetDiceCountAtMost,faceTargetValueAtLeast");
-			break;
-		case 6:
-			console.log("faceTargetDiceCountAtMost,faceTargetValueAtMost");
-			break;
-		case 7:
-			console.log("faceTargetDiceCountAtMost,faceTargetValueBetween");
-			break;
-		case 8:
-			console.log("faceTargetDiceCountAtMost,faceTargetValueExactly");
-			break;
-		case 9:
-			console.log("faceTargetDiceCountAtMost,faceTargetValueNotBetween");
-			break;
-		case 10:
-			console.log("faceTargetDiceCountBetween,faceTargetValueAtLeast");
-			break;
-		case 11:
-			console.log("faceTargetDiceCountBetween,faceTargetValueAtMost");
-			break;
-		case 12:
-			console.log("faceTargetDiceCountBetween,faceTargetValueBetween");
-			break;
-		case 13:
-			console.log("faceTargetDiceCountBetween,faceTargetValueExactly");
-			break;
-		case 14:
-			console.log("faceTargetDiceCountBetween,faceTargetValueNotBetween");
-			break;
-		case 15:
-			console.log("faceTargetDiceCountExactly,faceTargetValueAtLeast");
-			break;
-		case 16:
-			console.log("faceTargetDiceCountExactly,faceTargetValueAtMost");
-			break;
-		case 17:
-			console.log("faceTargetDiceCountExactly,faceTargetValueBetween");
-			break;
-		case 18:
-			console.log("faceTargetDiceCountExactly,faceTargetValueExactly");
-			break;
-		case 19:
-			console.log("faceTargetDiceCountExactly,faceTargetValueNotBetween");
-			break;
-		case 20:
-			console.log("faceTargetDiceCountNotBetween,faceTargetValueAtLeast");
-			break;
-		case 21:
-			console.log("faceTargetDiceCountNotBetween,faceTargetValueAtMost");
-			break;
-		case 22:
-			console.log("faceTargetDiceCountNotBetween,faceTargetValueBetween");
-			break;
-		case 23:
-			console.log("faceTargetDiceCountNotBetween,faceTargetValueExactly");
-			break;
-		case 24:
-			console.log("faceTargetDiceCountNotBetween,faceTargetValueNotBetween");
-			break;
-		default:
+		},
+		faceTargetDiceCountAtLeastfaceTargetValueBetween() {
+
+		},
+		faceTargetDiceCountAtLeastfaceTargetValueExactly() {
+
+		},
+		faceTargetDiceCountAtLeastfaceTargetValueNotBetween() {
+
+		},
+		faceTargetDiceCountAtMostfaceTargetValueAtLeast() {
+
+		},
+		faceTargetDiceCountAtMostfaceTargetValueAtMost() {
+
+		},
+		faceTargetDiceCountAtMostfaceTargetValueBetween() {
+
+		},
+		faceTargetDiceCountAtMostfaceTargetValueExactly() {
+
+		},
+		faceTargetDiceCountAtMostfaceTargetValueNotBetween() {
+
+		},
+		faceTargetDiceCountBetweenfaceTargetValueAtLeast() {
+
+		},
+		faceTargetDiceCountBetweenfaceTargetValueAtMost() {
+
+		},
+		faceTargetDiceCountBetweenfaceTargetValueBetween() {
+
+		},
+		faceTargetDiceCountBetweenfaceTargetValueExactly() {
+
+		},
+		faceTargetDiceCountBetweenfaceTargetValueNotBetween() {
+
+		},
+		faceTargetDiceCountExactlyfaceTargetValueAtLeast() {
+			probabilityValue = diceLib.binomialProbabilityDCETVAL(target, successes, diceArr)
+			probabilityText = `The probability of rolling exactly ${successes} dice where the face value is at least ${target} is `
+		},
+		faceTargetDiceCountExactlyfaceTargetValueAtMost() {
+			probabilityValue = diceLib.binomialProbabilityDCETVAM(target, successes, diceArr)
+			probabilityText = `The probability of rolling exactly ${successes} dice where the face value is at most ${target} is `
+		},
+		faceTargetDiceCountExactlyfaceTargetValueBetween() {
+
+		},
+		faceTargetDiceCountExactlyfaceTargetValueExactly() {
+			probabilityValue = diceLib.binomialProbabilityDCETVE(target, successes, diceArr)
+			probabilityText = `The probability of rolling exactly ${successes} dice where the face value is exactly ${target} is `
+		},
+		faceTargetDiceCountExactlyfaceTargetValueNotBetween() {
+
+		},
+		faceTargetDiceCountNotBetweenfaceTargetValueAtLeast() {
+
+		},
+		faceTargetDiceCountNotBetweenfaceTargetValueAtMost() {
+
+		},
+		faceTargetDiceCountNotBetweenfaceTargetValueBetween() {
+
+		},
+		faceTargetDiceCountNotBetweenfaceTargetValueExactly() {
+
+		},
+		faceTargetDiceCountNotBetweenfaceTargetValueNotBetween() {
+
+		}
 	}
-	const str = "face calculation sent to parent";
+
+	calculationOptions[calculationType](target, successes, diceArr, diceObj)
+
 	const message = {
-		str: str
+		probabilityText: probabilityText,
+		probabilityValue: probabilityValue
 	};
 	self.postMessage(message);
 });

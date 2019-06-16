@@ -366,7 +366,7 @@ const diceLib = {
 	},
 
 	diceSumNotBetween(polyDice, num, num2) {
-		return 1 - this.diceSumBetween(num, num2, polyDice);
+		return 1 - this.diceSumBetween(polyDice, num, num2);
 	}
 };
 

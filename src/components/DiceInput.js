@@ -31,15 +31,21 @@ class DiceInput extends Component {
 			inputValue = inputValue.replace(x, replaceValues[i]);
 		});
 
-		inputValue = inputValue.split("+");
-		diceObj = diceLib.createDiceObject(inputValue);
+		if (inputValue !== "") {
+			inputValue = inputValue.split("+");
+			diceObj = diceLib.createDiceObject(inputValue);
 
-		_.isEmpty(diceObj)
-			? (totalDice = 0)
-			: (totalDice = Object.values(diceObj).reduce((acc, curr) => acc + curr));
+			_.isEmpty(diceObj)
+				? (totalDice = 0)
+				: (totalDice = Object.values(diceObj).reduce((acc, curr) => acc + curr));
 
-		inputValue = diceLib.sortDiceInput(inputValue);
-		inputValue = inputValue.join("+");
+			if (inputValue[0] !== "") {
+				inputValue = diceLib.sortDiceInput(inputValue);
+			}
+
+			inputValue = inputValue.join("+");
+		}
+
 		this.props.callback(totalDice, "totalDice");
 		this.props.callback(diceObj, "diceCounts");
 		this.props.callback(inputValue, inputName);
