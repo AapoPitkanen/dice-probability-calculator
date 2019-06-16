@@ -172,6 +172,7 @@ const diceLib = {
 				diceCount = parseInt(dice[i].slice(0, dice[i].indexOf("d")));
 				sides = parseInt(y.slice(y.indexOf("d") + 1));
 				diceSuccessCount = parseInt(y.slice(0, y.indexOf("d")));
+				console.log('diceSuccessCount is now ' + diceSuccessCount)
 				currentProbability *= this.binomialDiceTargetExactly(
 					target,
 					sides,
@@ -180,6 +181,8 @@ const diceLib = {
 				);
 			});
 			totalProbability += currentProbability;
+			console.log(currentProbability);
+			console.log(totalProbability);
 			currentProbability = 1;
 		});
 		return totalProbability;
@@ -189,6 +192,7 @@ const diceLib = {
 		let totalProbability = 0;
 		let currentProbability = 1;
 		let sortedArr = this.sortUniqueDiceCombinations(target, successes, dice);
+		console.log(sortedArr)
 		let diceCount;
 		let sides;
 		let diceSuccessCount;
@@ -236,10 +240,11 @@ const diceLib = {
 	},
 
 	binomialProbabilityDCALTVAL(target, successes, dice, diceObj) {
-		let maxSuccesses = 0;
 		let probability = 0;
-		let values = Object.values(diceObj);
-		maxSuccesses = values.reduce((acc, curr) => acc + curr);
+		const filteredArr = this.diceObjToArray(diceObj).filter(dice => parseInt(dice.slice(dice.indexOf("d") + 1)) >= target)
+		diceObj = this.createDiceObject(filteredArr);
+		const values = Object.values(diceObj);
+		const maxSuccesses = values.reduce((acc, curr) => acc + curr);
 		while (successes <= maxSuccesses) {
 			probability += this.binomialProbabilityDCETVAL(target, successes, dice);
 			successes++;
@@ -247,7 +252,7 @@ const diceLib = {
 		return probability;
 	},
 
-	binomialDiceTargetExactly(sides, trials, successes) {
+	binomialDiceTargetExactly(target, sides, trials, successes) {
 		const psuccess = 1 / sides;
 		return (
 			math.combinations(trials, successes) *
