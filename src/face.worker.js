@@ -40,8 +40,8 @@ self.addEventListener("message", e => {
     24: "faceTargetDiceCountNotBetween,faceTargetValueNotBetween"
     */
 	const calculationOptions = {
-		faceTargetDiceCountAtLeastfaceTargetValueAtLeast() {
-			probabilityValue = diceLib.binomialProbabilityDCALTVAL(target, successes, diceArr, diceObj)
+		faceTargetDiceCountAtLeastfaceTargetValueAtLeast(target, successes, diceArr) {
+			probabilityValue = (diceLib.binomialProbabilityDCALTVAL(target, successes, diceArr) * 100).toFixed(2)
 			probabilityText = `The probability of rolling at least ${successes} dice where the face value is at least ${target} is `
 		},
 		faceTargetDiceCountAtLeastfaceTargetValueAtMost() {
@@ -86,19 +86,19 @@ self.addEventListener("message", e => {
 		faceTargetDiceCountBetweenfaceTargetValueNotBetween() {
 
 		},
-		faceTargetDiceCountExactlyfaceTargetValueAtLeast() {
-			probabilityValue = diceLib.binomialProbabilityDCETVAL(target, successes, diceArr)
+		faceTargetDiceCountExactlyfaceTargetValueAtLeast(target, successes, diceArr) {
+			probabilityValue = (diceLib.binomialProbabilityDCETVAL(target, successes, diceArr) * 100).toFixed(2)
 			probabilityText = `The probability of rolling exactly ${successes} dice where the face value is at least ${target} is `
 		},
-		faceTargetDiceCountExactlyfaceTargetValueAtMost() {
-			probabilityValue = diceLib.binomialProbabilityDCETVAM(target, successes, diceArr)
+		faceTargetDiceCountExactlyfaceTargetValueAtMost(target, successes, diceArr) {
+			probabilityValue = (diceLib.binomialProbabilityDCETVAM(target, successes, diceArr) * 100).toFixed(2)
 			probabilityText = `The probability of rolling exactly ${successes} dice where the face value is at most ${target} is `
 		},
 		faceTargetDiceCountExactlyfaceTargetValueBetween() {
 
 		},
-		faceTargetDiceCountExactlyfaceTargetValueExactly() {
-			probabilityValue = diceLib.binomialProbabilityDCETVE(target, successes, diceArr)
+		faceTargetDiceCountExactlyfaceTargetValueExactly(target, successes, diceArr) {
+			probabilityValue = (diceLib.binomialProbabilityDCETVE(target, successes, diceArr) * 100).toFixed(2)
 			probabilityText = `The probability of rolling exactly ${successes} dice where the face value is exactly ${target} is `
 		},
 		faceTargetDiceCountExactlyfaceTargetValueNotBetween() {
@@ -121,7 +121,7 @@ self.addEventListener("message", e => {
 		}
 	}
 
-	calculationOptions[calculationType](target, successes, diceArr, diceObj)
+	calculationOptions[calculationType](target, successes, diceArr)
 
 	const message = {
 		probabilityText: probabilityText,
