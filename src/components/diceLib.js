@@ -50,8 +50,6 @@ const diceLib = {
 	sortUniqueDiceCombinations(target, successes, diceArr) {
 		const sortedDice = [];
 		const diceTypes = diceArr.map(dice => dice.slice(dice.indexOf("d")));
-		let keys;
-		let values;
 		/* We'll just return zeroes for each diceArr if the user specifies 0 successes rolled or if the target cannot be rolled with any of the dice.
         The only combination then is that none of the dice roll a success */
 		if (successes === 0 || diceArr.every(dice => parseInt(dice.slice(dice.indexOf("d") + 1)) < target)) {
@@ -64,31 +62,26 @@ const diceLib = {
 		}
 
 		// Remove any dice that cannot roll successes if needed, e.g. a d6 cannot roll a 7 so it has to be filtered out when creating the combinations
-		if (diceArr.some(dice => parseInt(dice.slice(dice.indexOf("d") + 1)) < target)) {
-			let filtered = diceArr.filter(dice => parseInt(dice.slice(dice.indexOf("d") + 1)) >= target);
-			keys = filtered.map(dice => dice.slice(dice.indexOf("d")));
-			values = filtered.map(dice => dice.slice(0, dice.indexOf("d")));
-		} else {
-			keys = diceArr.map(dice => dice.slice(dice.indexOf("d")));
-			values = diceArr.map(dice => dice.slice(0, dice.indexOf("d")));
-		}
+		const filteredArr = diceArr.filter(dice => parseInt(dice.slice(dice.indexOf("d") + 1)) >= target);
+		const diceKeys = diceArr.some(dice => parseInt(dice.slice(dice.indexOf("d") + 1))) >= target ? diceArr.map(dice => dice.slice(dice.indexOf("d"))) : filteredArr.map(dice => dice.slice(dice.indexOf("d")))
+		const diceValues = diceArr.some(dice => parseInt(dice.slice(dice.indexOf("d") + 1))) >= target ? diceArr.map(dice => dice.slice(0, dice.indexOf("d"))) : filteredArr.map(dice => dice.slice(0, dice.indexOf("d")))
 
-		const diceObj = _.zipObject(keys, values);
-		const sortedObj = this.UniqueCombinations(diceObj, successes);
+		const diceObj = _.zipObject(diceKeys, diceValues);
+		const sortedDiceObjArr = this.UniqueCombinations(diceObj, successes);
 
-		sortedObj.forEach(el => {
-			const diceCounts = Object.values(el);
-			keys = Object.keys(el);
+		sortedDiceObjArr.forEach(dice => {
+			const diceCounts = Object.values(dice);
+			const keys = Object.keys(dice);
 			const singularDiceCounts = [];
 			const mapped = [];
-			keys.forEach((el, i) => {
+			keys.forEach((dice, i) => {
 				for (let j = 0; j < diceCounts[i]; j++) {
-					singularDiceCounts.push(el);
+					singularDiceCounts.push(dice);
 				}
 			});
 
-			diceTypes.forEach(el => {
-				mapped.push(this.countDice(el, singularDiceCounts));
+			diceTypes.forEach(dice => {
+				mapped.push(this.countDice(dice, singularDiceCounts));
 			});
 
 			sortedDice.push(mapped);
@@ -119,12 +112,12 @@ const diceLib = {
 	},
 
 	countDice(diceType, dice) {
-		return `${dice.filter(el => el === diceType).length}${diceType}`;
+		return `${dice.filter(singleDice => singleDice === diceType).length}${diceType}`;
 	},
 
 	createDiceObject(dice) {
 		dice = this.splitDice(dice);
-		let diceObj = {};
+		const diceObj = {};
 		dice.forEach(el => (diceObj[el] = (diceObj[el] || 0) + 1));
 		return diceObj;
 	},
@@ -136,7 +129,7 @@ const diceLib = {
 		for (let exponent = 1; exponent <= sides; exponent++) {
 			polyStr += `+1/${sides}x^${exponent}`
 		}
-		// replace the first +-sign from the string so the Polynomial object can be created
+		// Won't be a proper polynomial if the first character is a +-sign :-)
 		return new Polynomial(polyStr.replace('+', ''));
 	},
 
@@ -181,8 +174,6 @@ const diceLib = {
 				);
 			});
 			totalProbability += currentProbability;
-			console.log(currentProbability);
-			console.log(totalProbability);
 			currentProbability = 1;
 		});
 		return totalProbability;
@@ -217,6 +208,7 @@ const diceLib = {
 		let totalProbability = 0;
 		let currentProbability = 1;
 		let sortedArr = this.sortUniqueDiceCombinations(target, successes, dice);
+		console.log(sortedArr)
 		let diceCount;
 		let sides;
 		let diceSuccessCount;
@@ -225,16 +217,20 @@ const diceLib = {
 				diceCount = parseInt(dice[i].slice(0, dice[i].indexOf("d")));
 				sides = parseInt(singleDice.slice(singleDice.indexOf("d") + 1));
 				diceSuccessCount = parseInt(singleDice.slice(0, singleDice.indexOf("d")));
+				console.log(`currentProbability is before multiplication ${currentProbability}`);
 				currentProbability *= this.binomialDiceTargetAtMost(
 					target,
 					sides,
 					diceCount,
 					diceSuccessCount
 				);
+				console.log(`currentProbability has been multiplied with previous one, it is now ${currentProbability}`);
 			});
 			totalProbability += currentProbability;
+			console.log(`currentProbability has been added to totalProbability, totalProbability is now ${totalProbability}`);
 			currentProbability = 1;
 		});
+		console.log(`totalProbability is finally ${totalProbability}`)
 		return totalProbability;
 	},
 
@@ -271,6 +267,9 @@ const diceLib = {
 
 	binomialDiceTargetAtMost(target, sides, trials, successes) {
 		const psuccess = target <= sides ? target / sides : 1;
+		console.log(`target is now ${target}, sides are now ${sides}, trials are ${trials}, successes are ${successes}`)
+		console.log(`psuccess is now ${psuccess}`);
+		console.log(`math.combinations(${trials}, ${successes}) is ${math.combinations(trials, successes)}, math.pow(${psuccess}, ${successes}) is ${math.pow(psuccess, successes)}, math.pow(${1 - psuccess}, ${trials - successes}) is ${math.pow(1 - psuccess, trials - successes)})`)
 		return (
 			math.combinations(trials, successes) *
 			math.pow(psuccess, successes) *
