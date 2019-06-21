@@ -12,7 +12,10 @@ import d12 from "./img/d12-small.png";
 import d20 from "./img/d20-small.png";
 import sumWorker from "./sum.worker";
 import faceWorker from "./face.worker";
-import { CSSTransition, TransitionGroup } from "../node_modules/react-transition-group";
+import {
+	CSSTransition,
+	TransitionGroup
+} from "../node_modules/react-transition-group";
 
 class App extends Component {
 	constructor(props) {
@@ -22,7 +25,9 @@ class App extends Component {
 		this.inputCallback = this.inputCallback.bind(this);
 		this.handleSelectChange = this.handleSelectChange.bind(this);
 		this.handleClickDiceImage = this.handleClickDiceImage.bind(this);
-		this.handleCalculationTypeSelectChange = this.handleCalculationTypeSelectChange.bind(this);
+		this.handleCalculationTypeSelectChange = this.handleCalculationTypeSelectChange.bind(
+			this
+		);
 
 		this.state = {
 			calculating: false,
@@ -94,7 +99,8 @@ class App extends Component {
 		if (event.target.dataset.diceType) {
 			let diceType = event.target.dataset.diceType;
 			let diceObj = { ...this.state.diceCounts };
-			diceObj[diceType] = diceObj[diceType] === undefined ? 1 : diceObj[diceType] + 1;
+			diceObj[diceType] =
+				diceObj[diceType] === undefined ? 1 : diceObj[diceType] + 1;
 			let diceArr = diceLib.diceObjToArray(diceObj).join("+");
 			this.setState({
 				diceCounts: diceObj,
@@ -122,38 +128,52 @@ class App extends Component {
 			faceTargetValueType: this.state.faceTargetValueType.value
 		};
 		this.faceWorker.postMessage(message);
+		this.setState({
+			error: false,
+			probability: "",
+			probabilityText: "",
+			calculating: true,
+			calculationFinished: false
+		});
 	}
 
 	calculateSumProbability() {
 		const diceInput = this.state.diceInput;
-		const diceArr = diceInput.split('+');
+		const diceArr = diceInput.split("+");
 		const sumType = this.state.sumTargetValueType.value;
 		let num1 = this.state.sumTargetValueOne;
 		let num2 = this.state.sumTargetValueTwo;
 
-		if (sumType === "sumTargetValueNotBetween" || sumType === "sumTargetValueBetween") {
+		if (
+			sumType === "sumTargetValueNotBetween" ||
+			sumType === "sumTargetValueBetween"
+		) {
 			if ([diceInput, num1, num2].some(value => value === "")) {
-				console.log('parameters missing');
+				console.log("parameters missing");
 				this.setState({
 					error: true
-				})
+				});
 				setTimeout(() => {
 					this.setState({
 						error: false
-					})
-				}, 3000)
+					});
+				}, 3000);
 				return;
 			}
-		} else if ([diceInput, sumType, num1].some(value => value === "" || value === undefined)) {
+		} else if (
+			[diceInput, sumType, num1].some(
+				value => value === "" || value === undefined
+			)
+		) {
 			this.setState({
 				error: true
-			})
+			});
 			setTimeout(() => {
 				this.setState({
 					error: false
-				})
-			}, 5000)
-			console.log('parameters missing')
+				});
+			}, 5000);
+			console.log("parameters missing");
 			return;
 		}
 
@@ -166,9 +186,11 @@ class App extends Component {
 			0
 		);
 		const totalDice = diceCounts.reduce((acc, curr) => acc + curr);
-		const diceList = diceLib.splitDice(diceLib.diceObjToArray(this.state.diceCounts));
+		const diceList = diceLib.splitDice(
+			diceLib.diceObjToArray(this.state.diceCounts)
+		);
 
-		if (num2 && (num1 > num2)) {
+		if (num2 && num1 > num2) {
 			[num1, num2] = [num2, num1];
 		}
 
@@ -188,18 +210,18 @@ class App extends Component {
 
 		totalDice >= 200
 			? this.setState({
-				error: false,
-				probabilityText: "",
-				probability: "",
-				calculating: true,
-				calculationFinished: false
-			})
+					error: false,
+					probabilityText: "",
+					probability: "",
+					calculating: true,
+					calculationFinished: false
+			  })
 			: this.setState({
-				error: false,
-				probabilityText: "",
-				probability: "",
-				calculationFinished: false
-			});
+					error: false,
+					probabilityText: "",
+					probability: "",
+					calculationFinished: false
+			  });
 
 		this.sumWorker.postMessage(message);
 	}
@@ -239,10 +261,11 @@ class App extends Component {
 				<h2>Dice probability calculator</h2>
 
 				<p>
-					Here you can calculate the probability of getting specific sums with different
-					kinds of dice, such as d4, d6, d8, d10 etc. Non-standard dice (such as d5 and
-					d7) are also supported. To use this application, enter your desired comparison
-					value and the dice which are used to calculate the sums.
+					Here you can calculate the probability of getting specific sums with
+					different kinds of dice, such as d4, d6, d8, d10 etc. Non-standard
+					dice (such as d5 and d7) are also supported. To use this application,
+					enter your desired comparison value and the dice which are used to
+					calculate the sums.
 				</p>
 
 				<p>I want to calculate</p>
@@ -255,12 +278,42 @@ class App extends Component {
 				/>
 
 				<div className="dice-image-wrapper" onClick={this.handleClickDiceImage}>
-					<img src={d4} alt="d4 dice" className="dice-image" data-dice-type="d4" />
-					<img src={d6} alt="d6 dice" className="dice-image" data-dice-type="d6" />
-					<img src={d8} alt="d8 dice" className="dice-image" data-dice-type="d8" />
-					<img src={d10} alt="d10 dice" className="dice-image" data-dice-type="d10" />
-					<img src={d12} alt="d12 dice" className="dice-image" data-dice-type="d12" />
-					<img src={d20} alt="d20 dice" className="dice-image" data-dice-type="d20" />
+					<img
+						src={d4}
+						alt="d4 dice"
+						className="dice-image"
+						data-dice-type="d4"
+					/>
+					<img
+						src={d6}
+						alt="d6 dice"
+						className="dice-image"
+						data-dice-type="d6"
+					/>
+					<img
+						src={d8}
+						alt="d8 dice"
+						className="dice-image"
+						data-dice-type="d8"
+					/>
+					<img
+						src={d10}
+						alt="d10 dice"
+						className="dice-image"
+						data-dice-type="d10"
+					/>
+					<img
+						src={d12}
+						alt="d12 dice"
+						className="dice-image"
+						data-dice-type="d12"
+					/>
+					<img
+						src={d20}
+						alt="d20 dice"
+						className="dice-image"
+						data-dice-type="d20"
+					/>
 				</div>
 				<div className="dice-input-wrapper">
 					<p>with the dice</p>
@@ -289,19 +342,20 @@ class App extends Component {
 									name={"sumTargetValueOne"}
 									className={"number-input"}
 								/>
-								{(this.state.sumTargetValueType.value === "sumTargetValueBetween" ||
+								{(this.state.sumTargetValueType.value ===
+									"sumTargetValueBetween" ||
 									this.state.sumTargetValueType.value ===
-									"sumTargetValueNotBetween") && (
-										<React.Fragment>
-											<p>and</p>
-											<NumberInput
-												callback={this.inputCallback}
-												inputValue={this.state.sumTargetValueTwo}
-												name={"sumTargetValueTwo"}
-												className={"number-input"}
-											/>
-										</React.Fragment>
-									)}
+										"sumTargetValueNotBetween") && (
+									<React.Fragment>
+										<p>and</p>
+										<NumberInput
+											callback={this.inputCallback}
+											inputValue={this.state.sumTargetValueTwo}
+											name={"sumTargetValueTwo"}
+											className={"number-input"}
+										/>
+									</React.Fragment>
+								)}
 							</div>
 						</div>
 					)}
@@ -326,17 +380,17 @@ class App extends Component {
 								{(this.state.faceTargetDiceCountType.value ===
 									"faceTargetDiceCountBetween" ||
 									this.state.faceTargetDiceCountType.value ===
-									"faceTargetDiceCountNotBetween") && (
-										<React.Fragment>
-											<p>and</p>
-											<NumberInput
-												callback={this.inputCallback}
-												inputValue={this.state.faceTargetDiceCountTwo}
-												name={"faceTargetDiceCountTwo"}
-												className="number-input count-input"
-											/>
-										</React.Fragment>
-									)}
+										"faceTargetDiceCountNotBetween") && (
+									<React.Fragment>
+										<p>and</p>
+										<NumberInput
+											callback={this.inputCallback}
+											inputValue={this.state.faceTargetDiceCountTwo}
+											name={"faceTargetDiceCountTwo"}
+											className="number-input count-input"
+										/>
+									</React.Fragment>
+								)}
 								<p className="face-target-count-name">dice</p>
 							</div>
 							<p>where the face value</p>
@@ -357,17 +411,17 @@ class App extends Component {
 								{(this.state.faceTargetValueType.value ===
 									"faceTargetValueBetween" ||
 									this.state.faceTargetValueType.value ===
-									"faceTargetValueNotBetween") && (
-										<React.Fragment>
-											<p>and</p>
-											<NumberInput
-												callback={this.inputCallback}
-												inputValue={this.state.faceTargetValueTwo}
-												name={"faceTargetValueTwo"}
-												className={"number-input"}
-											/>
-										</React.Fragment>
-									)}
+										"faceTargetValueNotBetween") && (
+									<React.Fragment>
+										<p>and</p>
+										<NumberInput
+											callback={this.inputCallback}
+											inputValue={this.state.faceTargetValueTwo}
+											name={"faceTargetValueTwo"}
+											className={"number-input"}
+										/>
+									</React.Fragment>
+								)}
 							</div>
 						</div>
 					)}
@@ -390,14 +444,33 @@ class App extends Component {
 					</button>
 				)}
 
-				<CSSTransition key="error" unmountOnExit timeout={500} classNames="error" in={this.state.error}>
-					<div className="error-message">Please fill in all the required fields</div>
+				<CSSTransition
+					key="error"
+					unmountOnExit
+					timeout={500}
+					classNames="error"
+					in={this.state.error}
+				>
+					<div className="error-message">
+						Please fill in all the required fields
+					</div>
 				</CSSTransition>
 
-				<CSSTransition key="loader" unmountOnExit timeout={500} classNames="spin-loader" in={this.state.calculating}>
+				<CSSTransition
+					key="loader"
+					timeout={500}
+					classNames="spin-loader"
+					in={this.state.calculating}
+				>
 					<div className="loader">Calculating...</div>
 				</CSSTransition>
-				<CSSTransition key="output" unmountOnExit timeout={600} classNames="output" in={this.state.calculationFinished}>
+				<CSSTransition
+					key="output"
+					unmountOnExit
+					timeout={600}
+					classNames="output"
+					in={this.state.calculationFinished}
+				>
 					<div className="output-wrapper">
 						<div className="outputText">{this.state.probabilityText}</div>
 						<div className="probabilityValue">{this.state.probability}</div>

@@ -50,6 +50,7 @@ p {
 .loader {
 	font-size: 1rem;
 	color: #fff;
+	opacity: 0;
 }
 
 .probability-calculator-wrapper {
@@ -131,8 +132,8 @@ p {
 	position: absolute;
 	width: 20rem;
 	height: 5rem;
-	background-color: #BA3636;
-	color: #fff
+	background-color: #ba3636;
+	color: #fff;
 }
 
 .error-enter {
@@ -183,7 +184,7 @@ p {
 .output-enter-active {
 	max-height: 20rem;
 	opacity: 1;
-	transition: max-height 800ms ease-in-out, opacity 500ms ease-in-out;;
+	transition: max-height 800ms ease-in-out, opacity 500ms ease-in-out;
 }
 
 .output-exit {
