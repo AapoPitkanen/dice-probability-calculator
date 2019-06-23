@@ -186,9 +186,6 @@ class App extends Component {
 			0
 		);
 		const totalDice = diceCounts.reduce((acc, curr) => acc + curr);
-		const diceList = diceLib.splitDice(
-			diceLib.diceObjToArray(this.state.diceCounts)
-		);
 
 		if (num2 && num1 > num2) {
 			[num1, num2] = [num2, num1];
@@ -201,7 +198,6 @@ class App extends Component {
 
 		const message = {
 			diceArr: diceArr,
-			diceList: diceList,
 			sumTargetValueType: sumType,
 			sumTargetValueOne: num1,
 			sumTargetValueTwo: num2,
@@ -337,6 +333,7 @@ class App extends Component {
 									options={sumTargetValueOptions}
 								/>
 								<NumberInput
+									min={"1"}
 									callback={this.inputCallback}
 									inputValue={this.state.sumTargetValueOne}
 									name={"sumTargetValueOne"}
@@ -349,6 +346,7 @@ class App extends Component {
 									<React.Fragment>
 										<p>and</p>
 										<NumberInput
+											min={"1"}
 											callback={this.inputCallback}
 											inputValue={this.state.sumTargetValueTwo}
 											name={"sumTargetValueTwo"}
@@ -372,6 +370,7 @@ class App extends Component {
 									options={faceTargetDiceCountOptions}
 								/>
 								<NumberInput
+									min={"0"}
 									callback={this.inputCallback}
 									inputValue={this.state.faceTargetDiceCountOne}
 									name={"faceTargetDiceCountOne"}
@@ -384,6 +383,7 @@ class App extends Component {
 									<React.Fragment>
 										<p>and</p>
 										<NumberInput
+											min={"1"}
 											callback={this.inputCallback}
 											inputValue={this.state.faceTargetDiceCountTwo}
 											name={"faceTargetDiceCountTwo"}
@@ -403,6 +403,7 @@ class App extends Component {
 									options={faceTargetValueOptions}
 								/>
 								<NumberInput
+									min={"1"}
 									callback={this.inputCallback}
 									inputValue={this.state.faceTargetValueOne}
 									name={"faceTargetValueOne"}
@@ -415,6 +416,7 @@ class App extends Component {
 									<React.Fragment>
 										<p>and</p>
 										<NumberInput
+											min={"1"}
 											callback={this.inputCallback}
 											inputValue={this.state.faceTargetValueTwo}
 											name={"faceTargetValueTwo"}

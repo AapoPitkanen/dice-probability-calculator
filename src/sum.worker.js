@@ -2,41 +2,56 @@ import diceLib from "./components/diceLib";
 
 // eslint-disable-line no-restricted-globals
 self.addEventListener("message", e => {
+	const diceArr = e.data.diceArr;
+	const sumTargetValueOne = e.data.sumTargetValueOne;
+	const sumTargetValueTwo = e.data.sumTargetValueTwo;
+	const sumTargetValueType = e.data.sumTargetValueType;
+	const splitDice = diceLib.splitDice(diceArr);
+	const polyDice = splitDice.map(dice => diceLib.createDicePolynomial(dice));
 
-	const data = e.data;
-	const polyDice = data.diceList.map(dice => diceLib.createDicePolynomial(dice));
-	let probabilityText;
-	let probabilityValue;
+	const expectedValue = diceArr
+		.map(dice => {
+			const diceCount = parseInt(dice.slice(0, dice.indexOf("d")));
+			const sides = parseInt(dice.slice(dice.indexOf("d") + 1));
+			return diceLib.expectedSum(diceCount, sides);
+		})
+		.reduce((acc, curr) => acc + curr);
 
-	const calculationTypes = {
-		sumTargetValueExactly(polyDice, sumTargetValueOne) {
-			probabilityValue = (diceLib.diceSumExactly(polyDice, sumTargetValueOne) * 100).toFixed(2);
-			probabilityText = `The probability of rolling exactly ${sumTargetValueOne} with the dice ${data.diceArr.join(', ')} is`
-		},
-		sumTargetValueAtLeast(polyDice, sumTargetValueOne) {
-			probabilityValue = (diceLib.diceSumAtLeast(polyDice, sumTargetValueOne) * 100).toFixed(2);
-			probabilityText = `The probability of rolling at least ${sumTargetValueOne} with the dice ${data.diceArr.join(', ')} is`
-		},
-		sumTargetValueAtMost(polyDice, sumTargetValueOne) {
-			probabilityValue = (diceLib.diceSumAtMost(polyDice, sumTargetValueOne) * 100).toFixed(2);
-			probabilityText = `The probability of rolling at most ${sumTargetValueOne} with the dice ${data.diceArr.join(', ')} is`
-		},
-		sumTargetValueBetween(polyDice, sumTargetValueOne, sumTargetValueTwo) {
-			probabilityValue = (diceLib.diceSumBetween(polyDice, sumTargetValueOne, sumTargetValueTwo) * 100).toFixed(2);
-			probabilityText = `The probability of rolling between ${sumTargetValueOne} and ${sumTargetValueTwo} with the dice ${data.diceArr.join(', ')} is`
-		},
-		sumTargetValueNotBetween(polyDice, sumTargetValueOne, sumTargetValueTwo) {
-			probabilityValue = (diceLib.diceSumNotBetween(polyDice, sumTargetValueOne, sumTargetValueTwo) * 100).toFixed(2);
-			probabilityText = `The probability of not rolling between ${sumTargetValueOne} and ${sumTargetValueTwo} with the dice ${data.diceArr.join(', ')} is`
-		}
-	}
+	const textOptions = {
+		sumTargetValueExactly: `The probability of rolling exactly ${sumTargetValueOne} with the dice ${diceArr.join(
+			" ,"
+		)} is `,
+		sumTargetValueAtLeast: `The probability of rolling at least ${sumTargetValueOne} with the dice ${diceArr.join(
+			" ,"
+		)} is `,
+		sumTargetValueAtMost: `The probability of rolling at most ${sumTargetValueOne} with the dice ${diceArr.join(
+			" ,"
+		)} is `,
+		sumTargetValueBetween: `The probability of rolling between ${sumTargetValueOne} and ${sumTargetValueTwo} with the dice ${diceArr.join(
+			" ,"
+		)} is `,
+		sumTargetValueNotBetween: `The probability of not rolling between ${sumTargetValueOne} and ${sumTargetValueTwo} with the dice ${diceArr.join(
+			" ,"
+		)} is `
+	};
 
-	calculationTypes[data.sumTargetValueType](polyDice, data.sumTargetValueOne, data.sumTargetValueTwo)
+	const probabilityValue = (
+		diceLib.calculateDiceSumProbability(
+			polyDice,
+			sumTargetValueOne,
+			sumTargetValueTwo,
+			sumTargetValueType
+		) * 100
+	).toFixed(2);
+
+	const probabilityText = textOptions[sumTargetValueType];
+
+	console.log(expectedValue);
 
 	const message = {
 		probabilityText: probabilityText,
 		probabilityValue: probabilityValue
-	}
+	};
 
 	self.postMessage(message);
 });

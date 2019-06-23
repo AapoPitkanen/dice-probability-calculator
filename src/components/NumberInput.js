@@ -17,7 +17,7 @@ class NumberInput extends Component {
 		return (
 			<input
 				type="number"
-				min="0"
+				min={this.props.min}
 				className={this.props.className}
 				name={this.props.name}
 				value={this.props.inputValue}
