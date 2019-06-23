@@ -33,6 +33,9 @@ self.addEventListener("message", e => {
 		faceTargetValueType
 	);
 
+	/* For some reason the recursive "dice count not between" calculations return the wrong probability if the standard complement (1 - P) is used, 
+	but the correct probability if it's in the form (P - 1). When the complement is calculated as (P - 1), the resulting probability will have the wrong sign.
+	*/
 	probabilityValue =
 		faceTargetDiceCountType === "faceTargetDiceCountNotBetween"
 			? (-probabilityValue * 100).toFixed(2)
@@ -64,5 +67,6 @@ self.addEventListener("message", e => {
 		probabilityText: probabilityText,
 		probabilityValue: probabilityValue
 	};
+
 	self.postMessage(message);
 });

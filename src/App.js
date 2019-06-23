@@ -37,6 +37,7 @@ class App extends Component {
 			diceCounts: {},
 			diceInput: "",
 			error: false,
+			errorText: "",
 			faceTargetDiceCountType: "",
 			faceTargetDiceCountOne: "",
 			faceTargetDiceCountTwo: "",
@@ -143,56 +144,73 @@ class App extends Component {
 		const sumType = this.state.sumTargetValueType.value;
 		let num1 = this.state.sumTargetValueOne;
 		let num2 = this.state.sumTargetValueTwo;
-
-		if (
-			sumType === "sumTargetValueNotBetween" ||
-			sumType === "sumTargetValueBetween"
-		) {
-			if ([diceInput, num1, num2].some(value => value === "")) {
-				console.log("parameters missing");
-				this.setState({
-					error: true
-				});
-				setTimeout(() => {
-					this.setState({
-						error: false
-					});
-				}, 3000);
-				return;
-			}
-		} else if (
-			[diceInput, sumType, num1].some(
-				value => value === "" || value === undefined
-			)
-		) {
-			this.setState({
-				error: true
-			});
-			setTimeout(() => {
-				this.setState({
-					error: false
-				});
-			}, 5000);
-			console.log("parameters missing");
-			return;
-		}
-
 		const diceCounts = Object.values(this.state.diceCounts);
 		const entries = Object.entries(this.state.diceCounts).map(item =>
 			item.map(el => (typeof el === "string" ? parseInt(el.slice(1)) : el))
 		);
-		const maxSum = entries.reduce(
-			(acc, curr) => acc + curr.reduce((acc, curr) => acc * curr),
-			0
-		);
-		const totalDice = diceCounts.reduce((acc, curr) => acc + curr);
+
+		const maxSum = diceInput
+			? entries.reduce(
+					(acc, curr) => acc + curr.reduce((acc, curr) => acc * curr),
+					0
+			  )
+			: null;
+
+		const totalDice = diceCounts.length
+			? diceCounts.reduce((acc, curr) => acc + curr)
+			: null;
+
+		const minSum = totalDice ? totalDice : null;
 
 		if (num2 && num1 > num2) {
 			[num1, num2] = [num2, num1];
 		}
 
-		if ([num1, num2].some(value => value > maxSum)) {
-			console.log("Sum cannot be larger than maximum sum of dice");
+		const potentialErrors = [
+			{
+				errorName: "Empty input",
+				errorState: [(diceInput, num1, sumType)].some(value => !value),
+				errorText: "Please fill in all the required fields"
+			},
+			{
+				errorName: "Sum too large",
+				errorState: [num1, num2].some(value => value > maxSum),
+				errorText: "Sum cannot be greater than the maximum sum of the dice"
+			},
+			{
+				errorName: "Sum too small",
+				errorState: num1 < minSum,
+				errorText: "Sum cannot be less than the minimum sum of the dice"
+			},
+			{
+				errorName: "Empty num2 input",
+				errorState:
+					["sumTargetValueBetween", "sumTargetValueNotBetween"].includes(
+						sumType
+					) && num2 === "",
+				errorText: "Please fill in all the required field"
+			}
+		];
+
+		if (potentialErrors.some(error => error.errorState)) {
+			const errorIndex = potentialErrors.findIndex(
+				error => error.errorState === true
+			);
+
+			const errorText = potentialErrors[errorIndex].errorText;
+
+			this.setState({
+				error: true,
+				errorText: errorText
+			});
+
+			setTimeout(() => {
+				this.setState({
+					error: false,
+					errorText: ""
+				});
+			}, 3000);
+
 			return;
 		}
 
@@ -453,9 +471,7 @@ class App extends Component {
 					classNames="error"
 					in={this.state.error}
 				>
-					<div className="error-message">
-						Please fill in all the required fields
-					</div>
+					<div className="error-message">{this.state.errorText}</div>
 				</CSSTransition>
 
 				<CSSTransition
