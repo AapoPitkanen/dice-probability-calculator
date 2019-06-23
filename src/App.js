@@ -4,27 +4,21 @@ import DiceInput from "./components/DiceInput";
 import NumberInput from "./components/NumberInput";
 import Select from "react-select";
 import diceLib from "./components/diceLib";
-import d4 from "./img/d4-small.png";
-import d6 from "./img/d6-small.png";
-import d8 from "./img/d8-small.png";
-import d10 from "./img/d10-small.png";
-import d12 from "./img/d12-small.png";
-import d20 from "./img/d20-small.png";
 import sumWorker from "./sum.worker";
 import faceWorker from "./face.worker";
 import {
 	CSSTransition,
 	TransitionGroup
 } from "../node_modules/react-transition-group";
+import DiceImages from "./components/DiceImages";
 
 class App extends Component {
 	constructor(props) {
 		super(props);
 		this.calculateSumProbability = this.calculateSumProbability.bind(this);
 		this.calculateFaceProbability = this.calculateFaceProbability.bind(this);
-		this.inputCallback = this.inputCallback.bind(this);
+		this.childComponentCallback = this.childComponentCallback.bind(this);
 		this.handleSelectChange = this.handleSelectChange.bind(this);
-		this.handleClickDiceImage = this.handleClickDiceImage.bind(this);
 		this.handleCalculationTypeSelectChange = this.handleCalculationTypeSelectChange.bind(
 			this
 		);
@@ -96,22 +90,7 @@ class App extends Component {
 		});
 	}
 
-	handleClickDiceImage(event) {
-		if (event.target.dataset.diceType) {
-			let diceType = event.target.dataset.diceType;
-			let diceObj = { ...this.state.diceCounts };
-			diceObj[diceType] =
-				diceObj[diceType] === undefined ? 1 : diceObj[diceType] + 1;
-			let diceArr = diceLib.diceObjToArray(diceObj).join("+");
-			this.setState({
-				diceCounts: diceObj,
-				diceInput: diceArr,
-				totalDice: this.state.totalDice + 1
-			});
-		}
-	}
-
-	inputCallback(childData, childName) {
+	childComponentCallback(childData, childName) {
 		this.setState({
 			[childName]: childData
 		});
@@ -290,49 +269,15 @@ class App extends Component {
 					className="select-calculation-type select-input"
 					options={calculationTypeOptions}
 				/>
-
-				<div className="dice-image-wrapper" onClick={this.handleClickDiceImage}>
-					<img
-						src={d4}
-						alt="d4 dice"
-						className="dice-image"
-						data-dice-type="d4"
-					/>
-					<img
-						src={d6}
-						alt="d6 dice"
-						className="dice-image"
-						data-dice-type="d6"
-					/>
-					<img
-						src={d8}
-						alt="d8 dice"
-						className="dice-image"
-						data-dice-type="d8"
-					/>
-					<img
-						src={d10}
-						alt="d10 dice"
-						className="dice-image"
-						data-dice-type="d10"
-					/>
-					<img
-						src={d12}
-						alt="d12 dice"
-						className="dice-image"
-						data-dice-type="d12"
-					/>
-					<img
-						src={d20}
-						alt="d20 dice"
-						className="dice-image"
-						data-dice-type="d20"
-					/>
-				</div>
+				<DiceImages
+					callback={this.childComponentCallback}
+					totalDice={this.state.totalDice}
+					diceCounts={this.state.diceCounts}
+				/>
 				<div className="dice-input-wrapper">
 					<p>with the dice</p>
 					<DiceInput
-						callback={this.inputCallback}
+						callback={this.childComponentCallback}
 						inputValue={this.state.diceInput}
 						name={"diceInput"}
 						placeholder={"Enter dice here as addition (e.g. 2d6+1d8)..."}
@@ -352,7 +297,7 @@ class App extends Component {
 								/>
 								<NumberInput
 									min={"1"}
-									callback={this.inputCallback}
+									callback={this.childComponentCallback}
 									inputValue={this.state.sumTargetValueOne}
 									name={"sumTargetValueOne"}
 									className={"number-input"}
@@ -365,7 +310,7 @@ class App extends Component {
 										<p>and</p>
 										<NumberInput
 											min={"1"}
-											callback={this.inputCallback}
+											callback={this.childComponentCallback}
 											inputValue={this.state.sumTargetValueTwo}
 											name={"sumTargetValueTwo"}
 											className={"number-input"}
@@ -389,7 +334,7 @@ class App extends Component {
 								/>
 								<NumberInput
 									min={"0"}
-									callback={this.inputCallback}
+									callback={this.childComponentCallback}
 									inputValue={this.state.faceTargetDiceCountOne}
 									name={"faceTargetDiceCountOne"}
 									className="number-input count-input"
@@ -402,7 +347,7 @@ class App extends Component {
 										<p>and</p>
 										<NumberInput
 											min={"1"}
-											callback={this.inputCallback}
+											callback={this.childComponentCallback}
 											inputValue={this.state.faceTargetDiceCountTwo}
 											name={"faceTargetDiceCountTwo"}
 											className="number-input count-input"
@@ -422,7 +367,7 @@ class App extends Component {
 								/>
 								<NumberInput
 									min={"1"}
-									callback={this.inputCallback}
+									callback={this.childComponentCallback}
 									inputValue={this.state.faceTargetValueOne}
 									name={"faceTargetValueOne"}
 									className={"number-input"}
@@ -435,7 +380,7 @@ class App extends Component {
 										<p>and</p>
 										<NumberInput
 											min={"1"}
-											callback={this.inputCallback}
+											callback={this.childComponentCallback}
 											inputValue={this.state.faceTargetValueTwo}
 											name={"faceTargetValueTwo"}
 											className={"number-input"}
