@@ -4,303 +4,330 @@
 /* General stylings for the whole app */
 
 * {
-  box-sizing: border-box;
-  margin: 0;
-  border: 0;
+	box-sizing: border-box;
+	margin: 0;
+	border: 0;
 }
 
 body {
-  font-family: "Nunito", Arial, Helvetica, sans-serif;
-  line-height: 1.4;
-  background-color: #fff;
-  font-size: 100%;
+	font-family: "Nunito", Arial, Helvetica, sans-serif;
+	line-height: 1.4;
+	background-color: #fff;
+	font-size: 100%;
 }
 
 h2 {
-  font-weight: normal;
+	font-weight: normal;
 }
 
 a {
-  color: #333333;
-  text-decoration: none;
+	color: #333333;
+	text-decoration: none;
 }
 
 #root {
-  display: flex;
-  justify-content: center;
-  margin: 0.5rem;
+	display: flex;
+	justify-content: center;
+	margin: 0.5rem;
 }
 
 p {
-  text-align: justify;
-  margin: 0.5rem 0;
+	text-align: justify;
+	margin: 0.5rem 0;
 }
 
 /* Container stylings */
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
 }
 
 .loader {
-  font-size: 1rem;
-  color: #fff;
-  opacity: 0;
+	font-size: 1rem;
+	color: #fff;
+	opacity: 0;
 }
 
 .probability-calculator-wrapper {
-  padding: 1rem 2rem;
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: center;
-  align-items: center;
-  color: #fff;
-  background-color: #282c34;
-  border-radius: 8px;
-  box-shadow: 0 0 35px 2px rgba(0, 0, 0, 0.2);
-  max-width: 35rem;
-  transition: height 0.5s ease-in-out;
+	padding: 1rem 2rem;
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: center;
+	align-items: center;
+	color: #fff;
+	background-color: #282c34;
+	border-radius: 8px;
+	box-shadow: 0 0 35px 2px rgba(0, 0, 0, 0.2);
+	max-width: 35rem;
+	transition: height 0.5s ease-in-out;
 }
 
 .dice-faces-input-wrapper,
 .dice-sums-input-wrapper {
-  display: flex;
-  flex-flow: column wrap;
-  align-items: center;
-  width: 100%;
+	display: flex;
+	flex-flow: column wrap;
+	align-items: center;
+	width: 100%;
 }
 
 .sum-target-between-wrapper p,
 .face-target-between-wrapper p {
-  text-align: center;
+	text-align: center;
 }
 
 .dice-image-wrapper {
-  display: grid;
-  grid-template: auto / 1fr 1fr 1fr;
-  justify-content: center;
-  margin: 10px 0;
+	display: grid;
+	grid-template: 75px / 75px 75px 75px;
+	justify-content: center;
+	margin: 0;
+	grid-gap: 0.5rem;
 }
 
 .face-target-count-wrapper {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  margin: 0.5rem 0;
-  position: relative;
+	display: flex;
+	flex-flow: row wrap;
+	align-items: center;
+	position: relative;
 }
 
 .dice-sums-target-wrapper,
 .dice-faces-target-wrapper {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  margin: 0.5rem 0;
+	display: flex;
+	flex-flow: row wrap;
+	align-items: center;
 }
 
 .dice-input-wrapper {
-  display: flex;
-  flex-flow: column wrap;
-  align-items: center;
-  width: 100%;
+	display: flex;
+	flex-flow: column wrap;
+	align-items: center;
+	width: 100%;
 }
 
-.output-wrapper {
-  margin: 10px;
+.probability-value {
+	text-align: center;
+	font-size: 1.5em;
+	margin: 5px 0;
 }
 
-.probabilityValue {
-  text-align: center;
-  font-size: 1.5em;
-  margin: 5px 0;
+.output-text {
+	margin: 5px 0;
 }
 
 .error-message {
-  box-sizing: border-box;
-  box-shadow: 0 0 15px -2px rgba(0, 0, 0, 0.2);
-  padding: 16px;
-  border-radius: 16px;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  width: 20rem;
-  height: 5rem;
-  background-color: #ba3636;
-  color: #fff;
+	box-sizing: border-box;
+	box-shadow: 0 0 15px -2px rgba(0, 0, 0, 0.2);
+	padding: 16px;
+	border-radius: 16px;
+	text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	width: 20rem;
+	height: 5rem;
+	background-color: #ba3636;
+	color: #fff;
 }
 
 .error-enter {
-  opacity: 0;
+	opacity: 0;
 }
 
 .error-enter-active {
-  opacity: 1;
-  transition: opacity 500ms;
+	opacity: 1;
+	transition: opacity 500ms;
 }
 
 .error-exit {
-  opacity: 1;
+	opacity: 1;
 }
 
 .error-exit-active {
-  opacity: 0;
-  transition: opacity 500ms;
+	opacity: 0;
+	transition: opacity 500ms;
 }
 
 .spin-loader-enter {
-  opacity: 0;
-  max-height: 0;
+	opacity: 0;
+	max-height: 0;
 }
 
 .spin-loader-enter-active {
-  max-height: 20rem;
-  opacity: 1;
-  transition: max-height 800ms ease, opacity 500ms ease-in-out;
+	max-height: 20rem;
+	opacity: 1;
+	transition: max-height 800ms ease, opacity 500ms ease-in-out;
 }
 
 .spin-loader-exit {
-  max-height: 20rem;
-  opacity: 1;
+	max-height: 20rem;
+	opacity: 1;
 }
 
 .spin-loader-exit-active {
-  max-height: 0;
-  opacity: 0;
-  transition: max-height 800ms ease, opacity 500ms ease-in-out;
+	max-height: 0;
+	opacity: 0;
+	transition: max-height 800ms ease, opacity 500ms ease-in-out;
 }
 
 .output-enter {
-  max-height: 0;
-  opacity: 0;
+	max-height: 0;
+	opacity: 0;
 }
 
 .output-enter-active {
-  max-height: 20rem;
-  opacity: 1;
-  transition: max-height 800ms ease-in-out, opacity 500ms ease-in-out;
+	max-height: 20rem;
+	opacity: 1;
+	transition: max-height 800ms ease-in-out, opacity 500ms ease-in-out;
 }
 
 .output-exit {
-  opacity: 1;
-  max-height: 20rem;
+	opacity: 1;
+	max-height: 20rem;
 }
 
 .output-exit-active {
-  opacity: 0;
-  max-height: 0;
-  transition: max-height 800ms ease-in-out, opacity 500ms ease-in-out;
+	opacity: 0;
+	max-height: 0;
+	transition: max-height 800ms ease-in-out, opacity 500ms ease-in-out;
 }
 
 /* Specific element stylings */
 
 .face-target-count-name {
-  position: absolute;
-  right: -30px;
-  margin: 0;
-  text-align: center;
+	position: absolute;
+	right: -30px;
+	margin: 0;
+	text-align: center;
 }
 
 /* Controllable Component stylings*/
 
 .number-input {
-  width: 4rem;
-  height: auto;
-  border-radius: 8px;
-  padding: 0.5rem;
-  font-family: Nunito;
-  color: #282c34;
-  margin: 0.5rem;
+	width: 4rem;
+	height: auto;
+	border-radius: 8px;
+	padding: 0.5rem;
+	font-family: Nunito;
+	color: #282c34;
+	margin: 0.5rem;
 }
 
 .dice-input {
-  width: 18rem;
-  height: auto;
-  border-radius: 8px;
-  padding: 0.5rem;
-  font-family: Nunito;
-  color: #282c34;
-  margin: 0.5rem;
+	width: 18rem;
+	height: auto;
+	border-radius: 8px;
+	padding: 0.5rem;
+	font-family: Nunito;
+	color: #282c34;
+	margin: 0.5rem;
 }
 
 .number-input.count-input {
-  width: 4rem;
-  margin: 0.5rem;
+	width: 4rem;
+	margin: 0.5rem;
 }
 
 .select-input {
-  border-radius: 8px;
-  width: 10rem;
-  height: auto;
-  font-family: Nunito;
-  color: #282c34;
-  margin: 0.5rem;
-}
-
-.select-face-target-count {
-  margin: 0.5rem;
+	border-radius: 8px;
+	width: 10rem;
+	height: auto;
+	font-family: Nunito;
+	color: #282c34;
+	margin: 1rem;
 }
 
 .select-calculation-type {
-  width: 14rem;
+	width: 14rem;
 }
 
 /* Button stylings */
 
 .calculate-sums-button,
 .calculate-faces-button {
-  height: 3rem;
-  width: 10rem;
-  cursor: pointer;
-  border-radius: 1.5rem;
-  color: #fff;
-  background-color: #3f51b5;
-  font-family: "Nunito";
-  transition: background-color 0.15s ease-in;
-  margin: 0.75rem;
-  font-size: 1rem;
+	height: 3rem;
+	width: 10rem;
+	cursor: pointer;
+	border-radius: 1.5rem;
+	color: #fff;
+	background-color: #3f51b5;
+	font-family: "Nunito";
+	transition: background-color 0.15s ease-in;
+	margin: 0.75rem;
+	font-size: 1rem;
 }
 
 .calculate-sums-button:hover,
 .calculate-faces-button:hover {
-  background-color: #4a5bbf;
+	background-color: #4a5bbf;
 }
 
 /* Image stylings */
 
 .dice-image {
-  height: 75px;
-  width: auto;
-  border-radius: 50%;
-  margin: 5px;
-  cursor: pointer;
-  opacity: 1;
-  filter: invert(0%);
-  box-shadow: 2px 2px 20px 2px rgba(0, 0, 0, 0.3);
-  transition: filter 0.5s ease-in-out;
+	height: 75px;
+	width: auto;
+	border-radius: 50%;
+	cursor: pointer;
+	opacity: 1;
+	filter: invert(0%);
+	box-shadow: 2px 2px 20px 2px rgba(0, 0, 0, 0.3);
+	transition: filter 0.5s ease-in-out;
+}
+
+.dice-image-container {
+	width: 100%;
+	height: 100%;
+	position: relative;
+	border-radius: 50%;
+}
+
+.dice-image-container:hover.dice-image-container[data-dice-type="d4"]::after {
+	opacity: 1;
+}
+
+.dice-image-container[data-dice-type="d4"]::after {
+	z-index: 100;
+	content: attr(data-dice-type);
+	display: flex;
+	opacity: 0;
+	justify-content: center;
+	align-items: center;
+	color: #111;
+	position: absolute;
+	text-transform: uppercase;
+	font-size: 12px;
+	font-family: "Nunito";
+	border-radius: 12px;
+	width: 75px;
+	height: 25px;
+	background-color: #fff;
+	bottom: -30px;
+	left: 50%;
+	transform: translateX(-50%);
+	transition: opacity 0.5s ease-in-out;
 }
 
 .dice-image:hover {
-  filter: invert(90%) brightness(110%);
+	filter: invert(90%) brightness(110%);
 }
 
 /* Media queries for mobile */
 
 @media (min-width: 320px) and (max-width: 480px) {
-  .dice-sums-target-wrapper,
-  .dice-faces-target-wrapper,
-  .face-target-count-wrapper {
-    flex-flow: column wrap;
-  }
+	.dice-sums-target-wrapper,
+	.dice-faces-target-wrapper,
+	.face-target-count-wrapper {
+		flex-flow: column wrap;
+	}
 
-  .face-target-count-name {
-    position: relative;
-    right: 0;
-  }
+	.face-target-count-name {
+		position: relative;
+		right: 0;
+	}
 }

@@ -53,14 +53,20 @@ const diceLib = {
 
 	/* This function sorts the input dice to check all possible unique ways to roll the specified successes with the dice. 
     After sorting the dice, the binomial distributions can be calculated from the dice combinations. */
-	sortUniqueDiceCombinations(target, successes, diceArr, targetType, target2) {
+	sortUniqueDiceCombinations(
+		target,
+		successes,
+		diceArr,
+		targetType,
+		target2
+	) {
 		const sortedDiceArr = [];
 		const diceTypes = diceArr.map(dice => dice.slice(dice.indexOf("d")));
 		const isAtLeastExactlyBetween = [
 			"faceTargetValueAtLeast",
 			"faceTargetValueExactly",
 			"faceTargetValueBetween"
-		].includes(targetType)
+		].includes(targetType);
 		let diceKeys;
 		let diceValues;
 		let filteredArr;
@@ -92,24 +98,28 @@ const diceLib = {
 			);
 		}
 
-		if (
-			isAtLeastExactlyBetween
-		) {
+		if (isAtLeastExactlyBetween) {
 			filteredArr = diceArr.filter(
 				dice => parseInt(dice.slice(dice.indexOf("d") + 1)) >= target
 			);
 
 			diceKeys =
-				diceArr.every(dice => parseInt(dice.slice(dice.indexOf("d") + 1))) >=
-					target
+				diceArr.every(dice =>
+					parseInt(dice.slice(dice.indexOf("d") + 1))
+				) >= target
 					? diceArr.map(dice => dice.slice(dice.indexOf("d")))
 					: filteredArr.map(dice => dice.slice(dice.indexOf("d")));
 
 			diceValues =
-				diceArr.every(dice => parseInt(dice.slice(dice.indexOf("d") + 1))) >=
-					target
-					? diceArr.map(dice => parseInt(dice.slice(0, dice.indexOf("d"))))
-					: filteredArr.map(dice => parseInt(dice.slice(0, dice.indexOf("d"))));
+				diceArr.every(dice =>
+					parseInt(dice.slice(dice.indexOf("d") + 1))
+				) >= target
+					? diceArr.map(dice =>
+							parseInt(dice.slice(0, dice.indexOf("d")))
+					  )
+					: filteredArr.map(dice =>
+							parseInt(dice.slice(0, dice.indexOf("d")))
+					  );
 		}
 
 		if (targetType === "faceTargetValueAtMost") {
@@ -126,8 +136,12 @@ const diceLib = {
 					: diceArr.map(dice => dice.slice(dice.indexOf("d")));
 			diceValues =
 				target === 1
-					? filteredArr.map(dice => parseInt(dice.slice(0, dice.indexOf("d"))))
-					: diceArr.map(dice => parseInt(dice.slice(0, dice.indexOf("d"))));
+					? filteredArr.map(dice =>
+							parseInt(dice.slice(0, dice.indexOf("d")))
+					  )
+					: diceArr.map(dice =>
+							parseInt(dice.slice(0, dice.indexOf("d")))
+					  );
 		}
 
 		const diceObj = _.zipObject(diceKeys, diceValues);
@@ -160,7 +174,7 @@ const diceLib = {
 			);
 			return filteredSortedDiceArr;
 		}
-		console.log(sortedDiceArr)
+		console.log(sortedDiceArr);
 		return sortedDiceArr;
 	},
 
@@ -172,7 +186,8 @@ const diceLib = {
 
 		dice.forEach(
 			el =>
-				diceTypes.indexOf(el.slice(el.indexOf("d"))) < 0 && diceTypes.push(el)
+				diceTypes.indexOf(el.slice(el.indexOf("d"))) < 0 &&
+				diceTypes.push(el)
 		);
 		diceTypes.forEach(el =>
 			sortedDice.push(this.countDice(el.slice(el.indexOf("d")), dice))
@@ -194,7 +209,7 @@ const diceLib = {
 	countDice(diceType, dice) {
 		return `${
 			dice.filter(singleDice => singleDice === diceType).length
-			}${diceType}`;
+		}${diceType}`;
 	},
 
 	createDiceObject(dice) {
@@ -262,47 +277,49 @@ const diceLib = {
 				const diceCount = parseInt(
 					originalDice.slice(0, originalDice.indexOf("d"))
 				);
-				const sides = parseInt(singleDice.slice(singleDice.indexOf("d") + 1));
+				const sides = parseInt(
+					singleDice.slice(singleDice.indexOf("d") + 1)
+				);
 				const diceSuccessCount = parseInt(
 					singleDice.slice(0, singleDice.indexOf("d"))
 				);
 				currentProbability *=
 					targetType === "faceTargetValueExactly"
 						? this.binomialDiceTargetExactly(
-							target,
-							sides,
-							diceCount,
-							diceSuccessCount
-						)
-						: targetType === "faceTargetValueAtLeast"
-							? this.binomialDiceTargetAtLeast(
 								target,
 								sides,
 								diceCount,
 								diceSuccessCount
-							)
-							: targetType === "faceTargetValueAtMost"
-								? this.binomialDiceTargetAtMost(
-									target,
-									sides,
-									diceCount,
-									diceSuccessCount
-								)
-								: targetType === "faceTargetValueBetween"
-									? this.binomialDiceTargetBetween(
-										target,
-										sides,
-										diceCount,
-										diceSuccessCount,
-										target2
-									)
-									: this.binomialDiceTargetNotBetween(
-										target,
-										sides,
-										diceCount,
-										diceSuccessCount,
-										target2
-									);
+						  )
+						: targetType === "faceTargetValueAtLeast"
+						? this.binomialDiceTargetAtLeast(
+								target,
+								sides,
+								diceCount,
+								diceSuccessCount
+						  )
+						: targetType === "faceTargetValueAtMost"
+						? this.binomialDiceTargetAtMost(
+								target,
+								sides,
+								diceCount,
+								diceSuccessCount
+						  )
+						: targetType === "faceTargetValueBetween"
+						? this.binomialDiceTargetBetween(
+								target,
+								sides,
+								diceCount,
+								diceSuccessCount,
+								target2
+						  )
+						: this.binomialDiceTargetNotBetween(
+								target,
+								sides,
+								diceCount,
+								diceSuccessCount,
+								target2
+						  );
 			});
 			totalProbability += currentProbability;
 			currentProbability = 1;
@@ -323,56 +340,56 @@ const diceLib = {
 			return successes === maxSuccesses
 				? totalProbability
 				: (totalProbability += this.calculateBinomialProbability(
-					target,
-					successes + 1,
-					dice,
-					target2,
-					successes2,
-					successType,
-					targetType
-				));
+						target,
+						successes + 1,
+						dice,
+						target2,
+						successes2,
+						successType,
+						targetType
+				  ));
 		}
 
 		if (successType === "faceTargetDiceCountAtMost") {
 			return successes === 0
 				? totalProbability
 				: (totalProbability += this.calculateBinomialProbability(
-					target,
-					successes - 1,
-					dice,
-					target2,
-					successes2,
-					successType,
-					targetType
-				));
+						target,
+						successes - 1,
+						dice,
+						target2,
+						successes2,
+						successType,
+						targetType
+				  ));
 		}
 
 		if (successType === "faceTargetDiceCountBetween") {
 			return successes === successes2
 				? totalProbability
 				: (totalProbability += this.calculateBinomialProbability(
-					target,
-					successes + 1,
-					dice,
-					target2,
-					successes2,
-					successType,
-					targetType
-				));
+						target,
+						successes + 1,
+						dice,
+						target2,
+						successes2,
+						successType,
+						targetType
+				  ));
 		}
 
 		if (successType === "faceTargetDiceCountNotBetween") {
 			return successes === successes2
 				? totalProbability - 1
 				: (totalProbability += this.calculateBinomialProbability(
-					target,
-					successes + 1,
-					dice,
-					target2,
-					successes2,
-					successType,
-					targetType
-				));
+						target,
+						successes + 1,
+						dice,
+						target2,
+						successes2,
+						successType,
+						targetType
+				  ));
 		}
 	},
 
@@ -408,8 +425,8 @@ const diceLib = {
 			target2 < sides
 				? (target2 - target1 + 1) / sides
 				: sides < target1
-					? 0
-					: (sides - target1 + 1) / sides;
+				? 0
+				: (sides - target1 + 1) / sides;
 		return (
 			math.combinations(trials, successes) *
 			math.pow(psuccess, successes) *
@@ -422,8 +439,8 @@ const diceLib = {
 			target2 < sides
 				? (sides - (target2 - target1 + 1)) / sides
 				: sides < target1
-					? 1
-					: (sides - (sides - target1 + 1)) / sides;
+				? 1
+				: (sides - (sides - target1 + 1)) / sides;
 
 		return (
 			math.combinations(trials, successes) *
@@ -446,7 +463,7 @@ const diceLib = {
 				typeof sumProb === "string" ? parseInt(sumProb) : sumProb
 			)
 		);
-		console.log(entries)
+		console.log(entries);
 		// entry[0] is the sum, entry[1] is the probability for that specific sum
 		if (sumType === "sumTargetValueExactly") {
 			return distribution.coeff[target];

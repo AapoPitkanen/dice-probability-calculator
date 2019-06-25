@@ -33,8 +33,10 @@ self.addEventListener("message", e => {
 		faceTargetValueType
 	);
 
-	/* For some reason the recursive "dice count not between" calculations return the wrong probability if the standard complement (1 - P) is used, 
-	but the correct probability if it's in the form (P - 1). When the complement is calculated as (P - 1), the resulting probability will have the wrong sign.
+	/* 
+  	For some reason the recursive "dice count not between" calculations return the wrong probability if the standard complement (1 - P) is used, 
+	but the correct probability if it's in the form (P - 1). When the complement is calculated as (P - 1), the resulting probability will have the wrong sign, 
+	we'll just change that here.
 	*/
 	probabilityValue =
 		faceTargetDiceCountType === "faceTargetDiceCountNotBetween"
@@ -53,9 +55,9 @@ self.addEventListener("message", e => {
 		  } ${successes} dice where`;
 
 	const probabilityTextTargetValue = [
-		"faceTargetTargetValueBetween",
-		"faceTargetTargetValueNotBetween"
-	].includes(faceTargetDiceCountType)
+		"faceTargetValueBetween",
+		"faceTargetValueNotBetween"
+	].includes(faceTargetValueType)
 		? `the face value is ${
 				textOptions[faceTargetValueType]
 		  } ${target} and ${target2} is `

@@ -27,13 +27,18 @@ export class DiceImages extends Component {
 	}
 	render() {
 		return (
-			<div className="dice-image-wrapper" onClick={this.handleClickDiceImage}>
-				<img
-					src={d4}
-					alt="d4 dice"
-					className="dice-image"
-					data-dice-type="d4"
-				/>
+			<div
+				className="dice-image-wrapper"
+				onClick={this.handleClickDiceImage}
+			>
+				<div className="dice-image-container" data-dice-type="d4">
+					<img
+						src={d4}
+						alt="d4 dice"
+						className="dice-image"
+						data-dice-type="d4"
+					/>
+				</div>
 				<img
 					src={d6}
 					alt="d6 dice"

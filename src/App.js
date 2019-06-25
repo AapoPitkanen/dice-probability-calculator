@@ -16,7 +16,9 @@ class App extends Component {
 	constructor(props) {
 		super(props);
 		this.calculateSumProbability = this.calculateSumProbability.bind(this);
-		this.calculateFaceProbability = this.calculateFaceProbability.bind(this);
+		this.calculateFaceProbability = this.calculateFaceProbability.bind(
+			this
+		);
 		this.childComponentCallback = this.childComponentCallback.bind(this);
 		this.handleSelectChange = this.handleSelectChange.bind(this);
 		this.handleCalculationTypeSelectChange = this.handleCalculationTypeSelectChange.bind(
@@ -125,7 +127,9 @@ class App extends Component {
 		let num2 = this.state.sumTargetValueTwo;
 		const diceCounts = Object.values(this.state.diceCounts);
 		const entries = Object.entries(this.state.diceCounts).map(item =>
-			item.map(el => (typeof el === "string" ? parseInt(el.slice(1)) : el))
+			item.map(el =>
+				typeof el === "string" ? parseInt(el.slice(1)) : el
+			)
 		);
 
 		const maxSum = diceInput
@@ -141,6 +145,7 @@ class App extends Component {
 
 		const minSum = totalDice ? totalDice : null;
 
+		// Lazy fix, faster to just swap the numbers so the calculation can be run even though the numbers are reversed in the input fields
 		if (num2 && num1 > num2) {
 			[num1, num2] = [num2, num1];
 		}
@@ -152,25 +157,27 @@ class App extends Component {
 				errorText: "Please fill in all the required fields"
 			},
 			{
+				errorName: "Empty num2 input",
+				errorState:
+					[
+						"sumTargetValueBetween",
+						"sumTargetValueNotBetween"
+					].includes(sumType) && num2 === "",
+				errorText: "Please fill in all the required field"
+			},
+			{
 				errorName: "Sum too large",
 				errorState: [num1, num2].some(value => value > maxSum),
-				errorText: "Sum cannot be greater than the maximum sum of the dice"
+				errorText:
+					"Sum cannot be greater than the maximum sum of the dice"
 			},
 			{
 				errorName: "Sum too small",
 				errorState: num1 < minSum,
 				errorText: "Sum cannot be less than the minimum sum of the dice"
-			},
-			{
-				errorName: "Empty num2 input",
-				errorState:
-					["sumTargetValueBetween", "sumTargetValueNotBetween"].includes(
-						sumType
-					) && num2 === "",
-				errorText: "Please fill in all the required field"
 			}
 		];
-
+		// Of course if some inputs are empty and the sum is too large or small, only the empty input's error text will be visible, but I think this still works as empty input errors should be prioritized.
 		if (potentialErrors.some(error => error.errorState)) {
 			const errorIndex = potentialErrors.findIndex(
 				error => error.errorState === true
@@ -246,7 +253,10 @@ class App extends Component {
 			{ value: "faceTargetDiceCountAtLeast", label: "at least" },
 			{ value: "faceTargetDiceCountAtMost", label: "at most" },
 			{ value: "faceTargetDiceCountBetween", label: "between" },
-			{ value: "faceTargetDiceCountNotBetween", label: "outside of range" }
+			{
+				value: "faceTargetDiceCountNotBetween",
+				label: "outside of range"
+			}
 		];
 
 		return (
@@ -254,11 +264,12 @@ class App extends Component {
 				<h2>Dice probability calculator</h2>
 
 				<p>
-					Here you can calculate the probability of getting specific sums with
-					different kinds of dice, such as d4, d6, d8, d10 etc. Non-standard
-					dice (such as d5 and d7) are also supported. To use this application,
-					enter your desired comparison value and the dice which are used to
-					calculate the sums.
+					Here you can calculate the probability of getting specific
+					sums with different kinds of dice, such as d4, d6, d8, d10
+					etc. Non-standard dice (such as d5 and d7) are also
+					supported. To use this application, enter your desired
+					comparison value and the dice which are used to calculate
+					the sums.
 				</p>
 
 				<p>I want to calculate</p>
@@ -280,7 +291,9 @@ class App extends Component {
 						callback={this.childComponentCallback}
 						inputValue={this.state.diceInput}
 						name={"diceInput"}
-						placeholder={"Enter dice here as addition (e.g. 2d6+1d8)..."}
+						placeholder={
+							"Enter dice here as addition (e.g. 2d6+1d8)..."
+						}
 						className={"dice-input"}
 					/>
 
@@ -310,8 +323,12 @@ class App extends Component {
 										<p>and</p>
 										<NumberInput
 											min={"1"}
-											callback={this.childComponentCallback}
-											inputValue={this.state.sumTargetValueTwo}
+											callback={
+												this.childComponentCallback
+											}
+											inputValue={
+												this.state.sumTargetValueTwo
+											}
 											name={"sumTargetValueTwo"}
 											className={"number-input"}
 										/>
@@ -335,7 +352,9 @@ class App extends Component {
 								<NumberInput
 									min={"0"}
 									callback={this.childComponentCallback}
-									inputValue={this.state.faceTargetDiceCountOne}
+									inputValue={
+										this.state.faceTargetDiceCountOne
+									}
 									name={"faceTargetDiceCountOne"}
 									className="number-input count-input"
 								/>
@@ -347,8 +366,13 @@ class App extends Component {
 										<p>and</p>
 										<NumberInput
 											min={"1"}
-											callback={this.childComponentCallback}
-											inputValue={this.state.faceTargetDiceCountTwo}
+											callback={
+												this.childComponentCallback
+											}
+											inputValue={
+												this.state
+													.faceTargetDiceCountTwo
+											}
 											name={"faceTargetDiceCountTwo"}
 											className="number-input count-input"
 										/>
@@ -380,8 +404,12 @@ class App extends Component {
 										<p>and</p>
 										<NumberInput
 											min={"1"}
-											callback={this.childComponentCallback}
-											inputValue={this.state.faceTargetValueTwo}
+											callback={
+												this.childComponentCallback
+											}
+											inputValue={
+												this.state.faceTargetValueTwo
+											}
 											name={"faceTargetValueTwo"}
 											className={"number-input"}
 										/>
@@ -435,8 +463,12 @@ class App extends Component {
 					in={this.state.calculationFinished}
 				>
 					<div className="output-wrapper">
-						<div className="outputText">{this.state.probabilityText}</div>
-						<div className="probabilityValue">{this.state.probability}</div>
+						<div className="output-text">
+							{this.state.probabilityText}
+						</div>
+						<div className="probability-value">
+							{this.state.probability}
+						</div>
 					</div>
 				</CSSTransition>
 			</div>
