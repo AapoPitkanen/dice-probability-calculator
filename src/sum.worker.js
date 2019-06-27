@@ -19,19 +19,19 @@ self.addEventListener("message", e => {
 
 	const textOptions = {
 		sumTargetValueExactly: `The probability of rolling exactly ${sumTargetValueOne} with the dice ${diceArr.join(
-			" ,"
+			", "
 		)} is `,
 		sumTargetValueAtLeast: `The probability of rolling at least ${sumTargetValueOne} with the dice ${diceArr.join(
-			" ,"
+			", "
 		)} is `,
 		sumTargetValueAtMost: `The probability of rolling at most ${sumTargetValueOne} with the dice ${diceArr.join(
-			" ,"
+			", "
 		)} is `,
 		sumTargetValueBetween: `The probability of rolling between ${sumTargetValueOne} and ${sumTargetValueTwo} with the dice ${diceArr.join(
-			" ,"
+			", "
 		)} is `,
 		sumTargetValueNotBetween: `The probability of not rolling between ${sumTargetValueOne} and ${sumTargetValueTwo} with the dice ${diceArr.join(
-			" ,"
+			", "
 		)} is `
 	};
 

@@ -458,54 +458,31 @@ const diceLib = {
 			distribution = distribution.mul(polynomial);
 		});
 
-		const entries = Object.entries(distribution.coeff).map(entry =>
-			entry.map(sumProb =>
-				typeof sumProb === "string" ? parseInt(sumProb) : sumProb
-			)
-		);
-		console.log(entries);
-		// entry[0] is the sum, entry[1] is the probability for that specific sum
+		const sumValues = Object.keys(distribution.coeff).map(sum => parseInt(sum))
+		const probabilityValues = Object.values(distribution.coeff)
+
 		if (sumType === "sumTargetValueExactly") {
 			return distribution.coeff[target];
 		}
 
 		if (sumType === "sumTargetValueAtLeast") {
-			return entries
-				.filter(entry => {
-					return entry[0] >= target;
-				})
-				.map(entry => entry[1])
-				.reduce((acc, curr) => acc + curr);
+			return probabilityValues.slice(sumValues.indexOf(target))
+				.reduce((acc, cur) => acc + cur);
 		}
 
 		if (sumType === "sumTargetValueAtMost") {
-			return entries
-				.filter(entry => {
-					return entry[0] <= target;
-				})
-				.map(entry => entry[1])
-				.reduce((acc, curr) => acc + curr);
+			return probabilityValues.slice(0, sumValues.indexOf(target))
+				.reduce((acc, cur) => acc + cur);
 		}
 
 		if (sumType === "sumTargetValueBetween") {
-			return entries
-				.filter(entry => {
-					return entry[0] >= target && entry[0] <= target2;
-				})
-				.map(entry => entry[1])
-				.reduce((acc, curr) => acc + curr);
+			return probabilityValues.slice(sumValues.indexOf(target), sumValues.indexOf(target2) + 1)
+				.reduce((acc, cur) => acc + cur);
 		}
 
 		if (sumType === "sumTargetValueNotBetween") {
-			return (
-				1 -
-				entries
-					.filter(entry => {
-						return entry[0] >= target && entry[0] <= target2;
-					})
-					.map(entry => entry[1])
-					.reduce((acc, curr) => acc + curr)
-			);
+			return 1 - probabilityValues.slice(sumValues.indexOf(target), sumValues.indexOf(target2) + 1)
+				.reduce((acc, cur) => acc + cur);
 		}
 	}
 };

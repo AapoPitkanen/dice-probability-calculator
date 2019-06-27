@@ -33,7 +33,7 @@ a {
 
 p {
 	text-align: justify;
-	margin: 0.5rem 0;
+	margin: 1rem;
 }
 
 /* Container stylings */
@@ -54,7 +54,7 @@ p {
 }
 
 .probability-calculator-wrapper {
-	padding: 1rem 2rem;
+	padding: 2rem;
 	display: flex;
 	flex-flow: column wrap;
 	justify-content: center;
@@ -64,7 +64,6 @@ p {
 	border-radius: 8px;
 	box-shadow: 0 0 35px 2px rgba(0, 0, 0, 0.2);
 	max-width: 35rem;
-	transition: height 0.5s ease-in-out;
 }
 
 .dice-faces-input-wrapper,
@@ -84,7 +83,7 @@ p {
 	display: grid;
 	grid-template: 75px / 75px 75px 75px;
 	justify-content: center;
-	margin: 0;
+	margin: 1rem 0;
 	grid-gap: 0.5rem;
 }
 
@@ -109,6 +108,18 @@ p {
 	width: 100%;
 }
 
+.dice-calculation-types {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+}
+
+.dice-calculation-type-wrapper {
+	display: flex;
+	flex-flow: column wrap;
+	align-items: center;
+}
+
 .probability-value {
 	text-align: center;
 	font-size: 1.5em;
@@ -120,15 +131,18 @@ p {
 }
 
 .error-message {
+	left: 50%;
+	top: 50%;
+	transform: translateX(-50%) translateY(-50%);
 	box-sizing: border-box;
-	box-shadow: 0 0 15px -2px rgba(0, 0, 0, 0.2);
+	box-shadow: 2px 2px 20px -2px rgba(100, 0, 0, 0.75);
 	padding: 16px;
 	border-radius: 16px;
 	text-align: center;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	position: absolute;
+	position: fixed;
 	width: 20rem;
 	height: 5rem;
 	background-color: #ba3636;
@@ -161,7 +175,7 @@ p {
 .spin-loader-enter-active {
 	max-height: 20rem;
 	opacity: 1;
-	transition: max-height 800ms ease, opacity 500ms ease-in-out;
+	transition: max-height 1000ms ease, opacity 600ms ease-in-out;
 }
 
 .spin-loader-exit {
@@ -172,7 +186,7 @@ p {
 .spin-loader-exit-active {
 	max-height: 0;
 	opacity: 0;
-	transition: max-height 800ms ease, opacity 500ms ease-in-out;
+	transition: max-height 1000ms ease, opacity 600ms ease-in-out;
 }
 
 .output-enter {
@@ -183,7 +197,7 @@ p {
 .output-enter-active {
 	max-height: 20rem;
 	opacity: 1;
-	transition: max-height 800ms ease-in-out, opacity 500ms ease-in-out;
+	transition: max-height 1000ms ease-in-out, opacity 600ms ease-in-out;
 }
 
 .output-exit {
@@ -194,7 +208,7 @@ p {
 .output-exit-active {
 	opacity: 0;
 	max-height: 0;
-	transition: max-height 800ms ease-in-out, opacity 500ms ease-in-out;
+	transition: max-height 1000ms ease-in-out, opacity 600ms ease-in-out;
 }
 
 /* Specific element stylings */
@@ -285,32 +299,6 @@ p {
 	height: 100%;
 	position: relative;
 	border-radius: 50%;
-}
-
-.dice-image-container:hover.dice-image-container[data-dice-type="d4"]::after {
-	opacity: 1;
-}
-
-.dice-image-container[data-dice-type="d4"]::after {
-	z-index: 100;
-	content: attr(data-dice-type);
-	display: flex;
-	opacity: 0;
-	justify-content: center;
-	align-items: center;
-	color: #111;
-	position: absolute;
-	text-transform: uppercase;
-	font-size: 12px;
-	font-family: "Nunito";
-	border-radius: 12px;
-	width: 75px;
-	height: 25px;
-	background-color: #fff;
-	bottom: -30px;
-	left: 50%;
-	transform: translateX(-50%);
-	transition: opacity 0.5s ease-in-out;
 }
 
 .dice-image:hover {
