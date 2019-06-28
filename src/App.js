@@ -4,10 +4,7 @@ import DiceInput from "./components/DiceInput";
 import diceLib from "./components/diceLib";
 import sumWorker from "./sum.worker";
 import faceWorker from "./face.worker";
-import {
-	CSSTransition,
-	TransitionGroup
-} from "../node_modules/react-transition-group";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 import DiceImages from "./components/DiceImages";
 import DiceSums from "./components/DiceSums";
 import DiceFaces from "./components/DiceFaces";
@@ -288,7 +285,6 @@ class App extends Component {
 						/>
 					)}
 				</div>
-
 				<CSSTransition
 					key="error"
 					unmountOnExit

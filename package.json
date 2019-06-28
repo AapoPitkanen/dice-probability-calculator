@@ -3,13 +3,11 @@
 	"version": "0.1.0",
 	"private": true,
 	"dependencies": {
-		"big-integer": "^1.6.42",
 		"js-combinatorics": "^0.5.4",
 		"lodash": "^4.17.11",
 		"mathjs": "^5.7.0",
 		"polynomial": "^1.4.3",
 		"react": "^16.8.3",
-		"react-animate-height": "^2.0.7",
 		"react-dom": "^16.8.3",
 		"react-scripts": "2.1.5",
 		"react-select": "^2.4.1",
@@ -32,6 +30,7 @@
 		"not op_mini all"
 	],
 	"devDependencies": {
+		"@types/react-transition-group": "^2.9.2",
 		"react-app-rewired": "^2.1.1",
 		"worker-loader": "^2.0.0"
 	}
