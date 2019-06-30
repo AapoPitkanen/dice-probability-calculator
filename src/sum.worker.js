@@ -6,8 +6,9 @@ self.addEventListener("message", e => {
 	const sumTargetValueOne = e.data.sumTargetValueOne;
 	const sumTargetValueTwo = e.data.sumTargetValueTwo;
 	const sumTargetValueType = e.data.sumTargetValueType;
-	const splitDice = diceLib.splitDice(diceArr);
-	const polyDice = splitDice.map(dice => diceLib.createDicePolynomial(dice));
+	const polyDice = diceLib
+		.splitDice(diceArr)
+		.map(dice => diceLib.createDicePolynomial(dice));
 
 	const expectedValue = diceArr
 		.map(dice => {

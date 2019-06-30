@@ -1,7 +1,12 @@
 import React from "react";
 import Select from "react-select";
 
-export default function CalculationTypes(props) {
+const CalculationTypes = props => {
+	const handleCalculationTypeSelectChange = (newValue, actionMeta) => {
+		const selectName = actionMeta.name;
+		props.inputCallback({ [selectName]: newValue });
+	};
+
 	const calculationTypeOptions = [
 		{ value: "diceSums", label: "Dice sums" },
 		{ value: "diceFaces", label: "Dice face values" }
@@ -39,13 +44,15 @@ export default function CalculationTypes(props) {
 				<p>I want to calculate</p>
 				<Select
 					name="calculationType"
-					onChange={props.handleSelectChange}
-					value={props.calculationType}
+					onChange={handleCalculationTypeSelectChange}
+					value={props.value}
 					className="select-calculation-type select-input"
 					options={calculationTypeOptions}
-					defaultValue={props.calculationType}
+					defaultValue={props.value}
 				/>
 			</div>
 		</div>
 	);
-}
+};
+
+export default CalculationTypes;

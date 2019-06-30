@@ -1,69 +1,63 @@
-import React, { Component } from "react";
+import React from "react";
 import diceLib from "./diceLib";
 import _ from "lodash";
 
-class DiceInput extends Component {
-	constructor(props) {
-		super(props);
-		this.handleChange = this.handleChange.bind(this);
-		this.handleBlur = this.handleBlur.bind(this);
-	}
+const DiceInput = props => {
+	const handleChange = e => {
+		let newValue = e.target.value;
+		let inputName = e.target.name;
+		props.inputCallback({ [inputName]: newValue });
+	};
 
-	handleChange(event) {
-		let inputValue = event.target.value;
-		let inputName = event.target.name;
-		this.props.callback(inputValue, inputName);
-	}
-
-	handleBlur(event) {
-		let regex1 = /[^d^+^\d]/gi;
-		let regex2 = /(\+){2,}/g;
-		let regex3 = /(\+)$/g;
-		let regex4 = /(d){2,}/;
-		let regexArr = [regex1, regex2, regex3, regex4];
-		let replaceValues = ["", "+", "", "d"];
-		let inputValue = event.target.value;
-		let inputName = event.target.name;
+	const handleBlur = e => {
+		const regex1 = /[^d^+^\d]/gi;
+		const regex2 = /(\+){2,}/g;
+		const regex3 = /(\+)$/g;
+		const regex4 = /(d){2,}/;
+		const regexArr = [regex1, regex2, regex3, regex4];
+		const replaceValues = ["", "+", "", "d"];
+		let newValue = e.target.value;
+		const inputName = e.target.name;
 		let totalDice;
 		let diceObj;
 
 		regexArr.forEach((x, i) => {
-			inputValue = inputValue.replace(x, replaceValues[i]);
+			newValue = newValue.replace(x, replaceValues[i]);
 		});
 
-		if (inputValue !== "") {
-			inputValue = inputValue.split("+");
-			diceObj = diceLib.createDiceObject(inputValue);
+		if (newValue !== "") {
+			newValue = newValue.split("+");
+			diceObj = diceLib.createDiceObject(newValue);
 
 			_.isEmpty(diceObj)
 				? (totalDice = 0)
-				: (totalDice = Object.values(diceObj).reduce((acc, curr) => acc + curr));
+				: (totalDice = Object.values(diceObj).reduce(
+						(acc, curr) => acc + curr
+				  ));
 
-			if (inputValue[0] !== "") {
-				inputValue = diceLib.sortDiceInput(inputValue);
+			if (newValue[0] !== "") {
+				newValue = diceLib.sortDiceInput(newValue);
 			}
 
-			inputValue = inputValue.join("+");
+			newValue = newValue.join("+");
 		}
 
-		this.props.callback(totalDice, "totalDice");
-		this.props.callback(diceObj, "diceCounts");
-		this.props.callback(inputValue, inputName);
-	}
+		props.setTotalDice(totalDice);
+		props.setDiceCounts(diceObj);
+		props.inputCallback({ [inputName]: newValue });
+	};
 
-	render() {
-		return (
-			<input
-				type="text"
-				className={this.props.className}
-				name={this.props.name}
-				value={this.props.inputValue}
-				onChange={this.handleChange}
-				onBlur={this.handleBlur}
-				placeholder={this.props.placeholder}
-			/>
-		);
-	}
-}
+	return (
+		<input
+			type="text"
+			className={props.className}
+			name={props.name}
+			value={props.value}
+			onChange={handleChange}
+			onBlur={handleBlur}
+			placeholder={props.placeholder}
+		/>
+	);
+};
 
 export default DiceInput;
