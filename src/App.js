@@ -8,27 +8,37 @@ import DiceImages from "./components/DiceImages";
 import DiceSums from "./components/DiceSums";
 import DiceFaces from "./components/DiceFaces";
 import CalculationTypes from "./components/CalculationTypes";
+import styled from "styled-components";
+
+const CalculateButton = styled.button`
+	height: 3rem;
+	width: 10rem;
+	cursor: pointer;
+	border-radius: 1.5rem;
+	color: #fff;
+	background-color: #3f51b5;
+	font-family: "Nunito";
+	transition: background-color 0.15s ease-in;
+	margin: 0.75rem;
+	font-size: 1rem;
+
+	&:hover {
+		background-color: #4a5bbf;
+	}
+`;
 
 const sumWorker = new SumWorker();
 const faceWorker = new FaceWorker();
 
 const App = () => {
 	const [totalDice, setTotalDice] = useState(0);
-
 	const [diceCounts, setDiceCounts] = useState({});
-
 	const [error, setError] = useState(false);
-
 	const [calculating, setCalculating] = useState(false);
-
 	const [calculationFinished, setCalculationFinished] = useState(true);
-
 	const [errorText, setErrorText] = useState("");
-
 	const [probability, setProbability] = useState("");
-
 	const [probabilityText, setProbabilityText] = useState("");
-
 	const initialInputValues = {
 		calculationType: { value: "diceSums", label: "Dice sums" },
 		diceInput: "",
@@ -42,16 +52,13 @@ const App = () => {
 		sumTargetValueOne: "",
 		sumTargetValueTwo: ""
 	};
-
 	const reducer = (state, newState) => ({ ...state, ...newState });
-
 	const [inputValues, setInputValues] = useReducer(
 		reducer,
 		initialInputValues
 	);
-
 	const inputCallback = childData => setInputValues(childData);
-
+	const childCallback = (callback, value) => callback(value);
 	const handleWorkerMessage = e => {
 		const data = e.data;
 		setCalculating(false);
@@ -276,6 +283,8 @@ const App = () => {
 			<CalculationTypes
 				value={inputValues.calculationType}
 				inputCallback={inputCallback}
+				callback={childCallback}
+				setStates={[setProbability, setProbabilityText]}
 			/>
 			<DiceImages
 				inputCallback={inputCallback}
@@ -295,7 +304,6 @@ const App = () => {
 					placeholder={
 						"Enter dice here as addition (e.g. 2d6+1d8)..."
 					}
-					className={"dice-input"}
 				/>
 
 				{inputValues.calculationType.value === "diceSums" && (
@@ -304,7 +312,6 @@ const App = () => {
 						sumTargetValueOne={inputValues.sumTargetValueOne}
 						sumTargetValueTwo={inputValues.sumTargetValueTwo}
 						sumTargetValueType={inputValues.sumTargetValueType}
-						calculateSumProbability={calculateSumProbability}
 					/>
 				)}
 
@@ -323,9 +330,17 @@ const App = () => {
 						faceTargetValueType={inputValues.faceTargetValueType}
 						faceTargetValueOne={inputValues.faceTargetValueOne}
 						faceTargetValueTwo={inputValues.faceTargetValueTwo}
-						calculateFaceProbability={calculateFaceProbability}
 					/>
 				)}
+				<CalculateButton
+					onClick={
+						inputValues.calculationType.value === "diceSums"
+							? calculateSumProbability
+							: calculateFaceProbability
+					}
+				>
+					Calculate!
+				</CalculateButton>
 			</div>
 			<CSSTransition
 				key="error"

@@ -2,9 +2,13 @@ import React from "react";
 import Select from "react-select";
 
 const CalculationTypes = props => {
-	const handleCalculationTypeSelectChange = (newValue, actionMeta) => {
+	const [setProbability, setProbabilityText] = props.setStates;
+
+	const handleSelectChange = (newValue, actionMeta) => {
 		const selectName = actionMeta.name;
 		props.inputCallback({ [selectName]: newValue });
+		props.callback(setProbability, "");
+		props.callback(setProbabilityText, "");
 	};
 
 	const calculationTypeOptions = [
@@ -44,7 +48,7 @@ const CalculationTypes = props => {
 				<p>I want to calculate</p>
 				<Select
 					name="calculationType"
-					onChange={handleCalculationTypeSelectChange}
+					onChange={handleSelectChange}
 					value={props.value}
 					className="select-calculation-type select-input"
 					options={calculationTypeOptions}

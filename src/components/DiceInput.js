@@ -1,6 +1,17 @@
 import React from "react";
 import diceLib from "./diceLib";
 import _ from "lodash";
+import styled from "styled-components";
+
+const Input = styled.input`
+	width: 18rem;
+	height: auto;
+	border-radius: 8px;
+	padding: 0.5rem;
+	font-family: Nunito;
+	color: #282c34;
+	margin: 0.5rem;
+`;
 
 const DiceInput = props => {
 	const handleChange = e => {
@@ -48,9 +59,8 @@ const DiceInput = props => {
 	};
 
 	return (
-		<input
+		<Input
 			type="text"
-			className={props.className}
 			name={props.name}
 			value={props.value}
 			onChange={handleChange}

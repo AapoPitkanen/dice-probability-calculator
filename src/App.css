@@ -38,15 +38,6 @@ p {
 
 /* Container stylings */
 
-@keyframes spin {
-	0% {
-		transform: rotate(0deg);
-	}
-	100% {
-		transform: rotate(360deg);
-	}
-}
-
 .loader {
 	font-size: 1rem;
 	color: #fff;
@@ -221,31 +212,6 @@ p {
 }
 
 /* Controllable Component stylings*/
-
-.number-input {
-	width: 4rem;
-	height: auto;
-	border-radius: 8px;
-	padding: 0.5rem;
-	font-family: Nunito;
-	color: #282c34;
-	margin: 0.5rem;
-}
-
-.dice-input {
-	width: 18rem;
-	height: auto;
-	border-radius: 8px;
-	padding: 0.5rem;
-	font-family: Nunito;
-	color: #282c34;
-	margin: 0.5rem;
-}
-
-.number-input.count-input {
-	width: 4rem;
-	margin: 0.5rem;
-}
 
 .select-input {
 	border-radius: 8px;

@@ -32,7 +32,6 @@ const DiceSums = props => {
 					inputCallback={props.inputCallback}
 					inputValue={props.sumTargetValueOne}
 					name={"sumTargetValueOne"}
-					className={"number-input"}
 				/>
 				{(props.sumTargetValueType.value === "sumTargetValueBetween" ||
 					props.sumTargetValueType.value ===
@@ -44,17 +43,10 @@ const DiceSums = props => {
 							inputCallback={props.inputCallback}
 							inputValue={props.sumTargetValueTwo}
 							name={"sumTargetValueTwo"}
-							className={"number-input"}
 						/>
 					</React.Fragment>
 				)}
 			</div>
-			<button
-				onClick={props.calculateSumProbability}
-				className="calculate-sums-button"
-			>
-				Calculate!
-			</button>
 		</div>
 	);
 };

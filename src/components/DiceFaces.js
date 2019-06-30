@@ -28,7 +28,7 @@ const DiceFaces = props => {
 	];
 
 	return (
-		<div className="dice-faces-input-wrapper" ref="faces">
+		<div className="dice-faces-input-wrapper">
 			<p>and I want to roll</p>
 			<div className="face-target-count-wrapper">
 				<Select
@@ -43,7 +43,6 @@ const DiceFaces = props => {
 					inputCallback={props.inputCallback}
 					inputValue={props.faceTargetDiceCountOne}
 					name={"faceTargetDiceCountOne"}
-					className="number-input count-input"
 				/>
 				{(props.faceTargetDiceCountType.value ===
 					"faceTargetDiceCountBetween" ||
@@ -56,7 +55,6 @@ const DiceFaces = props => {
 							inputCallback={props.inputCallback}
 							inputValue={props.faceTargetDiceCountTwo}
 							name={"faceTargetDiceCountTwo"}
-							className="number-input count-input"
 						/>
 					</React.Fragment>
 				)}
@@ -76,7 +74,6 @@ const DiceFaces = props => {
 					inputCallback={props.inputCallback}
 					inputValue={props.faceTargetValueOne}
 					name={"faceTargetValueOne"}
-					className={"number-input"}
 				/>
 				{(props.faceTargetValueType.value ===
 					"faceTargetValueBetween" ||
@@ -89,17 +86,10 @@ const DiceFaces = props => {
 							inputCallback={props.inputCallback}
 							inputValue={props.faceTargetValueTwo}
 							name={"faceTargetValueTwo"}
-							className={"number-input"}
 						/>
 					</React.Fragment>
 				)}
 			</div>
-			<button
-				onClick={props.calculateFaceProbability}
-				className="calculate-faces-button"
-			>
-				Calculate!
-			</button>
 		</div>
 	);
 };
