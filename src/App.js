@@ -27,6 +27,25 @@ const CalculateButton = styled.button`
 	}
 `;
 
+const ErrorMessage = styled.div`
+	left: 50%;
+	top: 50%;
+	transform: translateX(-50%) translateY(-50%);
+	box-sizing: border-box;
+	box-shadow: 2px 2px 20px -2px rgba(100, 0, 0, 0.75);
+	padding: 16px;
+	border-radius: 16px;
+	text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: fixed;
+	width: 20rem;
+	height: 5rem;
+	background-color: #ba3636;
+	color: #fff;
+`;
+
 const sumWorker = new SumWorker();
 const faceWorker = new FaceWorker();
 
@@ -349,7 +368,7 @@ const App = () => {
 				classNames="error"
 				in={error}
 			>
-				<div className="error-message">{errorText}</div>
+				<ErrorMessage>{errorText}</ErrorMessage>
 			</CSSTransition>
 
 			<CSSTransition
