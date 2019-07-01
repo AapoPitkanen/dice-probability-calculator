@@ -1,116 +1,10 @@
 /* Font imports */
 @import url("https://fonts.googleapis.com/css?family=Nunito");
 
-/* General stylings for the whole app */
-
-* {
-	box-sizing: border-box;
-	margin: 0;
-	border: 0;
-}
-
-body {
-	font-family: "Nunito", Arial, Helvetica, sans-serif;
-	line-height: 1.4;
-	background-color: #fff;
-	font-size: 100%;
-}
-
-h2 {
-	font-weight: normal;
-}
-
-a {
-	color: #333333;
-	text-decoration: none;
-}
-
 #root {
 	display: flex;
 	justify-content: center;
 	margin: 0.5rem;
-}
-
-p {
-	text-align: justify;
-	margin: 1rem;
-}
-
-/* Container stylings */
-
-.loader {
-	font-size: 1rem;
-	color: #fff;
-	opacity: 0;
-}
-
-.probability-calculator-wrapper {
-	padding: 2rem;
-	display: flex;
-	flex-flow: column wrap;
-	justify-content: center;
-	align-items: center;
-	color: #fff;
-	background-color: #282c34;
-	border-radius: 8px;
-	box-shadow: 0 0 35px 2px rgba(0, 0, 0, 0.2);
-	max-width: 35rem;
-}
-
-.dice-faces-input-wrapper,
-.dice-sums-input-wrapper {
-	display: flex;
-	flex-flow: column wrap;
-	align-items: center;
-	width: 100%;
-}
-
-.sum-target-between-wrapper p,
-.face-target-between-wrapper p {
-	text-align: center;
-}
-
-.face-target-count-wrapper {
-	display: flex;
-	flex-flow: row wrap;
-	align-items: center;
-	position: relative;
-}
-
-.dice-sums-target-wrapper,
-.dice-faces-target-wrapper {
-	display: flex;
-	flex-flow: row wrap;
-	align-items: center;
-}
-
-.dice-input-wrapper {
-	display: flex;
-	flex-flow: column wrap;
-	align-items: center;
-	width: 100%;
-}
-
-.dice-calculation-types {
-	display: flex;
-	flex-flow: row wrap;
-	justify-content: center;
-}
-
-.dice-calculation-type-wrapper {
-	display: flex;
-	flex-flow: column wrap;
-	align-items: center;
-}
-
-.probability-value {
-	text-align: center;
-	font-size: 1.5em;
-	margin: 5px 0;
-}
-
-.output-text {
-	margin: 5px 0;
 }
 
 .error-enter {
@@ -132,7 +26,7 @@ p {
 }
 
 .spin-loader-enter {
-	opacity: 0;
+	opacity: 1;
 	max-height: 0;
 }
 
@@ -153,6 +47,11 @@ p {
 	transition: max-height 1000ms ease, opacity 600ms ease-in-out;
 }
 
+.spin-loader-exit-done {
+	max-height: 0;
+	opacity: 0;
+}
+
 .output-enter {
 	max-height: 0;
 	opacity: 0;
@@ -164,24 +63,23 @@ p {
 	transition: max-height 1000ms ease-in-out, opacity 600ms ease-in-out;
 }
 
-.output-exit {
-	opacity: 1;
+.output-enter-done {
 	max-height: 20rem;
 }
 
+.output-exit {
+	opacity: 1;
+	max-height: 0rem;
+}
+
 .output-exit-active {
-	opacity: 0;
-	max-height: 0;
+	opacity: 1;
+	max-height: 0rem;
 	transition: max-height 1000ms ease-in-out, opacity 600ms ease-in-out;
 }
 
-/* Specific element stylings */
-
-.face-target-count-name {
-	position: absolute;
-	right: -30px;
-	margin: 0;
-	text-align: center;
+.output-exit-done {
+	max-height: 0;
 }
 
 /* Controllable Component stylings*/
@@ -192,24 +90,9 @@ p {
 	height: auto;
 	font-family: Nunito;
 	color: #282c34;
-	margin: 1rem;
+	margin: 1rem 0.5rem;
 }
 
 .select-calculation-type {
 	width: 14rem;
-}
-
-/* Media queries for mobile */
-
-@media (min-width: 320px) and (max-width: 480px) {
-	.dice-sums-target-wrapper,
-	.dice-faces-target-wrapper,
-	.face-target-count-wrapper {
-		flex-flow: column wrap;
-	}
-
-	.face-target-count-name {
-		position: relative;
-		right: 0;
-	}
 }

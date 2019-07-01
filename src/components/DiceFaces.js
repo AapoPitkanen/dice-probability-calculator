@@ -1,6 +1,42 @@
 import React from "react";
 import Select from "react-select";
 import NumberInput from "./NumberInput";
+import styled from "styled-components";
+
+const Separator = styled.p`
+	margin: 0;
+`;
+
+const DiceCount = styled.p`
+	position: absolute;
+	right: -30px;
+	margin: 0;
+	text-align: center;
+
+	@media (min-width: 320px) and (max-width: 480px) {
+		position: relative;
+		right: 0;
+	}
+`;
+
+const FlexColumn = styled.div`
+	display: flex;
+	flex-flow: column wrap;
+	align-items: center;
+`;
+
+const FlexRow = styled.div`
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+
+	@media (min-width: 320px) and (max-width: 480px) {
+		flex-flow: column wrap;
+		margin: 1rem 0;
+	}
+`;
 
 const DiceFaces = props => {
 	const handleSelectChange = (newValue, actionMeta) => {
@@ -28,9 +64,9 @@ const DiceFaces = props => {
 	];
 
 	return (
-		<div className="dice-faces-input-wrapper">
+		<FlexColumn>
 			<p>and I want to roll</p>
-			<div className="face-target-count-wrapper">
+			<FlexRow>
 				<Select
 					name="faceTargetDiceCountType"
 					onChange={handleSelectChange}
@@ -49,7 +85,7 @@ const DiceFaces = props => {
 					props.faceTargetDiceCountType.value ===
 						"faceTargetDiceCountNotBetween") && (
 					<React.Fragment>
-						<p>and</p>
+						<Separator>and</Separator>
 						<NumberInput
 							min={"1"}
 							inputCallback={props.inputCallback}
@@ -58,10 +94,11 @@ const DiceFaces = props => {
 						/>
 					</React.Fragment>
 				)}
-				<p className="face-target-count-name">dice</p>
-			</div>
+				<DiceCount>dice</DiceCount>
+			</FlexRow>
+
 			<p>where the face value</p>
-			<div className="dice-faces-target-wrapper">
+			<FlexRow desktop>
 				<Select
 					name="faceTargetValueType"
 					onChange={handleSelectChange}
@@ -80,7 +117,7 @@ const DiceFaces = props => {
 					props.faceTargetValueType.value ===
 						"faceTargetValueNotBetween") && (
 					<React.Fragment>
-						<p>and</p>
+						<Separator>and</Separator>
 						<NumberInput
 							min={"1"}
 							inputCallback={props.inputCallback}
@@ -89,8 +126,8 @@ const DiceFaces = props => {
 						/>
 					</React.Fragment>
 				)}
-			</div>
-		</div>
+			</FlexRow>
+		</FlexColumn>
 	);
 };
 

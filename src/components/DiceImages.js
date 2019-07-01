@@ -25,10 +25,10 @@ const DiceImage = styled.img`
 
 const DiceImageWrapper = styled.div`
 	display: grid;
-	grid-template: 75px / 75px 75px 75px;
+	grid-template: 75px / repeat(3, 75px);
 	justify-content: center;
-	margin: 1rem 0;
 	grid-gap: 0.5rem;
+	margin: 1rem 0;
 `;
 
 const DiceImages = props => {

@@ -1,6 +1,30 @@
 import React from "react";
 import Select from "react-select";
+import styled from "styled-components";
 
+const SelectWrapper = styled.div`
+	display: flex;
+	flex-flow: column wrap;
+	align-items: center;
+`;
+
+const CalculationTypeWrapper = styled.div`
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: space-between;
+	align-items: center;
+	height: 35rem;
+	text-align: justify;
+	padding: 2rem 2rem 0 2rem;
+
+	@media (min-width: 320px) and (max-width: 480px) {
+		height: 45rem;
+	}
+`;
+
+const Header = styled.h2`
+	font-weight: normal;
+`;
 const CalculationTypes = props => {
 	const [setProbability, setProbabilityText] = props.setStates;
 
@@ -17,8 +41,8 @@ const CalculationTypes = props => {
 	];
 
 	return (
-		<div className="dice-calculation-types">
-			<h2>Dice probability calculator</h2>
+		<CalculationTypeWrapper>
+			<Header>Dice probability calculator</Header>
 			<p>
 				With this application you can calculate the probability of
 				getting specific sums with different kinds of dice, such as d4,
@@ -44,7 +68,7 @@ const CalculationTypes = props => {
 				want to roll, select the probability type, enter the target
 				value what you want to roll and click Calculate!
 			</p>
-			<div className="dice-calculation-type-wrapper">
+			<SelectWrapper>
 				<p>I want to calculate</p>
 				<Select
 					name="calculationType"
@@ -54,8 +78,8 @@ const CalculationTypes = props => {
 					options={calculationTypeOptions}
 					defaultValue={props.value}
 				/>
-			</div>
-		</div>
+			</SelectWrapper>
+		</CalculationTypeWrapper>
 	);
 };
 

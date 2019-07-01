@@ -16,7 +16,7 @@ self.addEventListener("message", e => {
 			const sides = parseInt(dice.slice(dice.indexOf("d") + 1));
 			return diceLib.expectedSum(diceCount, sides);
 		})
-		.reduce((acc, curr) => acc + curr);
+		.reduce((acc, cur) => acc + cur);
 
 	const textOptions = {
 		sumTargetValueExactly: `The probability of rolling exactly ${sumTargetValueOne} with the dice ${diceArr.join(

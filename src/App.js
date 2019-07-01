@@ -8,7 +8,34 @@ import DiceImages from "./components/DiceImages";
 import DiceSums from "./components/DiceSums";
 import DiceFaces from "./components/DiceFaces";
 import CalculationTypes from "./components/CalculationTypes";
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
+
+const GlobalStyle = createGlobalStyle`
+	* {
+		box-sizing: border-box;
+		margin: 0;
+		border: 0;
+	}
+
+	body {
+		font-family: "Nunito", Arial, Helvetica, sans-serif;
+		line-height: 1.4;
+		background-color: #fff;
+		font-size: 100%;
+	}
+`;
+
+const GlobalWrapper = styled.div`
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: center;
+	align-items: center;
+	color: #fff;
+	background-color: #282c34;
+	border-radius: 8px;
+	box-shadow: 0 0 35px 2px rgba(0, 0, 0, 0.2);
+	max-width: 35rem;
+`;
 
 const CalculateButton = styled.button`
 	height: 3rem;
@@ -19,7 +46,6 @@ const CalculateButton = styled.button`
 	background-color: #3f51b5;
 	font-family: "Nunito";
 	transition: background-color 0.15s ease-in;
-	margin: 0.75rem;
 	font-size: 1rem;
 
 	&:hover {
@@ -44,6 +70,43 @@ const ErrorMessage = styled.div`
 	height: 5rem;
 	background-color: #ba3636;
 	color: #fff;
+`;
+
+const Loader = styled.div`
+	font-size: 1rem;
+	color: #fff;
+`;
+
+const InputWrapper = styled.div`
+	display: flex;
+	flex-flow: column wrap;
+	align-items: center;
+	width: 100%;
+	justify-content: space-around;
+	margin: 1rem 0;
+`;
+
+const CalculatorWrapper = styled.div`
+	display: flex;
+	flex-flow: column wrap;
+	align-items: center;
+	justify-content: space-around;
+	width: 100%;
+`;
+
+const ProbabilityTextOutput = styled.div`
+	font-size: 1rem;
+`;
+
+const ProbabilityValueOutput = styled.div`
+	font-size: 1.5rem;
+`;
+
+const OutputWrapper = styled.div`
+	display: flex;
+	justify-content: center;
+	flex-flow: column wrap;
+	align-items: center;
 `;
 
 const sumWorker = new SumWorker();
@@ -298,100 +361,121 @@ const App = () => {
 	};
 
 	return (
-		<div className="probability-calculator-wrapper">
-			<CalculationTypes
-				value={inputValues.calculationType}
-				inputCallback={inputCallback}
-				callback={childCallback}
-				setStates={[setProbability, setProbabilityText]}
-			/>
-			<DiceImages
-				inputCallback={inputCallback}
-				totalDice={totalDice}
-				setTotalDice={setTotalDice}
-				diceCounts={diceCounts}
-				setDiceCounts={setDiceCounts}
-			/>
-			<div className="dice-input-wrapper">
-				<p>with the dice</p>
-				<DiceInput
+		<React.Fragment>
+			<GlobalStyle />
+			<GlobalWrapper>
+				<CalculationTypes
+					value={inputValues.calculationType}
 					inputCallback={inputCallback}
-					value={inputValues.diceInput}
-					setTotalDice={setTotalDice}
-					setDiceCounts={setDiceCounts}
-					name={"diceInput"}
-					placeholder={
-						"Enter dice here as addition (e.g. 2d6+1d8)..."
-					}
+					callback={childCallback}
+					setStates={[setProbability, setProbabilityText]}
 				/>
-
-				{inputValues.calculationType.value === "diceSums" && (
-					<DiceSums
+				<CalculatorWrapper>
+					<DiceImages
 						inputCallback={inputCallback}
-						sumTargetValueOne={inputValues.sumTargetValueOne}
-						sumTargetValueTwo={inputValues.sumTargetValueTwo}
-						sumTargetValueType={inputValues.sumTargetValueType}
+						totalDice={totalDice}
+						setTotalDice={setTotalDice}
+						diceCounts={diceCounts}
+						setDiceCounts={setDiceCounts}
 					/>
-				)}
+					<InputWrapper>
+						<p>with the dice</p>
+						<DiceInput
+							inputCallback={inputCallback}
+							value={inputValues.diceInput}
+							setTotalDice={setTotalDice}
+							setDiceCounts={setDiceCounts}
+							name={"diceInput"}
+							placeholder={
+								"Enter dice here as addition (e.g. 2d6+1d8)..."
+							}
+						/>
 
-				{inputValues.calculationType.value === "diceFaces" && (
-					<DiceFaces
-						inputCallback={inputCallback}
-						faceTargetDiceCountType={
-							inputValues.faceTargetDiceCountType
+						{inputValues.calculationType.value === "diceSums" && (
+							<DiceSums
+								inputCallback={inputCallback}
+								sumTargetValueOne={
+									inputValues.sumTargetValueOne
+								}
+								sumTargetValueTwo={
+									inputValues.sumTargetValueTwo
+								}
+								sumTargetValueType={
+									inputValues.sumTargetValueType
+								}
+							/>
+						)}
+
+						{inputValues.calculationType.value === "diceFaces" && (
+							<DiceFaces
+								inputCallback={inputCallback}
+								faceTargetDiceCountType={
+									inputValues.faceTargetDiceCountType
+								}
+								faceTargetDiceCountOne={
+									inputValues.faceTargetDiceCountOne
+								}
+								faceTargetDiceCountTwo={
+									inputValues.faceTargetDiceCountTwo
+								}
+								faceTargetValueType={
+									inputValues.faceTargetValueType
+								}
+								faceTargetValueOne={
+									inputValues.faceTargetValueOne
+								}
+								faceTargetValueTwo={
+									inputValues.faceTargetValueTwo
+								}
+								inputWrapper={InputWrapper}
+							/>
+						)}
+					</InputWrapper>
+					<CalculateButton
+						onClick={
+							inputValues.calculationType.value === "diceSums"
+								? calculateSumProbability
+								: calculateFaceProbability
 						}
-						faceTargetDiceCountOne={
-							inputValues.faceTargetDiceCountOne
-						}
-						faceTargetDiceCountTwo={
-							inputValues.faceTargetDiceCountTwo
-						}
-						faceTargetValueType={inputValues.faceTargetValueType}
-						faceTargetValueOne={inputValues.faceTargetValueOne}
-						faceTargetValueTwo={inputValues.faceTargetValueTwo}
-					/>
-				)}
-				<CalculateButton
-					onClick={
-						inputValues.calculationType.value === "diceSums"
-							? calculateSumProbability
-							: calculateFaceProbability
-					}
+					>
+						Calculate!
+					</CalculateButton>
+				</CalculatorWrapper>
+				<CSSTransition
+					key="error"
+					unmountOnExit
+					timeout={500}
+					classNames="error"
+					in={error}
 				>
-					Calculate!
-				</CalculateButton>
-			</div>
-			<CSSTransition
-				key="error"
-				unmountOnExit
-				timeout={500}
-				classNames="error"
-				in={error}
-			>
-				<ErrorMessage>{errorText}</ErrorMessage>
-			</CSSTransition>
+					<ErrorMessage>{errorText}</ErrorMessage>
+				</CSSTransition>
 
-			<CSSTransition
-				key="loader"
-				timeout={500}
-				classNames="spin-loader"
-				in={calculating}
-			>
-				<div className="loader">Calculating...</div>
-			</CSSTransition>
-			<CSSTransition
-				key="output"
-				unmountOnExit
-				timeout={600}
-				classNames="output"
-				in={calculationFinished}
-			>
-				<div className="output-wrapper">
-					<div className="output-text">{probabilityText}</div>
-					<div className="probability-value">{probability}</div>
-				</div>
-			</CSSTransition>
-		</div>
+				<CSSTransition
+					key="loader"
+					timeout={1000}
+					classNames="spin-loader"
+					in={calculating}
+				>
+					<Loader>Calculating...</Loader>
+				</CSSTransition>
+				<CSSTransition
+					key="output"
+					timeout={1000}
+					classNames="output"
+					in={calculationFinished}
+				>
+					<OutputWrapper>
+						<ProbabilityTextOutput>
+							{probabilityText}
+						</ProbabilityTextOutput>
+						<ProbabilityValueOutput>
+							{probability}
+						</ProbabilityValueOutput>
+					</OutputWrapper>
+				</CSSTransition>
+			</GlobalWrapper>
+		</React.Fragment>
 	);
 };
 

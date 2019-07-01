@@ -10,7 +10,7 @@ const Input = styled.input`
 	padding: 0.5rem;
 	font-family: Nunito;
 	color: #282c34;
-	margin: 0.5rem;
+	margin: 1rem 0;
 `;
 
 const DiceInput = props => {
