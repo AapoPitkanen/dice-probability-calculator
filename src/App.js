@@ -47,6 +47,7 @@ const CalculateButton = styled.button`
 	font-family: "Nunito";
 	transition: background-color 0.15s ease-in;
 	font-size: 1rem;
+	margin-bottom: 1rem;
 
 	&:hover {
 		background-color: #4a5bbf;
@@ -75,6 +76,11 @@ const ErrorMessage = styled.div`
 const Loader = styled.div`
 	font-size: 1rem;
 	color: #fff;
+	transition: max-height 800ms ease-in-out, opacity 600ms ease-in-out,
+		padding 800ms ease-in-out;
+	max-height: ${props => (props.calculating ? "5rem" : "0")};
+	opacity: ${props => (props.calculating ? "1" : "0")};
+	padding: ${props => (props.calculating ? "0.5rem" : "0")};
 `;
 
 const InputWrapper = styled.div`
@@ -92,21 +98,25 @@ const CalculatorWrapper = styled.div`
 	align-items: center;
 	justify-content: space-around;
 	width: 100%;
+	margin-bottom: 1rem;
 `;
 
 const ProbabilityTextOutput = styled.div`
 	font-size: 1rem;
+	padding: 0.25rem 0;
 `;
 
 const ProbabilityValueOutput = styled.div`
-	font-size: 1.5rem;
+	font-size: 1.25rem;
 `;
 
 const OutputWrapper = styled.div`
 	display: flex;
 	justify-content: center;
-	flex-flow: column wrap;
+	flex-direction: column
 	align-items: center;
+	padding: 0 2rem;
+
 `;
 
 const sumWorker = new SumWorker();
@@ -121,6 +131,10 @@ const App = () => {
 	const [errorText, setErrorText] = useState("");
 	const [probability, setProbability] = useState("");
 	const [probabilityText, setProbabilityText] = useState("");
+	const [sumDistribution, setSumDistribution] = useState({
+		sums: [],
+		probabilities: []
+	});
 	const initialInputValues = {
 		calculationType: { value: "diceSums", label: "Dice sums" },
 		diceInput: "",
@@ -135,13 +149,10 @@ const App = () => {
 		sumTargetValueTwo: ""
 	};
 	const reducer = (state, newState) => ({ ...state, ...newState });
-	const [inputValues, setInputValues] = useReducer(
-		reducer,
-		initialInputValues
-	);
+	const [inputValues, setInputValues] = useReducer(reducer, initialInputValues);
 	const inputCallback = childData => setInputValues(childData);
 	const childCallback = (callback, value) => callback(value);
-	const handleWorkerMessage = e => {
+	const handleFaceWorkerMessage = e => {
 		const data = e.data;
 		setCalculating(false);
 		setCalculationFinished(true);
@@ -149,26 +160,30 @@ const App = () => {
 		setProbability(`${data.probabilityValue}%`);
 	};
 
+	const handleSumWorkerMessage = e => {
+		const data = e.data;
+		setCalculating(false);
+		setCalculationFinished(true);
+		setSumDistribution(data.sumDistribution);
+		setProbabilityText(data.probabilityText);
+		setProbability(`${data.probabilityValue}%`);
+	};
+
 	useEffect(() => {
-		sumWorker.addEventListener("message", handleWorkerMessage);
-		faceWorker.addEventListener("message", handleWorkerMessage);
+		sumWorker.addEventListener("message", handleSumWorkerMessage);
+		faceWorker.addEventListener("message", handleFaceWorkerMessage);
 		return () => {
-			sumWorker.removeEventListener("message", handleWorkerMessage);
-			faceWorker.removeEventListener("message", handleWorkerMessage);
+			sumWorker.removeEventListener("message", handleSumWorkerMessage);
+			faceWorker.removeEventListener("message", handleFaceWorkerMessage);
 		};
 	});
 
 	const calculateFaceProbability = () => {
 		const diceInput = inputValues.diceInput;
 		const diceArr = diceInput.split("+");
-		const faceTargetDiceCountOne = parseInt(
-			inputValues.faceTargetDiceCountOne
-		);
-		const faceTargetDiceCountTwo = parseInt(
-			inputValues.faceTargetDiceCountTwo
-		);
-		const faceTargetDiceCountType =
-			inputValues.faceTargetDiceCountType.value;
+		const faceTargetDiceCountOne = parseInt(inputValues.faceTargetDiceCountOne);
+		const faceTargetDiceCountTwo = parseInt(inputValues.faceTargetDiceCountTwo);
+		const faceTargetDiceCountType = inputValues.faceTargetDiceCountType.value;
 		const faceTargetValueOne = parseInt(inputValues.faceTargetValueOne);
 		const faceTargetValueTwo = parseInt(inputValues.faceTargetValueTwo);
 		const faceTargetValueType = inputValues.faceTargetValueType.value;
@@ -189,11 +204,9 @@ const App = () => {
 			{
 				errorName: "Empty faceTargetValueTwo input",
 				errorState:
-					[
-						"faceTargetValueBetween",
-						"faceTargetValueNotBetween"
-					].includes(faceTargetValueType) &&
-					faceTargetValueTwo === "",
+					["faceTargetValueBetween", "faceTargetValueNotBetween"].includes(
+						faceTargetValueType
+					) && faceTargetValueTwo === "",
 				errorText: "Please fill in all the required fields"
 			},
 			{
@@ -202,16 +215,14 @@ const App = () => {
 					[
 						"faceTargetDiceCountBetween",
 						"faceTargetDiceCountNotBetween"
-					].includes(faceTargetDiceCountType) &&
-					faceTargetDiceCountTwo === "",
+					].includes(faceTargetDiceCountType) && faceTargetDiceCountTwo === "",
 				errorText: "Please fill in all the required fields"
 			},
 			{
 				errorName: "Too many successes",
-				errorState: [
-					faceTargetDiceCountOne,
-					faceTargetDiceCountTwo
-				].some(value => value > maxSuccesses),
+				errorState: [faceTargetDiceCountOne, faceTargetDiceCountTwo].some(
+					value => value > maxSuccesses
+				),
 				errorText: "Cannot roll more successes than the number of dice"
 			}
 		];
@@ -268,9 +279,7 @@ const App = () => {
 
 		const diceCountValues = diceCounts ? Object.values(diceCounts) : [];
 		const entries = Object.entries(diceCounts).map(item =>
-			item.map(el =>
-				typeof el === "string" ? parseInt(el.slice(1)) : el
-			)
+			item.map(el => (typeof el === "string" ? parseInt(el.slice(1)) : el))
 		);
 
 		const maxSum = diceInput
@@ -297,18 +306,17 @@ const App = () => {
 		const potentialErrors = [
 			{
 				errorName: "Empty input",
-				errorState: [
-					(diceInput, sumTargetValueOne, sumTargetValueType)
-				].some(value => !value),
+				errorState: [(diceInput, sumTargetValueOne, sumTargetValueType)].some(
+					value => !value
+				),
 				errorText: "Please fill in all the required fields"
 			},
 			{
 				errorName: "Empty sumTargetValueTwo input",
 				errorState:
-					[
-						"sumTargetValueBetween",
-						"sumTargetValueNotBetween"
-					].includes(sumTargetValueType) && sumTargetValueTwo === "",
+					["sumTargetValueBetween", "sumTargetValueNotBetween"].includes(
+						sumTargetValueType
+					) && sumTargetValueTwo === "",
 				errorText: "Please fill in all the required fields"
 			},
 			{
@@ -316,8 +324,7 @@ const App = () => {
 				errorState: [sumTargetValueOne, sumTargetValueTwo].some(
 					value => value > maxSum
 				),
-				errorText:
-					"Sum cannot be greater than the maximum sum of the dice"
+				errorText: "Sum cannot be greater than the maximum sum of the dice"
 			},
 			{
 				errorName: "Sum too small",
@@ -360,6 +367,8 @@ const App = () => {
 		sumWorker.postMessage(message);
 	};
 
+	console.log(sumDistribution);
+
 	return (
 		<React.Fragment>
 			<GlobalStyle />
@@ -386,47 +395,27 @@ const App = () => {
 							setTotalDice={setTotalDice}
 							setDiceCounts={setDiceCounts}
 							name={"diceInput"}
-							placeholder={
-								"Enter dice here as addition (e.g. 2d6+1d8)..."
-							}
+							placeholder={"Enter dice here as addition (e.g. 2d6+1d8)..."}
 						/>
 
 						{inputValues.calculationType.value === "diceSums" && (
 							<DiceSums
 								inputCallback={inputCallback}
-								sumTargetValueOne={
-									inputValues.sumTargetValueOne
-								}
-								sumTargetValueTwo={
-									inputValues.sumTargetValueTwo
-								}
-								sumTargetValueType={
-									inputValues.sumTargetValueType
-								}
+								sumTargetValueOne={inputValues.sumTargetValueOne}
+								sumTargetValueTwo={inputValues.sumTargetValueTwo}
+								sumTargetValueType={inputValues.sumTargetValueType}
 							/>
 						)}
 
 						{inputValues.calculationType.value === "diceFaces" && (
 							<DiceFaces
 								inputCallback={inputCallback}
-								faceTargetDiceCountType={
-									inputValues.faceTargetDiceCountType
-								}
-								faceTargetDiceCountOne={
-									inputValues.faceTargetDiceCountOne
-								}
-								faceTargetDiceCountTwo={
-									inputValues.faceTargetDiceCountTwo
-								}
-								faceTargetValueType={
-									inputValues.faceTargetValueType
-								}
-								faceTargetValueOne={
-									inputValues.faceTargetValueOne
-								}
-								faceTargetValueTwo={
-									inputValues.faceTargetValueTwo
-								}
+								faceTargetDiceCountType={inputValues.faceTargetDiceCountType}
+								faceTargetDiceCountOne={inputValues.faceTargetDiceCountOne}
+								faceTargetDiceCountTwo={inputValues.faceTargetDiceCountTwo}
+								faceTargetValueType={inputValues.faceTargetValueType}
+								faceTargetValueOne={inputValues.faceTargetValueOne}
+								faceTargetValueTwo={inputValues.faceTargetValueTwo}
 								inputWrapper={InputWrapper}
 							/>
 						)}
@@ -440,6 +429,29 @@ const App = () => {
 					>
 						Calculate!
 					</CalculateButton>
+					<CSSTransition
+						key="loader"
+						timeout={1000}
+						classNames="loader"
+						in={calculating}
+					>
+						<Loader calculating={calculating}>Calculating...</Loader>
+					</CSSTransition>
+					<CSSTransition
+						key="output"
+						timeout={1000}
+						classNames="output"
+						in={calculationFinished}
+					>
+						<OutputWrapper calculating={calculating}>
+							<ProbabilityTextOutput calculating={calculating}>
+								{probabilityText}
+							</ProbabilityTextOutput>
+							<ProbabilityValueOutput calculating={calculating}>
+								{probability}
+							</ProbabilityValueOutput>
+						</OutputWrapper>
+					</CSSTransition>
 				</CalculatorWrapper>
 				<CSSTransition
 					key="error"
@@ -449,30 +461,6 @@ const App = () => {
 					in={error}
 				>
 					<ErrorMessage>{errorText}</ErrorMessage>
-				</CSSTransition>
-
-				<CSSTransition
-					key="loader"
-					timeout={1000}
-					classNames="spin-loader"
-					in={calculating}
-				>
-					<Loader>Calculating...</Loader>
-				</CSSTransition>
-				<CSSTransition
-					key="output"
-					timeout={1000}
-					classNames="output"
-					in={calculationFinished}
-				>
-					<OutputWrapper>
-						<ProbabilityTextOutput>
-							{probabilityText}
-						</ProbabilityTextOutput>
-						<ProbabilityValueOutput>
-							{probability}
-						</ProbabilityValueOutput>
-					</OutputWrapper>
 				</CSSTransition>
 			</GlobalWrapper>
 		</React.Fragment>

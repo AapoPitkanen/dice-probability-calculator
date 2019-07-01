@@ -18,6 +18,15 @@ self.addEventListener("message", e => {
 		})
 		.reduce((acc, cur) => acc + cur);
 
+	const distribution = diceLib.createSumDistribution(polyDice).coeff;
+	const sums = Object.keys(distribution).map(sum => parseInt(sum));
+	const probabilities = Object.values(distribution);
+
+	const sumDistribution = {
+		sums: sums,
+		probabilities: probabilities
+	};
+
 	const textOptions = {
 		sumTargetValueExactly: `The probability of rolling exactly ${sumTargetValueOne} with the dice ${diceArr.join(
 			", "
@@ -51,7 +60,8 @@ self.addEventListener("message", e => {
 
 	const message = {
 		probabilityText: probabilityText,
-		probabilityValue: probabilityValue
+		probabilityValue: probabilityValue,
+		sumDistribution: sumDistribution
 	};
 
 	self.postMessage(message);

@@ -2,28 +2,7 @@ import Polynomial from "polynomial";
 import math from "mathjs";
 import _ from "lodash";
 
-const faceTargetValueOptions = [
-	"faceTargetValueExactly",
-	"faceTargetValueAtLeast",
-	"faceTargetValueAtMost",
-	"faceTargetValueBetween",
-	"faceTargetValueNotBetween"
-];
-
-const faceTargetDiceCountOptions = [
-	"faceTargetDiceCountExactly",
-	"faceTargetDiceCountAtLeast",
-	"faceTargetDiceCountAtMost",
-	"faceTargetDiceCountBetween",
-	"faceTargetDiceCountNotBetween"
-];
-
 const diceLib = {
-	faceCombinationOptions: math.setCartesian(
-		faceTargetDiceCountOptions,
-		faceTargetValueOptions
-	),
-
 	// Not written by me, found on math.stackexchange.com for finding only the n-sized unique combinations from a specific set
 	UniqueCombinations(set, n) {
 		let combinations = [];
@@ -53,13 +32,7 @@ const diceLib = {
 
 	/* This function sorts the input dice to check all possible unique ways to roll the specified successes with the dice. 
     After sorting the dice, the binomial distributions can be calculated from the dice combinations. */
-	sortUniqueDiceCombinations(
-		target,
-		successes,
-		diceArr,
-		targetType,
-		target2
-	) {
+	sortUniqueDiceCombinations(target, successes, diceArr, targetType, target2) {
 		const sortedDiceArr = [];
 		const diceTypes = diceArr.map(dice => dice.slice(dice.indexOf("d")));
 		const isAtLeastExactlyBetween = [
@@ -104,22 +77,16 @@ const diceLib = {
 			);
 
 			diceKeys =
-				diceArr.every(dice =>
-					parseInt(dice.slice(dice.indexOf("d") + 1))
-				) >= target
+				diceArr.every(dice => parseInt(dice.slice(dice.indexOf("d") + 1))) >=
+				target
 					? diceArr.map(dice => dice.slice(dice.indexOf("d")))
 					: filteredArr.map(dice => dice.slice(dice.indexOf("d")));
 
 			diceValues =
-				diceArr.every(dice =>
-					parseInt(dice.slice(dice.indexOf("d") + 1))
-				) >= target
-					? diceArr.map(dice =>
-							parseInt(dice.slice(0, dice.indexOf("d")))
-					  )
-					: filteredArr.map(dice =>
-							parseInt(dice.slice(0, dice.indexOf("d")))
-					  );
+				diceArr.every(dice => parseInt(dice.slice(dice.indexOf("d") + 1))) >=
+				target
+					? diceArr.map(dice => parseInt(dice.slice(0, dice.indexOf("d"))))
+					: filteredArr.map(dice => parseInt(dice.slice(0, dice.indexOf("d"))));
 		}
 
 		if (targetType === "faceTargetValueAtMost") {
@@ -136,12 +103,8 @@ const diceLib = {
 					: diceArr.map(dice => dice.slice(dice.indexOf("d")));
 			diceValues =
 				target === 1
-					? filteredArr.map(dice =>
-							parseInt(dice.slice(0, dice.indexOf("d")))
-					  )
-					: diceArr.map(dice =>
-							parseInt(dice.slice(0, dice.indexOf("d")))
-					  );
+					? filteredArr.map(dice => parseInt(dice.slice(0, dice.indexOf("d"))))
+					: diceArr.map(dice => parseInt(dice.slice(0, dice.indexOf("d"))));
 		}
 
 		const diceObj = _.zipObject(diceKeys, diceValues);
@@ -186,8 +149,7 @@ const diceLib = {
 
 		dice.forEach(
 			el =>
-				diceTypes.indexOf(el.slice(el.indexOf("d"))) < 0 &&
-				diceTypes.push(el)
+				diceTypes.indexOf(el.slice(el.indexOf("d"))) < 0 && diceTypes.push(el)
 		);
 		diceTypes.forEach(el =>
 			sortedDice.push(this.countDice(el.slice(el.indexOf("d")), dice))
@@ -277,9 +239,7 @@ const diceLib = {
 				const diceCount = parseInt(
 					originalDice.slice(0, originalDice.indexOf("d"))
 				);
-				const sides = parseInt(
-					singleDice.slice(singleDice.indexOf("d") + 1)
-				);
+				const sides = parseInt(singleDice.slice(singleDice.indexOf("d") + 1));
 				const diceSuccessCount = parseInt(
 					singleDice.slice(0, singleDice.indexOf("d"))
 				);
@@ -449,40 +409,52 @@ const diceLib = {
 		);
 	},
 
-	// multiplying the polynomials together will give the correct probability distribution
-	calculateDiceSumProbability(polyDice, target, target2, sumType) {
+	createSumDistribution(polyDice) {
 		let distribution = polyDice[0];
 
-		// This is just to avoid a vanilla for loop, easier to read I think. The slice is there so we don't multiply the first polynomial with itself
 		polyDice.slice(1).forEach(polynomial => {
 			distribution = distribution.mul(polynomial);
 		});
 
-		const sumValues = Object.keys(distribution.coeff).map(sum => parseInt(sum))
-		const probabilityValues = Object.values(distribution.coeff)
+		return distribution;
+	},
+
+	// multiplying the polynomials together will give the correct probability distribution
+	calculateDiceSumProbability(polyDice, target, target2, sumType) {
+		const distribution = this.createSumDistribution(polyDice);
+
+		const sumValues = Object.keys(distribution.coeff).map(sum => parseInt(sum));
+		const probabilityValues = Object.values(distribution.coeff);
 
 		if (sumType === "sumTargetValueExactly") {
 			return distribution.coeff[target];
 		}
 
 		if (sumType === "sumTargetValueAtLeast") {
-			return probabilityValues.slice(sumValues.indexOf(target))
+			return probabilityValues
+				.slice(sumValues.indexOf(target))
 				.reduce((acc, cur) => acc + cur);
 		}
 
 		if (sumType === "sumTargetValueAtMost") {
-			return probabilityValues.slice(0, sumValues.indexOf(target))
+			return probabilityValues
+				.slice(0, sumValues.indexOf(target))
 				.reduce((acc, cur) => acc + cur);
 		}
 
 		if (sumType === "sumTargetValueBetween") {
-			return probabilityValues.slice(sumValues.indexOf(target), sumValues.indexOf(target2) + 1)
+			return probabilityValues
+				.slice(sumValues.indexOf(target), sumValues.indexOf(target2) + 1)
 				.reduce((acc, cur) => acc + cur);
 		}
 
 		if (sumType === "sumTargetValueNotBetween") {
-			return 1 - probabilityValues.slice(sumValues.indexOf(target), sumValues.indexOf(target2) + 1)
-				.reduce((acc, cur) => acc + cur);
+			return (
+				1 -
+				probabilityValues
+					.slice(sumValues.indexOf(target), sumValues.indexOf(target2) + 1)
+					.reduce((acc, cur) => acc + cur)
+			);
 		}
 	}
 };

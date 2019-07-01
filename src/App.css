@@ -25,29 +25,29 @@
 	transition: opacity 500ms;
 }
 
-.spin-loader-enter {
+.loader-enter {
 	opacity: 1;
 	max-height: 0;
 }
 
-.spin-loader-enter-active {
+.loader-enter-active {
 	max-height: 20rem;
 	opacity: 1;
 	transition: max-height 1000ms ease, opacity 600ms ease-in-out;
 }
 
-.spin-loader-exit {
+.loader-exit {
 	max-height: 20rem;
 	opacity: 1;
 }
 
-.spin-loader-exit-active {
+.loader-exit-active {
 	max-height: 0;
 	opacity: 0;
 	transition: max-height 1000ms ease, opacity 600ms ease-in-out;
 }
 
-.spin-loader-exit-done {
+.loader-exit-done {
 	max-height: 0;
 	opacity: 0;
 }
@@ -69,12 +69,12 @@
 
 .output-exit {
 	opacity: 1;
-	max-height: 0rem;
+	max-height: 20rem;
 }
 
 .output-exit-active {
 	opacity: 1;
-	max-height: 0rem;
+	max-height: 0;
 	transition: max-height 1000ms ease-in-out, opacity 600ms ease-in-out;
 }
 
