@@ -7,30 +7,6 @@
 	margin: 0.5rem;
 }
 
-.dice-faces-enter {
-	opacity: 0;
-}
-.dice-faces-enter-active {
-	opacity: 1;
-	transition: opacity 200ms;
-}
-
-.dice-faces-enter-done {
-	opacity: 1;
-}
-
-.dice-faces-exit {
-	opacity: 1;
-}
-.dice-faces-exit-active {
-	opacity: 0;
-	transition: opacity 200ms;
-}
-
-.dice-faces-exit-done {
-	opacity: 0;
-}
-
 /* Controllable Component stylings*/
 
 .select-input {

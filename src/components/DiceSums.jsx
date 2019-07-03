@@ -11,6 +11,7 @@ const FlexColumn = styled.div`
 	display: flex;
 	flex-flow: column wrap;
 	align-items: center;
+	width: 100%;
 `;
 
 const FlexRow = styled.div`
@@ -53,8 +54,10 @@ const DiceSums = props => {
 						inputValue={props.sumTargetValueOne}
 						name={"sumTargetValueOne"}
 					/>
-					{(props.sumTargetValueType.value === "sumTargetValueBetween" ||
-						props.sumTargetValueType.value === "sumTargetValueNotBetween") && (
+					{(props.sumTargetValueType.value ===
+						"sumTargetValueBetween" ||
+						props.sumTargetValueType.value ===
+							"sumTargetValueNotBetween") && (
 						<React.Fragment>
 							<Separator>and</Separator>
 							<NumberInput

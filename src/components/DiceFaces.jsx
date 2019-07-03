@@ -2,7 +2,7 @@ import React from "react";
 import Select from "react-select";
 import NumberInput from "./NumberInput";
 import styled from "styled-components";
-import { Spring } from "react-spring/renderprops";
+import { Transition } from "react-spring/renderprops";
 
 const Separator = styled.p`
 	margin: 0;
@@ -24,6 +24,7 @@ const FlexColumn = styled.div`
 	display: flex;
 	flex-flow: column wrap;
 	align-items: center;
+	width: 100%;
 `;
 
 const FlexRow = styled.div`
@@ -114,8 +115,10 @@ const DiceFaces = props => {
 					inputValue={props.faceTargetValueOne}
 					name={"faceTargetValueOne"}
 				/>
-				{(props.faceTargetValueType.value === "faceTargetValueBetween" ||
-					props.faceTargetValueType.value === "faceTargetValueNotBetween") && (
+				{(props.faceTargetValueType.value ===
+					"faceTargetValueBetween" ||
+					props.faceTargetValueType.value ===
+						"faceTargetValueNotBetween") && (
 					<React.Fragment>
 						<Separator>and</Separator>
 						<NumberInput
