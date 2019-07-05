@@ -11,9 +11,17 @@ const Input = styled.input`
 	font-family: Nunito;
 	color: #282c34;
 	margin: 1rem 0;
+	transition: box-shadow 300ms ease-in-out;
+
+	&:focus {
+		outline: 0;
+		box-shadow: 0 0 5px 2px #2684ff;
+	}
 `;
 
 const DiceInput = props => {
+	console.log("rendering diceInput");
+
 	const handleChange = e => {
 		let newValue = e.target.value;
 		let inputName = e.target.name;

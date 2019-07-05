@@ -22,7 +22,7 @@ const GlobalStyle = createGlobalStyle`
 	}
 
 	body {
-		font-family: "Nunito", Arial, Helvetica, sans-serif;
+		font-family: Nunito, Arial, Helvetica, sans-serif;
 		line-height: 1.4;
 		background-color: #fff;
 		font-size: 100%;
@@ -51,12 +51,17 @@ const CalculateButton = styled.button`
 	color: #fff;
 	background-color: #3f51b5;
 	font-family: "Nunito";
-	transition: background-color 0.15s ease-in;
+	transition: background-color 0.15s ease-in, box-shadow 300ms ease-in-out;
 	font-size: 1rem;
 	margin: 1rem;
 
 	&:hover {
 		background-color: #4a5bbf;
+	}
+
+	&:focus {
+		outline: 0;
+		box-shadow: 0 0 6px 3px #2a3679;
 	}
 `;
 
@@ -104,8 +109,7 @@ const FlexRow = styled.div`
 	justify-content: center;
 	background-color: #282c34;
 	position: relative;
-	border-radius: ${props =>
-		props.calculationFinished ? "0" : "0 0 8px 8px"};
+	border-radius: ${props => (props.calculationFinished ? "0" : "0 0 8px 8px")};
 `;
 
 export {

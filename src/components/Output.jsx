@@ -18,6 +18,7 @@ const OutputWrapper = styled(animated.div)`
 	width: 100%;
 	border-radius: 0 0 8px 8px;
 	background-color: #282c34;
+	padding: 0 2rem;
 	z-index: 1;
 	position: absolute;
 	height: 10%;

@@ -38,7 +38,7 @@ const App = () => {
 		probabilities: []
 	});
 	const initialInputValues = {
-		calculationType: { value: "diceSums", label: "Dice sums" },
+		calculationType: "diceSums",
 		diceInput: "",
 		faceTargetDiceCountType: "",
 		faceTargetDiceCountOne: "",
@@ -54,10 +54,7 @@ const App = () => {
 	const [wrapperHeight, setWrapperHeight] = useState("auto");
 
 	const reducer = (state, newState) => ({ ...state, ...newState });
-	const [inputValues, setInputValues] = useReducer(
-		reducer,
-		initialInputValues
-	);
+	const [inputValues, setInputValues] = useReducer(reducer, initialInputValues);
 	const inputCallback = childData => setInputValues(childData);
 	const childCallback = (callback, value) => callback(value);
 	const handleFaceWorkerMessage = e => {
@@ -100,9 +97,7 @@ const App = () => {
 
 	const checkErrors = errors => {
 		if (errors.some(error => error.errorState)) {
-			const errorIndex = errors.findIndex(
-				error => error.errorState === true
-			);
+			const errorIndex = errors.findIndex(error => error.errorState === true);
 
 			const errorText = errors[errorIndex].errorText;
 
@@ -123,8 +118,7 @@ const App = () => {
 		const diceArr = diceInput.split("+");
 		const faceTargetDiceCountOne = inputValues.faceTargetDiceCountOne;
 		const faceTargetDiceCountTwo = inputValues.faceTargetDiceCountTwo;
-		const faceTargetDiceCountType =
-			inputValues.faceTargetDiceCountType.value;
+		const faceTargetDiceCountType = inputValues.faceTargetDiceCountType.value;
 		const faceTargetValueOne = inputValues.faceTargetValueOne;
 		const faceTargetValueTwo = inputValues.faceTargetValueTwo;
 		const faceTargetValueType = inputValues.faceTargetValueType.value;
@@ -145,11 +139,9 @@ const App = () => {
 			{
 				errorName: "Empty faceTargetValueTwo input",
 				errorState:
-					[
-						"faceTargetValueBetween",
-						"faceTargetValueNotBetween"
-					].includes(faceTargetValueType) &&
-					faceTargetValueTwo === "",
+					["faceTargetValueBetween", "faceTargetValueNotBetween"].includes(
+						faceTargetValueType
+					) && faceTargetValueTwo === "",
 				errorText: "Please fill in all the required fields"
 			},
 			{
@@ -158,16 +150,14 @@ const App = () => {
 					[
 						"faceTargetDiceCountBetween",
 						"faceTargetDiceCountNotBetween"
-					].includes(faceTargetDiceCountType) &&
-					faceTargetDiceCountTwo === "",
+					].includes(faceTargetDiceCountType) && faceTargetDiceCountTwo === "",
 				errorText: "Please fill in all the required fields"
 			},
 			{
 				errorName: "Too many successes",
-				errorState: [
-					faceTargetDiceCountOne,
-					faceTargetDiceCountTwo
-				].some(value => value > maxSuccesses),
+				errorState: [faceTargetDiceCountOne, faceTargetDiceCountTwo].some(
+					value => value > maxSuccesses
+				),
 				errorText: "Cannot roll more successes than the number of dice"
 			}
 		];
@@ -204,18 +194,17 @@ const App = () => {
 		const inputErrors = [
 			{
 				errorName: "Empty input",
-				errorState: [
-					(diceInput, sumTargetValueOne, sumTargetValueType)
-				].some(value => !value),
+				errorState: [(diceInput, sumTargetValueOne, sumTargetValueType)].some(
+					value => !value
+				),
 				errorText: "Please fill in all the required fields"
 			},
 			{
 				errorName: "Empty sumTargetValueTwo input",
 				errorState:
-					[
-						"sumTargetValueBetween",
-						"sumTargetValueNotBetween"
-					].includes(sumTargetValueType) && sumTargetValueTwo === "",
+					["sumTargetValueBetween", "sumTargetValueNotBetween"].includes(
+						sumTargetValueType
+					) && sumTargetValueTwo === "",
 				errorText: "Please fill in all the required fields"
 			}
 		];
@@ -226,9 +215,7 @@ const App = () => {
 
 		const diceCountValues = diceCounts ? Object.values(diceCounts) : [];
 		const entries = Object.entries(diceCounts).map(item =>
-			item.map(el =>
-				typeof el === "string" ? parseInt(el.slice(1)) : el
-			)
+			item.map(el => (typeof el === "string" ? parseInt(el.slice(1)) : el))
 		);
 
 		const maxSum = diceInput
@@ -258,8 +245,7 @@ const App = () => {
 				errorState: [sumTargetValueOne, sumTargetValueTwo].some(
 					value => value > maxSum
 				),
-				errorText:
-					"Sum cannot be greater than the maximum sum of the dice"
+				errorText: "Sum cannot be greater than the maximum sum of the dice"
 			},
 			{
 				errorName: "Sum too small",
@@ -291,6 +277,7 @@ const App = () => {
 
 	return (
 		<>
+			{console.log("rendering App")}
 			<GlobalStyle />
 			<GlobalWrapper>
 				<CalculationTypes
@@ -319,46 +306,26 @@ const App = () => {
 							setTotalDice={setTotalDice}
 							setDiceCounts={setDiceCounts}
 							name={"diceInput"}
-							placeholder={
-								"Enter dice here as addition (e.g. 2d6+1d8)..."
-							}
+							placeholder={"Enter dice here as addition (e.g. 2d6+1d8)..."}
 						/>
 
-						{inputValues.calculationType.value === "diceSums" && (
+						{inputValues.calculationType === "diceSums" && (
 							<DiceSums
 								inputCallback={inputCallback}
-								sumTargetValueOne={
-									inputValues.sumTargetValueOne
-								}
-								sumTargetValueTwo={
-									inputValues.sumTargetValueTwo
-								}
-								sumTargetValueType={
-									inputValues.sumTargetValueType
-								}
+								sumTargetValueOne={inputValues.sumTargetValueOne}
+								sumTargetValueTwo={inputValues.sumTargetValueTwo}
+								sumTargetValueType={inputValues.sumTargetValueType}
 							/>
 						)}
-						{inputValues.calculationType.value === "diceFaces" && (
+						{inputValues.calculationType === "diceFaces" && (
 							<DiceFaces
 								inputCallback={inputCallback}
-								faceTargetDiceCountType={
-									inputValues.faceTargetDiceCountType
-								}
-								faceTargetDiceCountOne={
-									inputValues.faceTargetDiceCountOne
-								}
-								faceTargetDiceCountTwo={
-									inputValues.faceTargetDiceCountTwo
-								}
-								faceTargetValueType={
-									inputValues.faceTargetValueType
-								}
-								faceTargetValueOne={
-									inputValues.faceTargetValueOne
-								}
-								faceTargetValueTwo={
-									inputValues.faceTargetValueTwo
-								}
+								faceTargetDiceCountType={inputValues.faceTargetDiceCountType}
+								faceTargetDiceCountOne={inputValues.faceTargetDiceCountOne}
+								faceTargetDiceCountTwo={inputValues.faceTargetDiceCountTwo}
+								faceTargetValueType={inputValues.faceTargetValueType}
+								faceTargetValueOne={inputValues.faceTargetValueOne}
+								faceTargetValueTwo={inputValues.faceTargetValueTwo}
 							/>
 						)}
 					</InputWrapper>
@@ -366,7 +333,7 @@ const App = () => {
 				<FlexRow calculationFinished={calculationFinished}>
 					<CalculateButton
 						onClick={
-							inputValues.calculationType.value === "diceSums"
+							inputValues.calculationType === "diceSums"
 								? calculateSumProbability
 								: calculateFaceProbability
 						}
@@ -375,10 +342,7 @@ const App = () => {
 					</CalculateButton>
 				</FlexRow>
 				{calculationFinished && (
-					<Output
-						probabilityText={probabilityText}
-						probability={probability}
-					/>
+					<Output probabilityText={probabilityText} probability={probability} />
 				)}
 				<Transition
 					items={calculating}
@@ -403,21 +367,24 @@ const App = () => {
 						bottom: "33%",
 						position: "fixed",
 						opacity: 0,
-						transform: "Translate3d(0, -60px, 0)"
+						transform: "Translate3d(0, -60px, 0)",
+						zIndex: 15
 					}}
 					enter={{
 						left: "50%",
 						bottom: "33%",
 						position: "fixed",
 						opacity: 1,
-						transform: "Translate3d(0, 0px, 0)"
+						transform: "Translate3d(0, 0px, 0)",
+						zIndex: 15
 					}}
 					leave={{
 						left: "50%",
 						bottom: "33%",
 						position: "fixed",
 						opacity: 0,
-						transform: "Translate3d(0, -60px, 0)"
+						transform: "Translate3d(0, -60px, 0)",
+						zIndex: 15
 					}}
 					config={{ duration: 800, easing: easeCubicInOut }}
 				>

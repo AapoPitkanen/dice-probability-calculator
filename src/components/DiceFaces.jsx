@@ -2,7 +2,7 @@ import React from "react";
 import Select from "react-select";
 import NumberInput from "./NumberInput";
 import styled from "styled-components";
-import { useSpring, animated, config } from "react-spring";
+import { useSpring, animated } from "react-spring";
 
 const Separator = styled.p`
 	margin: 0;
@@ -70,7 +70,7 @@ const DiceFaces = props => {
 	const dropDown = useSpring({
 		from: { transform: "translateY(-50%)", opacity: 0, zIndex: 10 },
 		to: { transform: "translateY(0)", opacity: 1, zIndex: 10 },
-		config: config.slow
+		config: { mass: 1, tension: 235, friction: 55 }
 	});
 
 	return (
@@ -83,6 +83,7 @@ const DiceFaces = props => {
 					value={props.faceTargetDiceCountType}
 					className="select-face-target-count select-input"
 					options={faceTargetDiceCountOptions}
+					isSearchable={false}
 				/>
 				<NumberInput
 					min={"0"}
@@ -94,7 +95,7 @@ const DiceFaces = props => {
 					"faceTargetDiceCountBetween" ||
 					props.faceTargetDiceCountType.value ===
 						"faceTargetDiceCountNotBetween") && (
-					<React.Fragment>
+					<>
 						<Separator>and</Separator>
 						<NumberInput
 							min={"1"}
@@ -102,7 +103,7 @@ const DiceFaces = props => {
 							inputValue={props.faceTargetDiceCountTwo}
 							name={"faceTargetDiceCountTwo"}
 						/>
-					</React.Fragment>
+					</>
 				)}
 				<DiceCount>dice</DiceCount>
 			</FlexRow>
@@ -115,6 +116,7 @@ const DiceFaces = props => {
 					value={props.faceTargetValueType}
 					className="select-face-target select-input"
 					options={faceTargetValueOptions}
+					isSearchable={false}
 				/>
 				<NumberInput
 					min={"1"}
@@ -122,11 +124,9 @@ const DiceFaces = props => {
 					inputValue={props.faceTargetValueOne}
 					name={"faceTargetValueOne"}
 				/>
-				{(props.faceTargetValueType.value ===
-					"faceTargetValueBetween" ||
-					props.faceTargetValueType.value ===
-						"faceTargetValueNotBetween") && (
-					<React.Fragment>
+				{(props.faceTargetValueType.value === "faceTargetValueBetween" ||
+					props.faceTargetValueType.value === "faceTargetValueNotBetween") && (
+					<>
 						<Separator>and</Separator>
 						<NumberInput
 							min={"1"}
@@ -134,7 +134,7 @@ const DiceFaces = props => {
 							inputValue={props.faceTargetValueTwo}
 							name={"faceTargetValueTwo"}
 						/>
-					</React.Fragment>
+					</>
 				)}
 			</FlexRow>
 		</FlexColumn>

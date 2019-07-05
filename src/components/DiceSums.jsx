@@ -2,7 +2,7 @@ import React from "react";
 import Select from "react-select";
 import NumberInput from "./NumberInput";
 import styled from "styled-components";
-import { useSpring, animated, config } from "react-spring";
+import { useSpring, animated } from "react-spring";
 
 const Separator = styled.p`
 	margin: 0;
@@ -36,15 +36,14 @@ const DiceSums = props => {
 		{ value: "sumTargetValueBetween", label: "is between" },
 		{ value: "sumTargetValueNotBetween", label: "is not between" }
 	];
-
-	const dropDown = useSpring({
-		from: { transform: "translateY(-50%)", opacity: 0, zIndex: 10 },
+	const dropUp = useSpring({
+		from: { transform: "translateY(100%)", opacity: 0, zIndex: 10 },
 		to: { transform: "translateY(0)", opacity: 1, zIndex: 10 },
-		config: config.slow
+		config: { mass: 1, tension: 235, friction: 55 }
 	});
 
 	return (
-		<FlexColumn style={dropDown}>
+		<FlexColumn style={dropUp}>
 			<p>where the sum of the dice</p>
 			<FlexRow>
 				<Select
@@ -53,6 +52,7 @@ const DiceSums = props => {
 					value={props.sumTargetValueType}
 					className="select-sum-target select-input"
 					options={sumTargetValueOptions}
+					isSearchable={false}
 				/>
 				<NumberInput
 					min={"1"}
@@ -61,8 +61,7 @@ const DiceSums = props => {
 					name={"sumTargetValueOne"}
 				/>
 				{(props.sumTargetValueType.value === "sumTargetValueBetween" ||
-					props.sumTargetValueType.value ===
-						"sumTargetValueNotBetween") && (
+					props.sumTargetValueType.value === "sumTargetValueNotBetween") && (
 					<React.Fragment>
 						<Separator>and</Separator>
 						<NumberInput
