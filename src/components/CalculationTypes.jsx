@@ -27,13 +27,18 @@ const Paragraph = styled.p`
 `;
 
 const CalculationTypes = props => {
-	const [setProbability, setProbabilityText] = props.setStates;
+	const [
+		setProbability,
+		setProbabilityText,
+		setCalculatingFinished
+	] = props.setStates;
 
 	const handleSelectChange = (newValue, actionMeta) => {
 		const selectName = actionMeta.name;
 		props.inputCallback({ [selectName]: newValue });
 		props.callback(setProbability, "");
 		props.callback(setProbabilityText, "");
+		props.callback(setCalculatingFinished, false);
 	};
 
 	const calculationTypeOptions = [

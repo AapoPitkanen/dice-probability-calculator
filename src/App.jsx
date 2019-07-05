@@ -1,10 +1,4 @@
-import React, {
-	useEffect,
-	useState,
-	useReducer,
-	useRef,
-	useLayoutEffect
-} from "react";
+import React, { useEffect, useState, useReducer, useRef } from "react";
 import "./App.css";
 import DiceInput from "./components/DiceInput";
 import SumWorker from "./sum.worker";
@@ -13,107 +7,19 @@ import DiceImages from "./components/DiceImages";
 import DiceSums from "./components/DiceSums";
 import DiceFaces from "./components/DiceFaces";
 import CalculationTypes from "./components/CalculationTypes";
-import styled, { createGlobalStyle } from "styled-components";
-import { Transition } from "react-spring/renderprops";
+import { Transition, Spring } from "react-spring/renderprops";
 import { easeCubicInOut } from "d3-ease";
-import { CSSTransition } from "react-transition-group";
-
-const GlobalStyle = createGlobalStyle`
-	* {
-		box-sizing: border-box;
-		margin: 0;
-		border: 0;
-	}
-
-	body {
-		font-family: "Nunito", Arial, Helvetica, sans-serif;
-		line-height: 1.4;
-		background-color: #fff;
-		font-size: 100%;
-	}
-`;
-
-const GlobalWrapper = styled.div`
-	display: flex;
-	flex-flow: column wrap;
-	justify-content: center;
-	align-items: center;
-	color: #fff;
-	background-color: #282c34;
-	border-radius: 8px;
-	box-shadow: 0 0 35px 2px rgba(0, 0, 0, 0.2);
-	max-width: 35rem;
-`;
-
-const CalculateButton = styled.button`
-	height: 3rem;
-	width: 10rem;
-	cursor: pointer;
-	border-radius: 1.5rem;
-	color: #fff;
-	background-color: #3f51b5;
-	font-family: "Nunito";
-	transition: background-color 0.15s ease-in;
-	font-size: 1rem;
-	margin: 1rem;
-
-	&:hover {
-		background-color: #4a5bbf;
-	}
-`;
-
-const ErrorMessage = styled.div`
-	transform: translateX(-50%) translateY(-50%);
-	box-sizing: border-box;
-	box-shadow: 2px 2px 20px -2px rgba(0, 0, 0, 0.75);
-	padding: 16px;
-	border-radius: 16px;
-	text-align: center;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	width: 20rem;
-	height: 4rem;
-	background-color: #ba3636;
-	color: #fff;
-`;
-
-const Loader = styled.div`
-	font-size: 1rem;
-	color: #fff;
-`;
-
-const InputWrapper = styled.div`
-	display: flex;
-	flex-flow: column wrap;
-	align-items: center;
-	width: 100%;
-	justify-content: space-around;
-`;
-
-const ProbabilityTextOutput = styled.div`
-	font-size: 1rem;
-	padding: 0.25rem 0;
-`;
-
-const ProbabilityValueOutput = styled.div`
-	font-size: 1.25rem;
-`;
-
-const OutputWrapper = styled.div`
-	display: flex;
-	justify-content: center;
-	flex-direction: column
-	align-items: center;
-	padding: 0 2rem 1rem 2rem;
-
-`;
-
-const HeightWrapper = styled.div`
-	height: ${props => props.height}px;
-	transition: height 800ms ease;
-	width: 100%;
-`;
+import {
+	GlobalStyle,
+	GlobalWrapper,
+	CalculateButton,
+	ErrorMessage,
+	Loader,
+	InputWrapper,
+	HeightWrapper,
+	FlexRow
+} from "./styles";
+import Output from "./components/Output";
 
 const sumWorker = new SumWorker();
 const faceWorker = new FaceWorker();
@@ -169,6 +75,10 @@ const App = () => {
 		setSumDistribution(data.sumDistribution);
 		setProbabilityText(data.probabilityText);
 		setProbability(`${data.probabilityValue}%`);
+
+		setTimeout(() => {
+			window.scroll(0, document.body.scrollHeight);
+		}, 500);
 	};
 
 	useEffect(() => {
@@ -380,14 +290,18 @@ const App = () => {
 	};
 
 	return (
-		<React.Fragment>
+		<>
 			<GlobalStyle />
 			<GlobalWrapper>
 				<CalculationTypes
 					value={inputValues.calculationType}
 					inputCallback={inputCallback}
 					callback={childCallback}
-					setStates={[setProbability, setProbabilityText]}
+					setStates={[
+						setProbability,
+						setProbabilityText,
+						setCalculationFinished
+					]}
 				/>
 				<HeightWrapper height={wrapperHeight}>
 					<InputWrapper ref={calculationRef}>
@@ -449,15 +363,23 @@ const App = () => {
 						)}
 					</InputWrapper>
 				</HeightWrapper>
-				<CalculateButton
-					onClick={
-						inputValues.calculationType.value === "diceSums"
-							? calculateSumProbability
-							: calculateFaceProbability
-					}
-				>
-					Calculate!
-				</CalculateButton>
+				<FlexRow calculationFinished={calculationFinished}>
+					<CalculateButton
+						onClick={
+							inputValues.calculationType.value === "diceSums"
+								? calculateSumProbability
+								: calculateFaceProbability
+						}
+					>
+						Calculate!
+					</CalculateButton>
+				</FlexRow>
+				{calculationFinished && (
+					<Output
+						probabilityText={probabilityText}
+						probability={probability}
+					/>
+				)}
 				<Transition
 					items={calculating}
 					from={{ opacity: 0, maxHeight: "0px" }}
@@ -475,47 +397,24 @@ const App = () => {
 					}
 				</Transition>
 				<Transition
-					items={calculationFinished}
-					from={{ opacity: 0, maxHeight: "0px" }}
-					enter={{ opacity: 1, maxHeight: "200px" }}
-					leave={{ opacity: 0, maxHeight: "0px" }}
-					config={{ duration: 1200, easing: easeCubicInOut }}
-				>
-					{calculationFinished =>
-						calculationFinished &&
-						(props => (
-							<div style={props}>
-								<OutputWrapper>
-									<ProbabilityTextOutput>
-										{probabilityText}
-									</ProbabilityTextOutput>
-									<ProbabilityValueOutput>
-										{probability}
-									</ProbabilityValueOutput>
-								</OutputWrapper>
-							</div>
-						))
-					}
-				</Transition>
-				<Transition
 					items={error}
 					from={{
 						left: "50%",
-						bottom: "25%",
+						bottom: "33%",
 						position: "fixed",
 						opacity: 0,
 						transform: "Translate3d(0, -60px, 0)"
 					}}
 					enter={{
 						left: "50%",
-						bottom: "25%",
+						bottom: "33%",
 						position: "fixed",
 						opacity: 1,
 						transform: "Translate3d(0, 0px, 0)"
 					}}
 					leave={{
 						left: "50%",
-						bottom: "25%",
+						bottom: "33%",
 						position: "fixed",
 						opacity: 0,
 						transform: "Translate3d(0, -60px, 0)"
@@ -532,7 +431,7 @@ const App = () => {
 					}
 				</Transition>
 			</GlobalWrapper>
-		</React.Fragment>
+		</>
 	);
 };
 

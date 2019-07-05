@@ -2,7 +2,7 @@ import React from "react";
 import Select from "react-select";
 import NumberInput from "./NumberInput";
 import styled from "styled-components";
-import { Transition } from "react-spring/renderprops";
+import { useSpring, animated, config } from "react-spring";
 
 const Separator = styled.p`
 	margin: 0;
@@ -20,11 +20,12 @@ const DiceCount = styled.p`
 	}
 `;
 
-const FlexColumn = styled.div`
+const FlexColumn = styled(animated.div)`
 	display: flex;
 	flex-flow: column wrap;
 	align-items: center;
 	width: 100%;
+	z-index: 2;
 `;
 
 const FlexRow = styled.div`
@@ -66,8 +67,14 @@ const DiceFaces = props => {
 		}
 	];
 
+	const dropDown = useSpring({
+		from: { transform: "translateY(-50%)", opacity: 0, zIndex: 10 },
+		to: { transform: "translateY(0)", opacity: 1, zIndex: 10 },
+		config: config.slow
+	});
+
 	return (
-		<FlexColumn>
+		<FlexColumn style={dropDown}>
 			<p>and I want to roll</p>
 			<FlexRow>
 				<Select
