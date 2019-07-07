@@ -6,7 +6,7 @@ import styled from "styled-components";
 const Input = styled.input`
 	width: 18rem;
 	height: auto;
-	border-radius: 8px;
+	border-radius: 6px;
 	padding: 0.5rem;
 	font-family: Nunito;
 	color: #282c34;
@@ -15,13 +15,15 @@ const Input = styled.input`
 
 	&:focus {
 		outline: 0;
-		box-shadow: 0 0 5px 2px #2684ff;
+		box-shadow: 0 0 6px 2px #2684ff;
+	}
+
+	&:hover {
+		box-shadow: 0 0 8px 1px #2684ff;
 	}
 `;
 
 const DiceInput = props => {
-	console.log("rendering diceInput");
-
 	const handleChange = e => {
 		let newValue = e.target.value;
 		let inputName = e.target.name;
@@ -29,41 +31,25 @@ const DiceInput = props => {
 	};
 
 	const handleBlur = e => {
-		const regex1 = /[^d^+^\d]/gi;
-		const regex2 = /(\+){2,}/g;
-		const regex3 = /(\+)$/g;
-		const regex4 = /(d){2,}/;
-		const regexArr = [regex1, regex2, regex3, regex4];
-		const replaceValues = ["", "+", "", "d"];
-		let newValue = e.target.value;
+		const replacerRegex = /(\d+d\d+)|(\+\d+d\d+)/g;
+		const newValue = e.target.value;
 		const inputName = e.target.name;
-		let totalDice;
-		let diceObj;
 
-		regexArr.forEach((x, i) => {
-			newValue = newValue.replace(x, replaceValues[i]);
-		});
-
-		if (newValue !== "") {
-			newValue = newValue.split("+");
-			diceObj = diceLib.createDiceObject(newValue);
-
-			_.isEmpty(diceObj)
-				? (totalDice = 0)
-				: (totalDice = Object.values(diceObj).reduce(
-						(acc, curr) => acc + curr
-				  ));
-
-			if (newValue[0] !== "") {
-				newValue = diceLib.sortDiceInput(newValue);
-			}
-
-			newValue = newValue.join("+");
-		}
+		const matchedInput =
+			newValue && replacerRegex.test(newValue)
+				? newValue.match(replacerRegex)
+				: [];
+		const diceObj = newValue ? diceLib.createDiceObject(matchedInput) : {};
+		const totalDice = _.isEmpty(diceObj)
+			? 0
+			: Object.values(diceObj).reduce((acc, cur) => acc + cur, 0);
+		const sortedInput = newValue
+			? diceLib.sortDiceInput(matchedInput).join("+")
+			: "";
 
 		props.setTotalDice(totalDice);
 		props.setDiceCounts(diceObj);
-		props.inputCallback({ [inputName]: newValue });
+		props.inputCallback({ [inputName]: sortedInput });
 	};
 
 	return (

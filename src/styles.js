@@ -2,7 +2,7 @@ import styled, { createGlobalStyle } from "styled-components";
 import { animated } from "react-spring";
 
 // If you're wondering why there's the same background color for multiple elements and not only for the root element,
-// it's because of animation trickery with z-index and transform(translateY).
+// it's because of animation trickery with z-index and transform.
 
 const GlobalStyle = createGlobalStyle`
 	html {
@@ -65,10 +65,11 @@ const CalculateButton = styled.button`
 	}
 `;
 
-const ErrorMessage = styled.div`
+const ErrorMessage = styled(animated.div)`
 	transform: translateX(-50%) translateY(-50%);
 	box-sizing: border-box;
 	box-shadow: 2px 2px 20px -2px rgba(0, 0, 0, 0.75);
+	position: fixed;
 	padding: 16px;
 	border-radius: 16px;
 	text-align: center;
@@ -79,12 +80,8 @@ const ErrorMessage = styled.div`
 	height: 4rem;
 	background-color: #ba3636;
 	color: #fff;
-`;
-
-const Loader = styled.div`
-	font-size: 1rem;
-	color: #fff;
-	padding: 0 0 1rem 0;
+	z-index: 20;
+	bottom: 33%;
 `;
 
 const InputWrapper = styled.div`
@@ -93,6 +90,7 @@ const InputWrapper = styled.div`
 	align-items: center;
 	width: 100%;
 	justify-content: space-around;
+	background-color: #282c34;
 	z-index: 10;
 `;
 
@@ -100,6 +98,7 @@ const HeightWrapper = styled.div`
 	height: ${props => props.height}px;
 	transition: height 800ms ease;
 	width: 100%;
+	will-change: height;
 `;
 
 const FlexRow = styled.div`
@@ -109,7 +108,8 @@ const FlexRow = styled.div`
 	justify-content: center;
 	background-color: #282c34;
 	position: relative;
-	border-radius: ${props => (props.calculationFinished ? "0" : "0 0 8px 8px")};
+	padding-bottom: ${props => (props.isCalculationFinished ? "0" : "1rem")}
+	border-radius: ${props => (props.isCalculationFinished ? "0" : "0 0 8px 8px")};
 `;
 
 export {
@@ -117,7 +117,6 @@ export {
 	GlobalWrapper,
 	CalculateButton,
 	ErrorMessage,
-	Loader,
 	InputWrapper,
 	HeightWrapper,
 	FlexRow

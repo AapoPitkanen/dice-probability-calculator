@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useReducer, useRef } from "react";
-import "./App.css";
+import "./DiceProbabilityCalculator.css";
 import DiceInput from "./components/DiceInput";
 import SumWorker from "./sum.worker";
 import FaceWorker from "./face.worker";
@@ -7,36 +7,134 @@ import DiceImages from "./components/DiceImages";
 import DiceSums from "./components/DiceSums";
 import DiceFaces from "./components/DiceFaces";
 import CalculationTypes from "./components/CalculationTypes";
-import { Transition, Spring } from "react-spring/renderprops";
+import { useTransition, animated, config } from "react-spring";
 import { easeCubicInOut } from "d3-ease";
 import {
 	GlobalStyle,
 	GlobalWrapper,
 	CalculateButton,
 	ErrorMessage,
-	Loader,
 	InputWrapper,
 	HeightWrapper,
 	FlexRow
 } from "./styles";
 import Output from "./components/Output";
+import styled, { keyframes } from "styled-components";
+import {
+	LineChart,
+	Line,
+	XAxis,
+	YAxis,
+	Tooltip,
+	Legend,
+	ResponsiveContainer
+} from "recharts";
 
 const sumWorker = new SumWorker();
 const faceWorker = new FaceWorker();
 
-const App = () => {
+const pulsate = keyframes`
+	0% {
+		opacity: 0;
+	}
+
+	15% {
+		opacity: 0;
+	}
+
+	50% {
+		opacity: 1;
+	}
+
+	85 % {
+		opacity: 0;
+	}
+
+	100% {
+		opacity: 0;
+	}
+`;
+
+const fadeIn = keyframes`
+	0% {
+		opacity: 0;
+	}
+
+	100% {
+		opacity: 1;
+	}
+`;
+
+const CalculatingText = styled.p`
+	color: #fff;
+	animation-name: ${pulsate};
+	animation-timing-function: ease-in-out;
+	animation-iteration-count: infinite;
+	animation-duration: 1800ms;
+	position: absolute;
+	left: 50%;
+	transform: translate3d(-50%, -50%, 0);
+`;
+
+const CalculateText = styled.p`
+	color: #fff;
+	transition: opacity 600ms ease;
+	opacity: ${props => (props.isCalculating ? 0 : 1)};
+	position: absolute;
+	left: 50%;
+	transform: translate3d(-50%, -50%, 0);
+`;
+
+const AnimatedProbabilityTextOutput = styled.p`
+	opacity: 0;
+	font-size: 1rem;
+	animation: ${fadeIn} 800ms ease-in-out 200ms 1 forwards;
+`;
+
+const AnimatedProbabilityValueOutput = styled.p`
+	opacity: 0;
+	font-size: 1.25rem;
+	animation: ${fadeIn} 800ms ease-in-out 200ms 1 forwards;
+`;
+
+const AnimatedOutputWrapper = styled(animated.div)`
+	display: flex;
+	justify-content: center;
+	flex-direction: column
+	align-items: center;
+	width: 100%;
+	border-radius: 0 0 8px 8px;
+	background-color: #282c34;
+	padding: 0 2rem;
+	z-index: 1;
+	position: absolute;
+	height: 10%;
+	bottom: -9.9%;
+`;
+
+const DiceProbabilityCalculator = () => {
+	// Check if mobile device, some animations need tweaking if on mobile
+
+	const mobileBooleans = [
+		window.navigator.maxTouchPoints > 0,
+		window.navigator.msMaxTouchPoints > 0,
+		!!window.matchMedia("(pointer:coarse)").matches,
+		"orientation" in window
+	];
+	const isMobile = mobileBooleans.some(value => value) ? true : false;
+
+	// App level state
+
 	const [totalDice, setTotalDice] = useState(0);
 	const [diceCounts, setDiceCounts] = useState({});
 	const [error, setError] = useState(false);
-	const [calculating, setCalculating] = useState(false);
-	const [calculationFinished, setCalculationFinished] = useState(false);
+	const [isCalculating, setIsCalculating] = useState(false);
+	const [isCalculationFinished, setIsCalculationFinished] = useState(false);
 	const [errorText, setErrorText] = useState("");
 	const [probability, setProbability] = useState("");
 	const [probabilityText, setProbabilityText] = useState("");
-	const [sumDistribution, setSumDistribution] = useState({
-		sums: [],
-		probabilities: []
-	});
+	const [sumDistribution, setSumDistribution] = useState([]);
+	const [toggleChart, setToggleChart] = useState(false);
 	const initialInputValues = {
 		calculationType: "diceSums",
 		diceInput: "",
@@ -50,50 +148,18 @@ const App = () => {
 		sumTargetValueOne: "",
 		sumTargetValueTwo: ""
 	};
-	const calculationRef = useRef(null);
 	const [wrapperHeight, setWrapperHeight] = useState("auto");
+
+	// Refs used for isCalculating correct height for animation
+
+	const calculationRef = useRef(null);
+
+	// Helper functions
 
 	const reducer = (state, newState) => ({ ...state, ...newState });
 	const [inputValues, setInputValues] = useReducer(reducer, initialInputValues);
 	const inputCallback = childData => setInputValues(childData);
 	const childCallback = (callback, value) => callback(value);
-	const handleFaceWorkerMessage = e => {
-		const data = e.data;
-		setCalculating(false);
-		setCalculationFinished(true);
-		setProbabilityText(data.probabilityText);
-		setProbability(`${data.probabilityValue}%`);
-	};
-
-	const handleSumWorkerMessage = e => {
-		const data = e.data;
-		setCalculating(false);
-		setCalculationFinished(true);
-		setSumDistribution(data.sumDistribution);
-		setProbabilityText(data.probabilityText);
-		setProbability(`${data.probabilityValue}%`);
-
-		setTimeout(() => {
-			window.scroll(0, document.body.scrollHeight);
-		}, 500);
-	};
-
-	useEffect(() => {
-		sumWorker.addEventListener("message", handleSumWorkerMessage);
-		faceWorker.addEventListener("message", handleFaceWorkerMessage);
-		return () => {
-			sumWorker.removeEventListener("message", handleSumWorkerMessage);
-			faceWorker.removeEventListener("message", handleFaceWorkerMessage);
-		};
-	});
-
-	useEffect(() => {
-		setWrapperHeight(calculationRef.current.clientHeight);
-	}, [
-		inputValues.calculationType,
-		inputValues.faceTargetDiceCountType,
-		inputValues.faceTargetValueType
-	]);
 
 	const checkErrors = errors => {
 		if (errors.some(error => error.errorState)) {
@@ -113,15 +179,81 @@ const App = () => {
 		return false;
 	};
 
+	// Event handlers
+
+	const handleFaceWorkerMessage = e => {
+		const data = e.data;
+		setIsCalculating(false);
+		setIsCalculationFinished(true);
+		setProbabilityText(data.probabilityText);
+		setProbability(`${data.probabilityValue}%`);
+	};
+
+	const handleSumWorkerMessage = e => {
+		const data = e.data;
+		setIsCalculating(false);
+		setIsCalculationFinished(true);
+		setSumDistribution(data.sumDistribution);
+		setProbabilityText(data.probabilityText);
+		setProbability(`${data.probabilityValue}%`);
+
+		setTimeout(() => {
+			window.scroll(0, document.body.scrollHeight);
+		}, 1000);
+	};
+
+	const handleDistribution = () => {
+		setToggleChart(!toggleChart);
+	};
+
+	// Effects
+
+	useEffect(() => {
+		sumWorker.addEventListener("message", handleSumWorkerMessage);
+		faceWorker.addEventListener("message", handleFaceWorkerMessage);
+		return () => {
+			sumWorker.removeEventListener("message", handleSumWorkerMessage);
+			faceWorker.removeEventListener("message", handleFaceWorkerMessage);
+		};
+	});
+
+	useEffect(() => {
+		setWrapperHeight(calculationRef.current.clientHeight);
+	}, [
+		inputValues.calculationType,
+		inputValues.faceTargetDiceCountType,
+		inputValues.faceTargetValueType,
+		toggleChart,
+		isCalculationFinished
+	]);
+
+	// Animations
+
+	const ErrorTransition = useTransition(error, null, {
+		from: { transform: "translateY(-100%)", opacity: 0 },
+		enter: { transform: "translateY(0)", opacity: 1 },
+		leave: { transform: "translateY(-100%)", opacity: 0 },
+		config: { duration: 700, easing: easeCubicInOut }
+	});
+
+	const OutputTransition = useTransition(isCalculationFinished, null, {
+		from: { transform: "translateY(-100%)" },
+		enter: { transform: "translateY(0)" },
+		leave: { transform: "translateY(-100%)" },
+		config: config.slow
+	});
+
+	// Probability calculations
+
 	const calculateFaceProbability = () => {
 		const diceInput = inputValues.diceInput;
 		const diceArr = diceInput.split("+");
 		const faceTargetDiceCountOne = inputValues.faceTargetDiceCountOne;
 		const faceTargetDiceCountTwo = inputValues.faceTargetDiceCountTwo;
-		const faceTargetDiceCountType = inputValues.faceTargetDiceCountType.value;
+		const faceTargetDiceCountType = inputValues.faceTargetDiceCountType;
 		const faceTargetValueOne = inputValues.faceTargetValueOne;
 		const faceTargetValueTwo = inputValues.faceTargetValueTwo;
-		const faceTargetValueType = inputValues.faceTargetValueType.value;
+		const faceTargetValueType = inputValues.faceTargetValueType;
 		const maxSuccesses = totalDice;
 
 		const potentialErrors = [
@@ -180,14 +312,15 @@ const App = () => {
 		setError(false);
 		setProbability("");
 		setProbabilityText("");
-		setCalculating(true);
-		setCalculationFinished(false);
+		setIsCalculationFinished(false);
+
+		totalDice >= 200 && setIsCalculating(true);
 	};
 
 	const calculateSumProbability = () => {
 		const diceInput = inputValues.diceInput;
 		const diceArr = diceInput.split("+");
-		const sumTargetValueType = inputValues.sumTargetValueType.value;
+		const sumTargetValueType = inputValues.sumTargetValueType;
 		let sumTargetValueOne = inputValues.sumTargetValueOne;
 		let sumTargetValueTwo = inputValues.sumTargetValueTwo;
 
@@ -268,16 +401,17 @@ const App = () => {
 		setError(false);
 		setProbabilityText("");
 		setProbability("");
-		setCalculationFinished(false);
+		setIsCalculationFinished(false);
 
-		totalDice >= 200 ? setCalculating(true) : setCalculating(false);
+		totalDice >= 200 && setIsCalculating(true);
 
 		sumWorker.postMessage(message);
 	};
 
+	console.log(sumDistribution);
+
 	return (
 		<>
-			{console.log("rendering App")}
 			<GlobalStyle />
 			<GlobalWrapper>
 				<CalculationTypes
@@ -287,7 +421,7 @@ const App = () => {
 					setStates={[
 						setProbability,
 						setProbabilityText,
-						setCalculationFinished
+						setIsCalculationFinished
 					]}
 				/>
 				<HeightWrapper height={wrapperHeight}>
@@ -319,6 +453,7 @@ const App = () => {
 						)}
 						{inputValues.calculationType === "diceFaces" && (
 							<DiceFaces
+								totalDice={totalDice}
 								inputCallback={inputCallback}
 								faceTargetDiceCountType={inputValues.faceTargetDiceCountType}
 								faceTargetDiceCountOne={inputValues.faceTargetDiceCountOne}
@@ -328,9 +463,39 @@ const App = () => {
 								faceTargetValueTwo={inputValues.faceTargetValueTwo}
 							/>
 						)}
+						{/* isCalculationFinished && (
+							<CalculateButton onClick={handleDistribution}>
+								Show distribution
+							</CalculateButton>
+						) */}
+
+						{/* isCalculationFinished && toggleChart && (
+							<ResponsiveContainer width="90%" height={300}>
+								<LineChart
+									data={sumDistribution}
+									margin={{
+										top: 5,
+										right: 30,
+										left: 20,
+										bottom: 5
+									}}
+								>
+									<XAxis dataKey="sum" />
+									<YAxis dataKey="probability" />
+									<Legend />
+									<Tooltip />
+									<Line
+										type="monotone"
+										dataKey="probability"
+										stroke="#8884d8"
+										activeDot={{ r: 8 }}
+									/>
+								</LineChart>
+							</ResponsiveContainer>
+						) */}
 					</InputWrapper>
 				</HeightWrapper>
-				<FlexRow calculationFinished={calculationFinished}>
+				<FlexRow isCalculationFinished={isCalculationFinished}>
 					<CalculateButton
 						onClick={
 							inputValues.calculationType === "diceSums"
@@ -338,68 +503,43 @@ const App = () => {
 								: calculateFaceProbability
 						}
 					>
-						Calculate!
+						<CalculateText isCalculating={isCalculating}>
+							Calculate!
+						</CalculateText>
+						{isCalculating && (
+							<CalculatingText isCalculating={isCalculating}>
+								Calculating...
+							</CalculatingText>
+						)}
 					</CalculateButton>
 				</FlexRow>
-				{calculationFinished && (
-					<Output probabilityText={probabilityText} probability={probability} />
+				{OutputTransition.map(
+					({ item, key, props }) =>
+						item && (
+							<AnimatedOutputWrapper key={key} style={props}>
+								<AnimatedProbabilityTextOutput>
+									{probabilityText}
+								</AnimatedProbabilityTextOutput>
+								<AnimatedProbabilityValueOutput>
+									{probability}
+								</AnimatedProbabilityValueOutput>
+							</AnimatedOutputWrapper>
+						)
 				)}
-				<Transition
-					items={calculating}
-					from={{ opacity: 0, maxHeight: "0px" }}
-					enter={{ opacity: 1, maxHeight: "200px" }}
-					leave={{ opacity: 0, maxHeight: "0px" }}
-					config={{ duration: 700, easing: easeCubicInOut }}
-				>
-					{calculationFinished =>
-						calculationFinished &&
-						(props => (
-							<div style={props}>
-								<Loader>Calculating...</Loader>
-							</div>
-						))
-					}
-				</Transition>
-				<Transition
-					items={error}
-					from={{
-						left: "50%",
-						bottom: "33%",
-						position: "fixed",
-						opacity: 0,
-						transform: "Translate3d(0, -60px, 0)",
-						zIndex: 15
-					}}
-					enter={{
-						left: "50%",
-						bottom: "33%",
-						position: "fixed",
-						opacity: 1,
-						transform: "Translate3d(0, 0px, 0)",
-						zIndex: 15
-					}}
-					leave={{
-						left: "50%",
-						bottom: "33%",
-						position: "fixed",
-						opacity: 0,
-						transform: "Translate3d(0, -60px, 0)",
-						zIndex: 15
-					}}
-					config={{ duration: 800, easing: easeCubicInOut }}
-				>
-					{error =>
-						error &&
-						(props => (
-							<div style={props}>
-								<ErrorMessage>{errorText}</ErrorMessage>
-							</div>
-						))
-					}
-				</Transition>
+				{/* isCalculationFinished && !isMobile && (
+					<Output probabilityText={probabilityText} probability={probability} />
+				) */}
+				{ErrorTransition.map(
+					({ item, key, props }) =>
+						item && (
+							<ErrorMessage key={key} style={props}>
+								{errorText}
+							</ErrorMessage>
+						)
+				)}
 			</GlobalWrapper>
 		</>
 	);
 };
 
-export default App;
+export default DiceProbabilityCalculator;

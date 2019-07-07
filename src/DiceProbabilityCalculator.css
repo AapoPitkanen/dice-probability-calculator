@@ -1,0 +1,12 @@
+/* Font imports */
+@import url("https://fonts.googleapis.com/css?family=Nunito");
+
+#root {
+	display: flex;
+	justify-content: center;
+	margin: 0.5rem;
+}
+
+.MuiSelect-root {
+	margin: 0 0.75rem 0 0;
+}

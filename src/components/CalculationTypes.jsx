@@ -1,23 +1,23 @@
 import React from "react";
-//import Select from "react-select";
 import styled from "styled-components";
 import { withStyles } from "@material-ui/core/styles";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import InputBase from "@material-ui/core/InputBase";
-import { ExpandMore, PortraitSharp } from "@material-ui/icons";
+import { ExpandMore } from "@material-ui/icons";
 
 const Input = withStyles(theme => ({
 	input: {
-		borderRadius: 4,
+		boxSizing: "border-box",
+		borderRadius: 6,
 		position: "relative",
 		backgroundColor: theme.palette.background.paper,
 		border: "1px solid #ced4da",
 		fontSize: 16,
 		padding: "10px 26px 10px 12px",
 		fontFamily: "Nunito",
-		width: "14rem",
+		width: "16rem",
 		transition: theme.transitions.create(["box-shadow"]),
 		"&:focus": {
 			borderRadius: 4,
@@ -56,20 +56,16 @@ const Paragraph = styled.p`
 	margin: 0.5rem;
 `;
 
+const CalculateHeader = styled.p`
+	margin-bottom: 0.5rem;
+`;
+
 const CalculationTypes = props => {
 	const [
 		setProbability,
 		setProbabilityText,
-		setCalculatingFinished
+		setIsCalculatingFinished
 	] = props.setStates;
-
-	const handleSelectChange = (newValue, actionMeta) => {
-		const selectName = actionMeta.name;
-		props.inputCallback({ [selectName]: newValue });
-		props.callback(setProbability, "");
-		props.callback(setProbabilityText, "");
-		props.callback(setCalculatingFinished, false);
-	};
 
 	const handleChange = e => {
 		const selectName = e.target.name;
@@ -77,10 +73,8 @@ const CalculationTypes = props => {
 		props.inputCallback({ [selectName]: newValue });
 		props.callback(setProbability, "");
 		props.callback(setProbabilityText, "");
-		props.callback(setCalculatingFinished, false);
+		props.callback(setIsCalculatingFinished, false);
 	};
-
-	console.log("rendering calcTypes");
 
 	return (
 		<CalculationTypeWrapper>
@@ -109,7 +103,7 @@ const CalculationTypes = props => {
 				to roll and click Calculate!
 			</Paragraph>
 			<SelectWrapper>
-				<p>I want to calculate</p>
+				<CalculateHeader>I want to calculate</CalculateHeader>
 				<FormControl>
 					<Select
 						value={props.value}
@@ -117,8 +111,12 @@ const CalculationTypes = props => {
 						input={<Input name="calculationType" />}
 						IconComponent={ExpandMore}
 					>
-						<MenuItem value={"diceSums"}>Dice sums</MenuItem>
-						<MenuItem value={"diceFaces"}>Dice face values</MenuItem>
+						<MenuItem style={{ minWidth: "16rem" }} value={"diceSums"}>
+							Dice sums
+						</MenuItem>
+						<MenuItem style={{ minWidth: "16rem" }} value={"diceFaces"}>
+							Dice face values
+						</MenuItem>
 					</Select>
 				</FormControl>
 			</SelectWrapper>

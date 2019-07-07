@@ -39,9 +39,10 @@ const DiceImages = props => {
 			diceObj[diceType] =
 				diceObj[diceType] === undefined ? 1 : diceObj[diceType] + 1;
 			const diceArr = diceLib.diceObjToArray(diceObj).join("+");
+			const totalDice = props.totalDice + 1;
 			props.inputCallback({ diceInput: diceArr });
 			props.setDiceCounts(diceObj);
-			props.setTotalDice(props.totalDice + 1);
+			props.setTotalDice(totalDice);
 		}
 	};
 

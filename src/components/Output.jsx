@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import styled from "styled-components";
 import { useSpring, animated, config } from "react-spring";
 
@@ -35,7 +35,8 @@ const Output = ({ probabilityText, probability }) => {
 	const fadeIn = useSpring({
 		from: { opacity: 0 },
 		to: { opacity: 1 },
-		config: config.slow
+		config: config.slow,
+		delay: 300
 	});
 
 	return (
@@ -43,7 +44,9 @@ const Output = ({ probabilityText, probability }) => {
 			<ProbabilityTextOutput style={fadeIn}>
 				{probabilityText}
 			</ProbabilityTextOutput>
-			<ProbabilityValueOutput>{probability}</ProbabilityValueOutput>
+			<ProbabilityValueOutput style={fadeIn}>
+				{probability}
+			</ProbabilityValueOutput>
 		</OutputWrapper>
 	);
 };

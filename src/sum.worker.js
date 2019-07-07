@@ -22,10 +22,29 @@ self.addEventListener("message", e => {
 	const sums = Object.keys(distribution).map(sum => parseInt(sum));
 	const probabilities = Object.values(distribution);
 
+	/*
 	const sumDistribution = {
 		sums: sums,
 		probabilities: probabilities
 	};
+	*/
+
+	const sumDistribution = sums.map((sum, index) => {
+		return { sum: sum, probability: (probabilities[index] * 100).toFixed(2) };
+	});
+
+	const filteredDistribution =
+		sumTargetValueType === "sumTargetValueAtLeast"
+			? sumDistribution.filter(obj => obj.sum >= sumTargetValueOne)
+			: sumTargetValueType === "sumTargetValueAtMost"
+			? sumDistribution.filter(obj => obj.sum <= sumTargetValueOne)
+			: sumTargetValueType === "sumTargetValueBetween"
+			? sumDistribution.filter(
+					obj => obj.sum >= sumTargetValueOne || obj.sum <= sumTargetValueTwo
+			  )
+			: sumDistribution.filter(
+					obj => obj.sum < sumTargetValueOne || obj.sum > sumTargetValueTwo
+			  );
 
 	const textOptions = {
 		sumTargetValueExactly: `The probability of rolling exactly ${sumTargetValueOne} with the dice ${diceArr.join(
@@ -61,7 +80,7 @@ self.addEventListener("message", e => {
 	const message = {
 		probabilityText: probabilityText,
 		probabilityValue: probabilityValue,
-		sumDistribution: sumDistribution
+		sumDistribution: filteredDistribution
 	};
 
 	self.postMessage(message);
