@@ -1,4 +1,13 @@
 {
-    "editor.formatOnSave": true,
-    "editor.formatOnPaste": true
+	"editor.formatOnSave": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.formatOnPaste": true,
+	"prettier.eslintIntegration": true,
+	"prettier.tabWidth": 4,
+	"prettier.tslintIntegration": true,
+	"prettier.useTabs": true,
+	"[javascript]": {
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	}
 }

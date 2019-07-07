@@ -32,7 +32,13 @@ const diceLib = {
 
 	/* This function sorts the input dice to check all possible unique ways to roll the specified successes with the dice. 
     After sorting the dice, the binomial distributions can be calculated from the dice combinations. */
-	sortUniqueDiceCombinations(target, successes, diceArr, targetType, target2) {
+	sortUniqueDiceCombinations(
+		target,
+		successes,
+		diceArr,
+		targetType,
+		target2
+	) {
 		const sortedDiceArr = [];
 		const diceTypes = diceArr.map(dice => dice.slice(dice.indexOf("d")));
 		const isAtLeastExactlyBetween = [
@@ -77,16 +83,22 @@ const diceLib = {
 			);
 
 			diceKeys =
-				diceArr.every(dice => parseInt(dice.slice(dice.indexOf("d") + 1))) >=
-				target
+				diceArr.every(dice =>
+					parseInt(dice.slice(dice.indexOf("d") + 1))
+				) >= target
 					? diceArr.map(dice => dice.slice(dice.indexOf("d")))
 					: filteredArr.map(dice => dice.slice(dice.indexOf("d")));
 
 			diceValues =
-				diceArr.every(dice => parseInt(dice.slice(dice.indexOf("d") + 1))) >=
-				target
-					? diceArr.map(dice => parseInt(dice.slice(0, dice.indexOf("d"))))
-					: filteredArr.map(dice => parseInt(dice.slice(0, dice.indexOf("d"))));
+				diceArr.every(dice =>
+					parseInt(dice.slice(dice.indexOf("d") + 1))
+				) >= target
+					? diceArr.map(dice =>
+							parseInt(dice.slice(0, dice.indexOf("d")))
+					  )
+					: filteredArr.map(dice =>
+							parseInt(dice.slice(0, dice.indexOf("d")))
+					  );
 		}
 
 		if (targetType === "faceTargetValueAtMost") {
@@ -103,8 +115,12 @@ const diceLib = {
 					: diceArr.map(dice => dice.slice(dice.indexOf("d")));
 			diceValues =
 				target === 1
-					? filteredArr.map(dice => parseInt(dice.slice(0, dice.indexOf("d"))))
-					: diceArr.map(dice => parseInt(dice.slice(0, dice.indexOf("d"))));
+					? filteredArr.map(dice =>
+							parseInt(dice.slice(0, dice.indexOf("d")))
+					  )
+					: diceArr.map(dice =>
+							parseInt(dice.slice(0, dice.indexOf("d")))
+					  );
 		}
 
 		const diceObj = _.zipObject(diceKeys, diceValues);
@@ -149,7 +165,8 @@ const diceLib = {
 
 		dice.forEach(
 			el =>
-				diceTypes.indexOf(el.slice(el.indexOf("d"))) < 0 && diceTypes.push(el)
+				diceTypes.indexOf(el.slice(el.indexOf("d"))) < 0 &&
+				diceTypes.push(el)
 		);
 		diceTypes.forEach(el =>
 			sortedDice.push(this.countDice(el.slice(el.indexOf("d")), dice))
@@ -240,7 +257,9 @@ const diceLib = {
 				const diceCount = parseInt(
 					originalDice.slice(0, originalDice.indexOf("d"))
 				);
-				const sides = parseInt(singleDice.slice(singleDice.indexOf("d") + 1));
+				const sides = parseInt(
+					singleDice.slice(singleDice.indexOf("d") + 1)
+				);
 				const diceSuccessCount = parseInt(
 					singleDice.slice(0, singleDice.indexOf("d"))
 				);
@@ -430,7 +449,9 @@ const diceLib = {
 	calculateDiceSumProbability(polyDice, target, target2, sumType) {
 		const distribution = this.createSumDistribution(polyDice);
 
-		const sumValues = Object.keys(distribution.coeff).map(sum => parseInt(sum));
+		const sumValues = Object.keys(distribution.coeff).map(sum =>
+			parseInt(sum)
+		);
 		const probabilityValues = Object.values(distribution.coeff);
 
 		if (sumType === "sumTargetValueExactly") {
@@ -451,7 +472,10 @@ const diceLib = {
 
 		if (sumType === "sumTargetValueBetween") {
 			return probabilityValues
-				.slice(sumValues.indexOf(target), sumValues.indexOf(target2) + 1)
+				.slice(
+					sumValues.indexOf(target),
+					sumValues.indexOf(target2) + 1
+				)
 				.reduce((acc, cur) => acc + cur, 0);
 		}
 
@@ -459,7 +483,10 @@ const diceLib = {
 			return (
 				1 -
 				probabilityValues
-					.slice(sumValues.indexOf(target), sumValues.indexOf(target2) + 1)
+					.slice(
+						sumValues.indexOf(target),
+						sumValues.indexOf(target2) + 1
+					)
 					.reduce((acc, cur) => acc + cur, 0)
 			);
 		}
