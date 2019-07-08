@@ -135,7 +135,8 @@ const DiceFaces = props => {
 					inputValue={props.faceTargetDiceCountOne}
 					name={"faceTargetDiceCountOne"}
 				/>
-				{(props.faceTargetDiceCountType === "faceTargetDiceCountBetween" ||
+				{(props.faceTargetDiceCountType ===
+					"faceTargetDiceCountBetween" ||
 					props.faceTargetDiceCountType ===
 						"faceTargetDiceCountNotBetween") && (
 					<>
@@ -199,7 +200,8 @@ const DiceFaces = props => {
 					name={"faceTargetValueOne"}
 				/>
 				{(props.faceTargetValueType === "faceTargetValueBetween" ||
-					props.faceTargetValueType === "faceTargetValueNotBetween") && (
+					props.faceTargetValueType ===
+						"faceTargetValueNotBetween") && (
 					<>
 						<Separator>and</Separator>
 						<NumberInput
