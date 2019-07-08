@@ -42,6 +42,7 @@ const FlexColumn = styled(animated.div)`
 	flex-flow: column wrap;
 	align-items: center;
 	width: 100%;
+	background-color: #282c34;
 `;
 
 const FlexRow = styled.div`
