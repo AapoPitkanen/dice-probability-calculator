@@ -18,19 +18,7 @@ import {
 	HeightWrapper,
 	FlexRow
 } from "./styles";
-import Output from "./components/Output";
 import styled, { keyframes } from "styled-components";
-/*
-import {
-	LineChart,
-	Line,
-	XAxis,
-	YAxis,
-	Tooltip,
-	Legend,
-	ResponsiveContainer
-} from "recharts";
-*/
 
 const sumWorker = new SumWorker();
 const faceWorker = new FaceWorker();
@@ -159,13 +147,18 @@ const DiceProbabilityCalculator = () => {
 	// Helper functions
 
 	const reducer = (state, newState) => ({ ...state, ...newState });
-	const [inputValues, setInputValues] = useReducer(reducer, initialInputValues);
+	const [inputValues, setInputValues] = useReducer(
+		reducer,
+		initialInputValues
+	);
 	const inputCallback = childData => setInputValues(childData);
 	const childCallback = (callback, value) => callback(value);
 
 	const checkErrors = errors => {
 		if (errors.some(error => error.errorState)) {
-			const errorIndex = errors.findIndex(error => error.errorState === true);
+			const errorIndex = errors.findIndex(
+				error => error.errorState === true
+			);
 
 			const errorText = errors[errorIndex].errorText;
 
@@ -222,12 +215,12 @@ const DiceProbabilityCalculator = () => {
 	useEffect(() => {
 		setWrapperHeight(calculationRef.current.clientHeight);
 	}, [
-			inputValues.calculationType,
-			inputValues.faceTargetDiceCountType,
-			inputValues.faceTargetValueType,
-			toggleChart,
-			isCalculationFinished
-		]);
+		inputValues.calculationType,
+		inputValues.faceTargetDiceCountType,
+		inputValues.faceTargetValueType,
+		toggleChart,
+		isCalculationFinished
+	]);
 
 	// Animations
 
@@ -242,7 +235,7 @@ const DiceProbabilityCalculator = () => {
 		from: { transform: "translateY(-100%)" },
 		enter: { transform: "translateY(0)" },
 		leave: { transform: "translateY(-100%)" },
-		config: config.slow,
+		config: config.slow
 	});
 
 	// Probability calculations
@@ -273,9 +266,11 @@ const DiceProbabilityCalculator = () => {
 			{
 				errorName: "Empty faceTargetValueTwo input",
 				errorState:
-					["faceTargetValueBetween", "faceTargetValueNotBetween"].includes(
-						faceTargetValueType
-					) && faceTargetValueTwo === "",
+					[
+						"faceTargetValueBetween",
+						"faceTargetValueNotBetween"
+					].includes(faceTargetValueType) &&
+					faceTargetValueTwo === "",
 				errorText: "Please fill in all the required fields"
 			},
 			{
@@ -284,14 +279,16 @@ const DiceProbabilityCalculator = () => {
 					[
 						"faceTargetDiceCountBetween",
 						"faceTargetDiceCountNotBetween"
-					].includes(faceTargetDiceCountType) && faceTargetDiceCountTwo === "",
+					].includes(faceTargetDiceCountType) &&
+					faceTargetDiceCountTwo === "",
 				errorText: "Please fill in all the required fields"
 			},
 			{
 				errorName: "Too many successes",
-				errorState: [faceTargetDiceCountOne, faceTargetDiceCountTwo].some(
-					value => value > maxSuccesses
-				),
+				errorState: [
+					faceTargetDiceCountOne,
+					faceTargetDiceCountTwo
+				].some(value => value > maxSuccesses),
 				errorText: "Cannot roll more successes than the number of dice"
 			}
 		];
@@ -329,17 +326,18 @@ const DiceProbabilityCalculator = () => {
 		const inputErrors = [
 			{
 				errorName: "Empty input",
-				errorState: [(diceInput, sumTargetValueOne, sumTargetValueType)].some(
-					value => !value
-				),
+				errorState: [
+					(diceInput, sumTargetValueOne, sumTargetValueType)
+				].some(value => !value),
 				errorText: "Please fill in all the required fields"
 			},
 			{
 				errorName: "Empty sumTargetValueTwo input",
 				errorState:
-					["sumTargetValueBetween", "sumTargetValueNotBetween"].includes(
-						sumTargetValueType
-					) && sumTargetValueTwo === "",
+					[
+						"sumTargetValueBetween",
+						"sumTargetValueNotBetween"
+					].includes(sumTargetValueType) && sumTargetValueTwo === "",
 				errorText: "Please fill in all the required fields"
 			}
 		];
@@ -350,14 +348,16 @@ const DiceProbabilityCalculator = () => {
 
 		const diceCountValues = diceCounts ? Object.values(diceCounts) : [];
 		const entries = Object.entries(diceCounts).map(item =>
-			item.map(el => (typeof el === "string" ? parseInt(el.slice(1)) : el))
+			item.map(el =>
+				typeof el === "string" ? parseInt(el.slice(1)) : el
+			)
 		);
 
 		const maxSum = diceInput
 			? entries.reduce(
-				(acc, curr) => acc + curr.reduce((acc, curr) => acc * curr),
-				0
-			)
+					(acc, curr) => acc + curr.reduce((acc, curr) => acc * curr),
+					0
+			  )
 			: null;
 
 		const totalDice = diceCountValues.length
@@ -380,7 +380,8 @@ const DiceProbabilityCalculator = () => {
 				errorState: [sumTargetValueOne, sumTargetValueTwo].some(
 					value => value > maxSum
 				),
-				errorText: "Sum cannot be greater than the maximum sum of the dice"
+				errorText:
+					"Sum cannot be greater than the maximum sum of the dice"
 			},
 			{
 				errorName: "Sum too small",
@@ -442,61 +443,51 @@ const DiceProbabilityCalculator = () => {
 							setTotalDice={setTotalDice}
 							setDiceCounts={setDiceCounts}
 							name={"diceInput"}
-							placeholder={"Enter dice here as addition (e.g. 2d6+1d8)..."}
+							placeholder={
+								"Enter dice here as addition (e.g. 2d6+1d8)..."
+							}
 						/>
 
 						{inputValues.calculationType === "diceSums" && (
 							<DiceSums
 								inputCallback={inputCallback}
-								sumTargetValueOne={inputValues.sumTargetValueOne}
-								sumTargetValueTwo={inputValues.sumTargetValueTwo}
-								sumTargetValueType={inputValues.sumTargetValueType}
+								sumTargetValueOne={
+									inputValues.sumTargetValueOne
+								}
+								sumTargetValueTwo={
+									inputValues.sumTargetValueTwo
+								}
+								sumTargetValueType={
+									inputValues.sumTargetValueType
+								}
 							/>
 						)}
 						{inputValues.calculationType === "diceFaces" && (
 							<DiceFaces
 								totalDice={totalDice}
 								inputCallback={inputCallback}
-								faceTargetDiceCountType={inputValues.faceTargetDiceCountType}
-								faceTargetDiceCountOne={inputValues.faceTargetDiceCountOne}
-								faceTargetDiceCountTwo={inputValues.faceTargetDiceCountTwo}
-								faceTargetValueType={inputValues.faceTargetValueType}
-								faceTargetValueOne={inputValues.faceTargetValueOne}
-								faceTargetValueTwo={inputValues.faceTargetValueTwo}
+								faceTargetDiceCountType={
+									inputValues.faceTargetDiceCountType
+								}
+								faceTargetDiceCountOne={
+									inputValues.faceTargetDiceCountOne
+								}
+								faceTargetDiceCountTwo={
+									inputValues.faceTargetDiceCountTwo
+								}
+								faceTargetValueType={
+									inputValues.faceTargetValueType
+								}
+								faceTargetValueOne={
+									inputValues.faceTargetValueOne
+								}
+								faceTargetValueTwo={
+									inputValues.faceTargetValueTwo
+								}
 							/>
 						)}
-						{/* isCalculationFinished && (
-							<CalculateButton onClick={handleDistribution}>
-								Show distribution
-							</CalculateButton>
-						) */}
-
-						{/* isCalculationFinished && toggleChart && (
-							<ResponsiveContainer width="90%" height={300}>
-								<LineChart
-									data={sumDistribution}
-									margin={{
-										top: 5,
-										right: 30,
-										left: 20,
-										bottom: 5
-									}}
-								>
-									<XAxis dataKey="sum" />
-									<YAxis dataKey="probability" />
-									<Legend />
-									<Tooltip />
-									<Line
-										type="monotone"
-										dataKey="probability"
-										stroke="#8884d8"
-										activeDot={{ r: 8 }}
-									/>
-								</LineChart>
-							</ResponsiveContainer>
-						) */}
-					</InputWrapper >
-				</HeightWrapper >
+					</InputWrapper>
+				</HeightWrapper>
 				<FlexRow isCalculationFinished={isCalculationFinished}>
 					<CalculateButton
 						onClick={
@@ -515,35 +506,28 @@ const DiceProbabilityCalculator = () => {
 						)}
 					</CalculateButton>
 				</FlexRow>
-				{
-					OutputTransition.map(
-						({ item, key, props }) =>
-							item && (
-								<AnimatedOutputWrapper key={key} style={props}>
-									<AnimatedProbabilityTextOutput>
-										{probabilityText}
-									</AnimatedProbabilityTextOutput>
-									<AnimatedProbabilityValueOutput>
-										{probability}
-									</AnimatedProbabilityValueOutput>
-								</AnimatedOutputWrapper>
-							)
-					)
-				}
-				{/* isCalculationFinished && !isMobile && (
-					<Output probabilityText={probabilityText} probability={probability} />
-				) */}
-				{
-					ErrorTransition.map(
-						({ item, key, props }) =>
-							item && (
-								<ErrorMessage key={key} style={props}>
-									{errorText}
-								</ErrorMessage>
-							)
-					)
-				}
-			</GlobalWrapper >
+				{OutputTransition.map(
+					({ item, key, props }) =>
+						item && (
+							<AnimatedOutputWrapper key={key} style={props}>
+								<AnimatedProbabilityTextOutput>
+									{probabilityText}
+								</AnimatedProbabilityTextOutput>
+								<AnimatedProbabilityValueOutput>
+									{probability}
+								</AnimatedProbabilityValueOutput>
+							</AnimatedOutputWrapper>
+						)
+				)}
+				{ErrorTransition.map(
+					({ item, key, props }) =>
+						item && (
+							<ErrorMessage key={key} style={props}>
+								{errorText}
+							</ErrorMessage>
+						)
+				)}
+			</GlobalWrapper>
 		</>
 	);
 };
