@@ -20,6 +20,7 @@ import {
 } from "./styles";
 import Output from "./components/Output";
 import styled, { keyframes } from "styled-components";
+/*
 import {
 	LineChart,
 	Line,
@@ -29,6 +30,7 @@ import {
 	Legend,
 	ResponsiveContainer
 } from "recharts";
+*/
 
 const sumWorker = new SumWorker();
 const faceWorker = new FaceWorker();
@@ -220,12 +222,12 @@ const DiceProbabilityCalculator = () => {
 	useEffect(() => {
 		setWrapperHeight(calculationRef.current.clientHeight);
 	}, [
-		inputValues.calculationType,
-		inputValues.faceTargetDiceCountType,
-		inputValues.faceTargetValueType,
-		toggleChart,
-		isCalculationFinished
-	]);
+			inputValues.calculationType,
+			inputValues.faceTargetDiceCountType,
+			inputValues.faceTargetValueType,
+			toggleChart,
+			isCalculationFinished
+		]);
 
 	// Animations
 
@@ -240,7 +242,7 @@ const DiceProbabilityCalculator = () => {
 		from: { transform: "translateY(-100%)" },
 		enter: { transform: "translateY(0)" },
 		leave: { transform: "translateY(-100%)" },
-		config: config.slow
+		config: config.slow,
 	});
 
 	// Probability calculations
@@ -353,9 +355,9 @@ const DiceProbabilityCalculator = () => {
 
 		const maxSum = diceInput
 			? entries.reduce(
-					(acc, curr) => acc + curr.reduce((acc, curr) => acc * curr),
-					0
-			  )
+				(acc, curr) => acc + curr.reduce((acc, curr) => acc * curr),
+				0
+			)
 			: null;
 
 		const totalDice = diceCountValues.length
@@ -493,8 +495,8 @@ const DiceProbabilityCalculator = () => {
 								</LineChart>
 							</ResponsiveContainer>
 						) */}
-					</InputWrapper>
-				</HeightWrapper>
+					</InputWrapper >
+				</HeightWrapper >
 				<FlexRow isCalculationFinished={isCalculationFinished}>
 					<CalculateButton
 						onClick={
@@ -513,31 +515,35 @@ const DiceProbabilityCalculator = () => {
 						)}
 					</CalculateButton>
 				</FlexRow>
-				{OutputTransition.map(
-					({ item, key, props }) =>
-						item && (
-							<AnimatedOutputWrapper key={key} style={props}>
-								<AnimatedProbabilityTextOutput>
-									{probabilityText}
-								</AnimatedProbabilityTextOutput>
-								<AnimatedProbabilityValueOutput>
-									{probability}
-								</AnimatedProbabilityValueOutput>
-							</AnimatedOutputWrapper>
-						)
-				)}
+				{
+					OutputTransition.map(
+						({ item, key, props }) =>
+							item && (
+								<AnimatedOutputWrapper key={key} style={props}>
+									<AnimatedProbabilityTextOutput>
+										{probabilityText}
+									</AnimatedProbabilityTextOutput>
+									<AnimatedProbabilityValueOutput>
+										{probability}
+									</AnimatedProbabilityValueOutput>
+								</AnimatedOutputWrapper>
+							)
+					)
+				}
 				{/* isCalculationFinished && !isMobile && (
 					<Output probabilityText={probabilityText} probability={probability} />
 				) */}
-				{ErrorTransition.map(
-					({ item, key, props }) =>
-						item && (
-							<ErrorMessage key={key} style={props}>
-								{errorText}
-							</ErrorMessage>
-						)
-				)}
-			</GlobalWrapper>
+				{
+					ErrorTransition.map(
+						({ item, key, props }) =>
+							item && (
+								<ErrorMessage key={key} style={props}>
+									{errorText}
+								</ErrorMessage>
+							)
+					)
+				}
+			</GlobalWrapper >
 		</>
 	);
 };
