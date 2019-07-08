@@ -23,7 +23,9 @@ const Input = styled.input`
 
 const NumberInput = props => {
 	const handleChange = e => {
-		const newValue = e.target.value ? parseInt(e.target.value) : e.target.value;
+		const newValue = e.target.value
+			? parseInt(e.target.value)
+			: e.target.value;
 		const inputName = e.target.name;
 		props.inputCallback({ [inputName]: newValue });
 	};

@@ -30,7 +30,10 @@ self.addEventListener("message", e => {
 	*/
 
 	const sumDistribution = sums.map((sum, index) => {
-		return { sum: sum, probability: (probabilities[index] * 100).toFixed(2) };
+		return {
+			sum: sum,
+			probability: (probabilities[index] * 100).toFixed(2)
+		};
 	});
 
 	const filteredDistribution =
@@ -40,10 +43,14 @@ self.addEventListener("message", e => {
 			? sumDistribution.filter(obj => obj.sum <= sumTargetValueOne)
 			: sumTargetValueType === "sumTargetValueBetween"
 			? sumDistribution.filter(
-					obj => obj.sum >= sumTargetValueOne || obj.sum <= sumTargetValueTwo
+					obj =>
+						obj.sum >= sumTargetValueOne ||
+						obj.sum <= sumTargetValueTwo
 			  )
 			: sumDistribution.filter(
-					obj => obj.sum < sumTargetValueOne || obj.sum > sumTargetValueTwo
+					obj =>
+						obj.sum < sumTargetValueOne ||
+						obj.sum > sumTargetValueTwo
 			  );
 
 	const textOptions = {

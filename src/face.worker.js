@@ -47,20 +47,14 @@ self.addEventListener("message", e => {
 		"faceTargetDiceCountBetween",
 		"faceTargetDiceCountNotBetween"
 	].includes(faceTargetDiceCountType)
-		? `The probability of rolling ${
-				textOptions[faceTargetDiceCountType]
-		  } ${successes} to ${successes2} dice where`
-		: `The probability of rolling ${
-				textOptions[faceTargetDiceCountType]
-		  } ${successes} dice where`;
+		? `The probability of rolling ${textOptions[faceTargetDiceCountType]} ${successes} to ${successes2} dice where`
+		: `The probability of rolling ${textOptions[faceTargetDiceCountType]} ${successes} dice where`;
 
 	const probabilityTextTargetValue = [
 		"faceTargetValueBetween",
 		"faceTargetValueNotBetween"
 	].includes(faceTargetValueType)
-		? `the face value is ${
-				textOptions[faceTargetValueType]
-		  } ${target} and ${target2} is `
+		? `the face value is ${textOptions[faceTargetValueType]} ${target} and ${target2} is `
 		: `the face value is ${textOptions[faceTargetValueType]} ${target} is `;
 
 	const probabilityText = `${probabilityTextDiceCount} ${probabilityTextTargetValue}`;
