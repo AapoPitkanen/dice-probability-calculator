@@ -25,8 +25,8 @@ const Input = styled.input`
 
 const DiceInput = props => {
 	const handleChange = e => {
-		let newValue = e.target.value;
-		let inputName = e.target.name;
+		const newValue = e.target.value;
+		const inputName = e.target.name;
 		props.inputCallback({ [inputName]: newValue });
 	};
 

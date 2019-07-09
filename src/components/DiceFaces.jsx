@@ -2,7 +2,7 @@ import React from "react";
 // import Select from "react-select";
 import NumberInput from "./NumberInput";
 import styled from "styled-components";
-import { useSpring, animated } from "react-spring";
+import { useSpring, animated, useTransition } from "react-spring";
 import { withStyles } from "@material-ui/core/styles";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
@@ -42,8 +42,15 @@ const DiceCount = styled.p`
 	right: -35px;
 	margin: 0;
 	text-align: center;
-	transition: opacity 400ms ease;
+	transition: opacity 400ms ease, transform 700ms ease;
 	opacity: ${props => (props.totalDice > 0 ? "1" : "0")};
+	transform: ${props =>
+		![
+			"faceTargetDiceCountBetween",
+			"faceTargetDiceCountNotBetween"
+		].includes(props.faceTargetDiceCountType)
+			? "translateX(0)"
+			: "translateX(3.5rem)"};
 
 	@media (min-width: 320px) and (max-width: 480px) {
 		position: relative;
@@ -73,11 +80,50 @@ const FlexRow = styled.div`
 	}
 `;
 
-const DiceFaces = props => {
+const AnimatedFlexRow = styled(animated.div)`
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	right: -3.25rem;
+`;
+
+const MovingFlexRow = styled.div`
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	align-items: center;
+	transition: transform 600ms ease;
+	position: relative;
+	transform: ${props =>
+		[
+			"faceTargetDiceCountBetween",
+			"faceTargetDiceCountNotBetween",
+			"faceTargetValueBetween",
+			"faceTargetValueBetween"
+		].includes(props.faceTargetDiceCountType || props.faceTargetValueType)
+			? "translateX(-3.5rem)"
+			: "translateX(0)"};
+`;
+
+const DiceFaces = ({
+	totalDice,
+	inputCallback,
+	faceTargetDiceCountType,
+	faceTargetDiceCountOne,
+	faceTargetDiceCountTwo,
+	faceTargetValueType,
+	faceTargetValueOne,
+	faceTargetValueTwo
+}) => {
+	console.log(faceTargetDiceCountType);
+	const isDiceCountBetween = faceTargetDiceCountType.indexOf("Between") > -1;
+	const isTargetBetween = faceTargetValueType.indexOf("Between") > -1;
 	const handleChange = e => {
 		const selectName = e.target.name;
 		const newValue = e.target.value;
-		props.inputCallback({ [selectName]: newValue });
+		inputCallback({ [selectName]: newValue });
 	};
 
 	const dropDown = useSpring({
@@ -86,131 +132,156 @@ const DiceFaces = props => {
 		config: { mass: 1, tension: 235, friction: 55 }
 	});
 
+	const DiceCountBetween = useTransition(isDiceCountBetween, null, {
+		from: { transform: "translateY(-30px)", opacity: 0 },
+		enter: { transform: "translateY(0)", opacity: 1 },
+		leave: { transform: "translateY(-30px)", opacity: 0 }
+	});
+
+	const TargetBetween = useTransition(isTargetBetween, null, {
+		from: { transform: "translateY(-30px)", opacity: 0 },
+		enter: { transform: "translateY(0)", opacity: 1 },
+		leave: { transform: "translateY(-30px)", opacity: 0 }
+	});
+
 	return (
 		<FlexColumn style={dropDown}>
 			<p>and I want to roll</p>
 			<FlexRow>
-				<FormControl>
-					<Select
-						value={props.faceTargetDiceCountType}
-						onChange={handleChange}
-						input={<Input name="faceTargetDiceCountType" />}
-						IconComponent={ExpandMore}
-					>
-						<MenuItem
-							style={{ minWidth: "10rem" }}
-							value={"faceTargetDiceCountExactly"}
+				<MovingFlexRow
+					faceTargetDiceCountType={faceTargetDiceCountType}
+				>
+					<FormControl>
+						<Select
+							value={faceTargetDiceCountType}
+							onChange={handleChange}
+							input={<Input name="faceTargetDiceCountType" />}
+							IconComponent={ExpandMore}
 						>
-							exactly
-						</MenuItem>
-						<MenuItem
-							style={{ minWidth: "10rem" }}
-							value={"faceTargetDiceCountAtLeast"}
-						>
-							at least
-						</MenuItem>
-						<MenuItem
-							style={{ minWidth: "10rem" }}
-							value={"faceTargetDiceCountAtMost"}
-						>
-							at most
-						</MenuItem>
-						<MenuItem
-							style={{ minWidth: "10rem" }}
-							value={"faceTargetDiceCountBetween"}
-						>
-							between
-						</MenuItem>
-						<MenuItem
-							style={{ minWidth: "10rem" }}
-							value={"faceTargetDiceCountNotBetween"}
-						>
-							outside of range
-						</MenuItem>
-					</Select>
-				</FormControl>
-				<NumberInput
-					min={"0"}
-					inputCallback={props.inputCallback}
-					inputValue={props.faceTargetDiceCountOne}
-					name={"faceTargetDiceCountOne"}
-				/>
-				{(props.faceTargetDiceCountType ===
-					"faceTargetDiceCountBetween" ||
-					props.faceTargetDiceCountType ===
-						"faceTargetDiceCountNotBetween") && (
-					<>
-						<Separator>and</Separator>
-						<NumberInput
-							min={"1"}
-							inputCallback={props.inputCallback}
-							inputValue={props.faceTargetDiceCountTwo}
-							name={"faceTargetDiceCountTwo"}
-						/>
-					</>
+							<MenuItem
+								style={{ minWidth: "10rem" }}
+								value={"faceTargetDiceCountExactly"}
+							>
+								exactly
+							</MenuItem>
+							<MenuItem
+								style={{ minWidth: "10rem" }}
+								value={"faceTargetDiceCountAtLeast"}
+							>
+								at least
+							</MenuItem>
+							<MenuItem
+								style={{ minWidth: "10rem" }}
+								value={"faceTargetDiceCountAtMost"}
+							>
+								at most
+							</MenuItem>
+							<MenuItem
+								style={{ minWidth: "10rem" }}
+								value={"faceTargetDiceCountBetween"}
+							>
+								between
+							</MenuItem>
+							<MenuItem
+								style={{ minWidth: "10rem" }}
+								value={"faceTargetDiceCountNotBetween"}
+							>
+								outside of range
+							</MenuItem>
+						</Select>
+					</FormControl>
+					<NumberInput
+						min={"0"}
+						inputCallback={inputCallback}
+						inputValue={faceTargetDiceCountOne}
+						name={"faceTargetDiceCountOne"}
+						margin={"0 0 0 0.75rem"}
+					/>
+				</MovingFlexRow>
+				<DiceCount
+					totalDice={totalDice}
+					faceTargetDiceCountType={faceTargetDiceCountType}
+				>
+					dice
+				</DiceCount>
+				{DiceCountBetween.map(
+					({ item, key, props }) =>
+						item && (
+							<AnimatedFlexRow key={key} style={props}>
+								<Separator>and</Separator>
+								<NumberInput
+									min={"1"}
+									inputCallback={inputCallback}
+									inputValue={faceTargetDiceCountTwo}
+									name={"sumTargetValueTwo"}
+								/>
+							</AnimatedFlexRow>
+						)
 				)}
-				<DiceCount totalDice={props.totalDice}>dice</DiceCount>
 			</FlexRow>
-
 			<p>where the face value</p>
-			<FlexRow desktop>
-				<FormControl>
-					<Select
-						value={props.faceTargetValueType}
-						onChange={handleChange}
-						input={<Input name="faceTargetValueType" />}
-						IconComponent={ExpandMore}
-					>
-						<MenuItem
-							style={{ minWidth: "10rem" }}
-							value={"faceTargetDiceValueExactly"}
+			<FlexRow>
+				<MovingFlexRow faceTargetValueType={faceTargetValueType}>
+					<FormControl>
+						<Select
+							value={faceTargetValueType}
+							onChange={handleChange}
+							input={<Input name="faceTargetValueType" />}
+							IconComponent={ExpandMore}
 						>
-							is exactly
-						</MenuItem>
-						<MenuItem
-							style={{ minWidth: "10rem" }}
-							value={"faceTargetValueAtLeast"}
-						>
-							is at least
-						</MenuItem>
-						<MenuItem
-							style={{ minWidth: "10rem" }}
-							value={"faceTargetValueAtMost"}
-						>
-							is at most
-						</MenuItem>
-						<MenuItem
-							style={{ minWidth: "10rem" }}
-							value={"faceTargetValueBetween"}
-						>
-							is between
-						</MenuItem>
-						<MenuItem
-							style={{ minWidth: "10rem" }}
-							value={"faceTargetValueNotBetween"}
-						>
-							is not between
-						</MenuItem>
-					</Select>
-				</FormControl>
-				<NumberInput
-					min={"1"}
-					inputCallback={props.inputCallback}
-					inputValue={props.faceTargetValueOne}
-					name={"faceTargetValueOne"}
-				/>
-				{(props.faceTargetValueType === "faceTargetValueBetween" ||
-					props.faceTargetValueType ===
-						"faceTargetValueNotBetween") && (
-					<>
-						<Separator>and</Separator>
-						<NumberInput
-							min={"1"}
-							inputCallback={props.inputCallback}
-							inputValue={props.faceTargetValueTwo}
-							name={"faceTargetValueTwo"}
-						/>
-					</>
+							<MenuItem
+								style={{ minWidth: "10rem" }}
+								value={"faceTargetDiceValueExactly"}
+							>
+								is exactly
+							</MenuItem>
+							<MenuItem
+								style={{ minWidth: "10rem" }}
+								value={"faceTargetValueAtLeast"}
+							>
+								is at least
+							</MenuItem>
+							<MenuItem
+								style={{ minWidth: "10rem" }}
+								value={"faceTargetValueAtMost"}
+							>
+								is at most
+							</MenuItem>
+							<MenuItem
+								style={{ minWidth: "10rem" }}
+								value={"faceTargetValueBetween"}
+							>
+								is between
+							</MenuItem>
+							<MenuItem
+								style={{ minWidth: "10rem" }}
+								value={"faceTargetValueNotBetween"}
+							>
+								is not between
+							</MenuItem>
+						</Select>
+					</FormControl>
+					<NumberInput
+						min={"1"}
+						inputCallback={inputCallback}
+						inputValue={faceTargetValueOne}
+						name={"faceTargetValueOne"}
+						margin={"0 0 0 0.75rem"}
+					/>
+				</MovingFlexRow>
+				{TargetBetween.map(
+					({ item, key, props }) =>
+						item && (
+							<AnimatedFlexRow key={key} style={props}>
+								<Separator>and</Separator>
+								<NumberInput
+									min={"1"}
+									inputCallback={inputCallback}
+									inputValue={faceTargetValueTwo}
+									name={"sumTargetValueTwo"}
+								/>
+							</AnimatedFlexRow>
+						)
 				)}
 			</FlexRow>
 		</FlexColumn>

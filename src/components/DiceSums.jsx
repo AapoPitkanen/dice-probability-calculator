@@ -42,7 +42,6 @@ const FlexColumn = styled(animated.div)`
 	flex-flow: column wrap;
 	align-items: center;
 	width: 100%;
-	background-color: #282c34;
 `;
 
 const FlexRow = styled.div`
@@ -71,7 +70,9 @@ const MovingFlexRow = styled.div`
 	transition: transform 600ms ease;
 	position: relative;
 	transform: ${props =>
-		props.sumTargetValueType.indexOf("Between") > -1
+		["sumTargetValueBetween", "sumTargetValueNotBetween"].includes(
+			props.sumTargetValueType
+		)
 			? "translateX(-3.5rem)"
 			: "translateX(0)"};
 `;
@@ -151,6 +152,7 @@ const DiceSums = ({
 						inputCallback={inputCallback}
 						inputValue={sumTargetValueOne}
 						name={"sumTargetValueOne"}
+						margin={"0 0 0 0.75rem"}
 					/>
 				</MovingFlexRow>
 				{SumDiceBetween.map(

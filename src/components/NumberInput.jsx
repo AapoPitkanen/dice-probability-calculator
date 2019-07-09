@@ -8,7 +8,7 @@ const Input = styled.input`
 	padding: 0.5rem;
 	font-family: Nunito;
 	color: #282c34;
-	margin: 0;
+	margin: ${props => props.margin};
 	transition: box-shadow 300ms ease-in-out;
 
 	&:focus {
@@ -37,6 +37,7 @@ const NumberInput = props => {
 			value={props.inputValue}
 			onChange={handleChange}
 			placeholder={props.placeholder}
+			margin={props.margin}
 		/>
 	);
 };
