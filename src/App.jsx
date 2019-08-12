@@ -411,8 +411,6 @@ const DiceProbabilityCalculator = () => {
 		sumWorker.postMessage(message);
 	};
 
-	console.log(sumDistribution);
-
 	return (
 		<>
 			<GlobalStyle />

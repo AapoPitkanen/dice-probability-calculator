@@ -101,7 +101,7 @@ const MovingFlexRow = styled.div`
 			"faceTargetDiceCountBetween",
 			"faceTargetDiceCountNotBetween",
 			"faceTargetValueBetween",
-			"faceTargetValueBetween"
+			"faceTargetValueNotBetween"
 		].includes(props.faceTargetDiceCountType || props.faceTargetValueType)
 			? "translateX(-3.5rem)"
 			: "translateX(0)"};
@@ -117,7 +117,6 @@ const DiceFaces = ({
 	faceTargetValueOne,
 	faceTargetValueTwo
 }) => {
-	console.log(faceTargetDiceCountType);
 	const isDiceCountBetween = faceTargetDiceCountType.indexOf("Between") > -1;
 	const isTargetBetween = faceTargetValueType.indexOf("Between") > -1;
 	const handleChange = e => {
@@ -125,7 +124,6 @@ const DiceFaces = ({
 		const newValue = e.target.value;
 		inputCallback({ [selectName]: newValue });
 	};
-
 	const dropDown = useSpring({
 		from: { transform: "translateY(-50%)", opacity: 0, zIndex: 10 },
 		to: { transform: "translateY(0)", opacity: 1, zIndex: 10 },
@@ -213,7 +211,7 @@ const DiceFaces = ({
 									min={"1"}
 									inputCallback={inputCallback}
 									inputValue={faceTargetDiceCountTwo}
-									name={"sumTargetValueTwo"}
+									name={"faceTargetDiceCountTwo"}
 								/>
 							</AnimatedFlexRow>
 						)
@@ -278,7 +276,7 @@ const DiceFaces = ({
 									min={"1"}
 									inputCallback={inputCallback}
 									inputValue={faceTargetValueTwo}
-									name={"sumTargetValueTwo"}
+									name={"faceTargetValueTwo"}
 								/>
 							</AnimatedFlexRow>
 						)
