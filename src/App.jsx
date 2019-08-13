@@ -99,11 +99,12 @@ const AnimatedOutputWrapper = styled(animated.div)`
 	z-index: 1;
 	position: absolute;
 	height: 10%;
-	bottom: -9.9%;
+	bottom: -10%;
 `;
 
 const DiceProbabilityCalculator = () => {
 	// Check if mobile device, some animations need tweaking if on mobile
+	// TODO - implement mobile specific animations
 
 	const mobileBooleans = [
 		window.navigator.maxTouchPoints > 0,
@@ -290,10 +291,17 @@ const DiceProbabilityCalculator = () => {
 					faceTargetDiceCountTwo
 				].some(value => value > maxSuccesses),
 				errorText: "Cannot roll more successes than the number of dice"
+			},
+			{
+				errorName: "Too many dice",
+				errorState: maxSuccesses > 250,
+				errorText: "Please enter fewer than 250 dice to the dice input"
 			}
 		];
 
-		checkErrors(potentialErrors);
+		if (checkErrors(potentialErrors)) {
+			return;
+		}
 
 		const message = {
 			diceArr: diceArr,

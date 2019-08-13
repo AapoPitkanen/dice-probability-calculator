@@ -64,6 +64,7 @@ const FlexColumn = styled(animated.div)`
 	align-items: center;
 	width: 100%;
 	z-index: 2;
+	background-color: #282c34;
 `;
 
 const FlexRow = styled.div`
